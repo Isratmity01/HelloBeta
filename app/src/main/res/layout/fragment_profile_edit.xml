@@ -1,0 +1,85 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_pic"
+
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+
+        app:srcCompat="@drawable/ic_user_pic_02"
+        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:id="@+id/gallary_upload"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+
+        android:layout_alignBottom="@+id/user_pic"
+        android:layout_alignRight="@+id/user_pic"
+
+        app:srcCompat="@drawable/ic_upload_icon_01"
+        android:elevation="5dp"
+        android:visibility="visible"
+        />
+
+    <TextView
+        android:layout_below="@+id/user_pic"
+        android:id="@+id/name_field_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#8190a7"
+        android:text="নাম এডিট করুন" />
+
+    <EditText
+        android:id="@+id/name_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_below="@+id/name_field_title"
+        android:ems="10"
+        android:inputType="textPersonName" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_marginTop="40dp"
+            android:id="@+id/avatargrid"
+            android:layout_below="@id/name_field"
+            android:layout_height="wrap_content">
+            <GridView
+                android:id="@+id/gridView"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_height="wrap_content"
+
+                android:columnWidth="50dp"
+                android:drawSelectorOnTop="true"
+                android:gravity="center"
+                android:numColumns="4"
+                android:stretchMode="spacingWidthUniform"
+                android:verticalSpacing="10dp"
+                android:focusable="true"
+                android:clickable="true"/>
+        </FrameLayout>
+
+    <Button
+        android:id="@+id/profile_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+       android:visibility="gone"
+        android:text="  শেষ"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/avatargrid"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

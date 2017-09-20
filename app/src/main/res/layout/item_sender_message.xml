@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:emojicon="http://schemas.android.com/tools"
+
+    android:id="@+id/message_holder_sender"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="end"
+        android:gravity="end"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp">
+
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:maxWidth="250dp"
+
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:background="@drawable/shape_chat_bubble"
+                android:layout_height="wrap_content">
+                <github.ankushsachdeva.emojicon.EmojiconTextView
+                    android:id="@+id/sendersMessage"
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content"
+                    emojicon:emojiconSize="10pt"
+
+                    android:textSize="7pt"
+
+                    android:text="হাই! কি অবস্থা?এই যে চলছে বেশ ভালোই। শোন, আমার টাকা পয়সা বেশী হয়ে গেছে, বুঝলি? চল তোরে ট্রিট দেই! কই খাইতে চাস? "
+                    android:textColor="@color/text_white"
+                    android:maxWidth="250dp"
+                    android:textIsSelectable="true"/>
+            <TextView
+                android:id="@+id/senderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="বিকাল ৫.১৫"
+                android:textSize="5pt"
+                android:textColor="#b3ffffff"
+
+                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+                android:layout_below="@id/sendersMessage"
+                android:layout_alignLeft="@id/senderName"
+                android:layout_alignStart="@id/senderName"
+               />
+                <ImageView
+                    android:id="@+id/delivery_status_sendermsg"
+                    android:layout_width="15dp"
+                    android:layout_height="10dp"
+
+                    android:layout_marginTop="2dp"
+                    android:layout_below="@id/sendersMessage"
+                    android:layout_toRightOf="@id/senderName"
+                    android:layout_toEndOf="@id/senderName"
+                     />
+
+
+            </RelativeLayout>
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

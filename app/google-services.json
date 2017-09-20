@@ -1,0 +1,131 @@
+{
+  "project_info": {
+    "project_number": "139201140596",
+    "firebase_url": "https://mars-e7047.firebaseio.com",
+    "project_id": "mars-e7047",
+    "storage_bucket": "mars-e7047.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139201140596:android:afac4e0d84773da7",
+        "android_client_info": {
+          "package_name": "com.grameenphone.mars"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "139201140596-k73t1csod383r8bqv75lna28ti63r496.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grameenphone.mars",
+            "certificate_hash": "6ff5b9e560f4c8f17399c94023d2fb02d589f3ad"
+          }
+        },
+        {
+          "client_id": "139201140596-3ck8lsm9j10ckn38i7ctipcd4i86miul.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grameenphone.mars",
+            "certificate_hash": "72d9e33fa0648f8afaffb384c43506f4670c34b9"
+          }
+        },
+        {
+          "client_id": "139201140596-jh37jh7eph8j0uqt349fhuf7jclanvji.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grameenphone.mars",
+            "certificate_hash": "baf42bce6c07cb205d443e169d601025294a2ebb"
+          }
+        },
+        {
+          "client_id": "139201140596-n4u1jea0qjmugqja9gi45mhsd75rbfn8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grameenphone.mars",
+            "certificate_hash": "b758f1d1bbe1af05a3bbb1425f08461bdc8f1eb3"
+          }
+        },
+        {
+          "client_id": "139201140596-hsljrn7f4gvqhdok3a8a69pc1g0hc5to.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqOurAEaAI5JxuJR8TASvaEiQFclI_gvA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "139201140596-hsljrn7f4gvqhdok3a8a69pc1g0hc5to.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139201140596:android:65c83beb8db25343",
+        "android_client_info": {
+          "package_name": "com.grameenphone.hello"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "139201140596-8snmdvea6vusp106mh0ssjl5fl1i0nuq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grameenphone.hello",
+            "certificate_hash": "72d9e33fa0648f8afaffb384c43506f4670c34b9"
+          }
+        },
+        {
+          "client_id": "139201140596-2vdj4fufn664mgu9bd91j8289vctt7c1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grameenphone.hello",
+            "certificate_hash": "b758f1d1bbe1af05a3bbb1425f08461bdc8f1eb3"
+          }
+        },
+        {
+          "client_id": "139201140596-hsljrn7f4gvqhdok3a8a69pc1g0hc5to.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqOurAEaAI5JxuJR8TASvaEiQFclI_gvA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "139201140596-hsljrn7f4gvqhdok3a8a69pc1g0hc5to.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

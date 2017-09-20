@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#00d3ff</color>
+    <color name="colorPrimaryDark">#007cd6</color>
+    <color name="colorAccent">#00d3ff</color>
+    <color name="statusbarcolor">#0083d9</color>
+    <color name="transparent">#00000000</color>
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#000000</color>
+    <color name="white">#fafafa</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="pink">#e91e63</color>
+    <color name="red">#dd4b39</color>
+    <color name="pink_pressed">#ec407a</color>
+    <color name="blue_semi_transparent">#2200d3ff</color>
+    <color name="blue_semi_transparent_pressed">#80738ffe</color>
+
+    <color name="semitransparent">#2e000000</color>
+    <color name="disabled">#c88190a7</color>
+    <color name="pressed">#515C85</color>
+    <color name="colorPrimaryRipple">#423F51B5</color>
+    <color name="sender_chat_bubble">#26BEFF</color>
+    <color name="receiver_chat_bubble">#FFFFFF</color>
+    <color name="purple">#c054c9</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_black">#303b4b</color>
+    <color name="text_gray">#8190a7</color>
+    <color name="text_red">#ff4949</color>
+    <color name="icons">#AEC3E3</color>
+
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_300">#E0E0E0</color>
+
+    <color name="unseen_message_color">#303b4b</color>
+    <color name="seen_message_color">#8190a7</color>
+
+
+    <color name="border_color">#42aec3e3</color>
+    <color name="chat_screen_background">#D4DDE2</color>
+
+    <color name="time_stamp">#8a000000</color>
+
+
+    <color name="bottom_nav_unchecked">#8597B2</color>
+
+    <color name="hint_text_color">#e1edff</color>
+
+
+</resources>

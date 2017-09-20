@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_icon_chip"
+    android:layout_width="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="10dp"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_chip">
+
+        <ImageView
+            android:id="@+id/iconlivee"
+            android:layout_alignParentLeft="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/laila"
+             />
+
+        <TextView
+            android:id="@+id/texttextname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/iconlivee"
+            android:paddingTop="5dp"
+            android:paddingStart="6dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
+            android:textColor="@color/white"
+            android:paddingBottom="5dp"
+            android:text="লাইলা"
+            />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

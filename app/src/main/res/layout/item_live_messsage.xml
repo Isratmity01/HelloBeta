@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:padding="3dp"
+    android:layout_height="wrap_content">
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/liveholder"
+
+    android:layout_height="wrap_content">
+
+<ImageView
+    android:layout_width="10dp"
+    android:layout_height="10dp"
+    android:id="@+id/badge"
+    android:layout_gravity="center"
+    android:layout_marginTop="5dp"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+
+    android:background="@drawable/level_1_badge"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/liveusername"
+        android:layout_toRightOf="@id/badge"
+        android:text="abs"
+        android:textSize="15sp"
+        android:textColor="#26BEFF"
+        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:id="@+id/liveholderall"
+        android:layout_alignTop="@+id/liveusername"
+        android:layout_toRightOf="@id/liveusername"
+        android:layout_height="wrap_content">
+    <github.ankushsachdeva.emojicon.EmojiconTextView
+
+        android:id="@+id/live_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="string"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/text_black"
+        android:textIsSelectable="true"
+        android:textSize="15sp"
+        app:emojiconSize="10pt" />
+    <ImageView
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:id="@+id/livesticker"
+        android:layout_marginBottom="5dp"
+
+
+
+
+        android:gravity="start"/>
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/liveimage"
+        android:layout_marginTop="10dp"
+
+        android:layout_marginBottom="5dp"
+
+        android:gravity="start"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/livedownloader"
+        android:visibility="gone"
+
+        android:background="@drawable/ic_get_app_white_24dp"
+        android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+    <TextView
+
+        android:id="@+id/time_stamp_live"
+        android:textColor="@color/time_stamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+
+        android:layout_below="@+id/liveholderall"
+
+        android:layout_alignLeft="@id/liveholderall"
+        android:layout_alignStart="@id/liveholderall"
+
+        android:text="time"
+        android:textSize="5pt" />
+</RelativeLayout>
+
+
+</RelativeLayout>
+

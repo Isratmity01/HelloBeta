@@ -1,0 +1,11 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_icon_size">18dp</dimen>
+    <dimen name="banner_spacing">5dp</dimen>
+    <dimen name="home_spacing">8dp</dimen>
+    <dimen name="maincardheight">150dp</dimen>
+    <dimen name="sendbuttonsouter">45dp</dimen>
+    <dimen name="sendbuttonsinside">25dp</dimen>
+    <dimen name="activity_horizontal_margin">10dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+</resources>
