@@ -19,6 +19,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.grameenphone.hello.Fragments.Fragment_Live;
 import com.grameenphone.hello.Fragments.Fragment_MainPage;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.Utils.DateTimeUtility;
 import com.grameenphone.hello.Utils.ImageDialog;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
@@ -189,16 +190,24 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         viewHolder.liveuser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                User user=databaseHelper.getUser(chat.getSenderUid());
-                User meuser=databaseHelper.getMe();
-                if(!meuser.getUid().equals(user.getUid()))
-                (fragment_live).openDialogue(user);
-            //    (fragment_live).StartP2p(current.getRoomId(), current.getName());
-             /*   if(current.getType().equals("p2p")) {
-                    ((MainActivityHolder)context).StartP2p(current.getRoomId(), current.getName());
-                } else {
-                    ((MainActivityHolder)context).startGroupChat(current.getRoomId(), current.getName());
-                }*/
+                User user = databaseHelper.getUser(chat.getSenderUid());
+                User meuser = databaseHelper.getMe();
+                if(!meuser.getUid().equals(user.getUid())) {
+
+                    if(user.getUid()!=null) {
+                        final String chatRoomId = Compare.getRoomName(user.getUid(), meuser.getUid());
+
+                        final ChatRoom chatRoom = databaseHelper.getRoom(chatRoomId);
+
+                        if ( chatRoom != null && chatRoom.getName() !=null ){
+                            (fragment_live).openDialogue(user, chatRoom.getRequestStatus());
+                        } else {
+                            (fragment_live).openDialogue(user, 100);
+                        }
+                    }
+
+                }
+
 
 
             }
