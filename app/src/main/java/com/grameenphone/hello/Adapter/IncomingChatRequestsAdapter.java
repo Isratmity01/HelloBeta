@@ -11,9 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Fragments.Fragment_MainPage;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.ChatRoom;
+import com.grameenphone.hello.model.User;
 
 import java.util.ArrayList;
 
@@ -28,11 +33,25 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private LayoutInflater inflater;
     private Fragment_MainPage fragment_mainPage;
+    private DatabaseReference firebaseDatabaseRef;
 
-    public IncomingChatRequestsAdapter(Context context, ArrayList<ChatRoom> rooms, Fragment_MainPage fragment_mainPage) {
+    private DatabaseHelper dbHelper;
+
+    private User me;
+    private String userid = "";
+
+    public IncomingChatRequestsAdapter(Context context, ArrayList<ChatRoom> rooms, Fragment_MainPage fragment_mainPage, User me) {
         this.context = context;
         this.rooms = rooms;
         this.fragment_mainPage=fragment_mainPage;
+
+        this.me = me;
+
+        dbHelper = new DatabaseHelper(context);
+
+
+
+        firebaseDatabaseRef = FirebaseDatabase.getInstance().getReference();
 
     }
 
@@ -73,9 +92,32 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
 
+        if(current.getRoomId() != null) {
+
+            for (String id : current.getRoomId().split("_")) {
+                if (!id.equals(me.getUid())) {
+                    userid = id;
+                }
+            }
+        }
+
+
         itemHolder.acceptRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                firebaseDatabaseRef.child("users_chat_room")
+                        .child( me.getUid())
+                        .child(current.getRoomId())
+                        .child("requestStatus")
+                        .setValue(1);
+
+                firebaseDatabaseRef.child("users_chat_room")
+                        .child( userid )
+                        .child(current.getRoomId())
+                        .child("requestStatus")
+                        .setValue(1);
 
                 Toast.makeText(context,"আপনি ম্যাসেজ রিকুয়েস্ট এক্সেপ্ট করেছেন", Toast.LENGTH_SHORT).show();
 
@@ -85,6 +127,20 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
         itemHolder.rejectRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                firebaseDatabaseRef.child("users_chat_room")
+                        .child( me.getUid())
+                        .child(current.getRoomId())
+                        .setValue(null);
+
+                firebaseDatabaseRef.child("users_chat_room")
+                        .child( userid )
+                        .child(current.getRoomId())
+                        .setValue(null);
+
+
+                dbHelper.addRoom(current.getRoomId(),current.getName(),current.getPhotoUrl(),100);
+
 
                 Toast.makeText(context,"আপনি ম্যাসেজ রিকুয়েস্ট রিজেক্ট করেছেন", Toast.LENGTH_SHORT).show();
 

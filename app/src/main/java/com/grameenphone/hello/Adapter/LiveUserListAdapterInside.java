@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.grameenphone.hello.Fragments.Fragment_Live;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.User;
@@ -34,12 +35,14 @@ public class LiveUserListAdapterInside extends RecyclerView.Adapter<RecyclerView
     private RequestManager glideRequest;
     private Fragment_Live fragment_live;
     private DatabaseHelper dbhelper;
+    private User me;
     private final static int FADE_DURATION = 1000 ;// in milliseconds
     public LiveUserListAdapterInside(Context context, ArrayList<String> users, DatabaseHelper databaseHelper,Fragment_Live fragmentLive){
         this.context = context;
         this.users = users;
         this.dbhelper=databaseHelper;
         this.fragment_live=fragmentLive;
+        this.me = dbhelper.getMe();
 
     }
 
@@ -76,7 +79,17 @@ public class LiveUserListAdapterInside extends RecyclerView.Adapter<RecyclerView
             @Override
             public void onClick(View view) {
 
-                (fragment_live).openDialogue(current);
+                if(current!=null && !(current.getUid()).equals(me.getUid()) ) {
+                    final String chatRoomId = Compare.getRoomName(current.getUid(), me.getUid());
+
+                    final ChatRoom chatRoom = dbhelper.getRoom(chatRoomId);
+
+                    if ( chatRoom != null && chatRoom.getName() !=null ){
+                        (fragment_live).openDialogue(current, chatRoom.getRequestStatus());
+                    } else {
+                        (fragment_live).openDialogue(current, 100);
+                    }
+                }
             }
         });
 

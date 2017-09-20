@@ -36,7 +36,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.IncomingChatRequestsAdapter;
 import com.grameenphone.hello.Adapter.LiveUserListAdapter;
@@ -50,13 +49,10 @@ import com.grameenphone.hello.model.User;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-
-
 
 
 public class Fragment_MainPage extends Fragment {
@@ -141,13 +137,15 @@ public class Fragment_MainPage extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_main, menu);
         item = menu.findItem(R.id.action_settings);
-        Glide.with(this).load(myself.getPhotoUrl()).asBitmap().centerCrop().transform(new CropCircleTransformation(getActivity())).into(new SimpleTarget<Bitmap>(50, 50) {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                item.setIcon(new BitmapDrawable(getResources(), resource));
+        Glide.with(this).load(myself.getPhotoUrl()).asBitmap().centerCrop()
+                .transform(new CropCircleTransformation(getActivity()))
+                .into(new SimpleTarget<Bitmap>(50, 50) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                        item.setIcon(new BitmapDrawable(getResources(), resource));
 
-            }
-        });
+                    }
+                });
 
     }
 
@@ -157,7 +155,7 @@ public class Fragment_MainPage extends Fragment {
         onlineUserCount = (TextView) view.findViewById(R.id.onlineusers);
         liveusercount = 0;
 
-        liveHeader=(TextView)view.findViewById(R.id.liveuserheader);
+        liveHeader = (TextView) view.findViewById(R.id.liveuserheader);
 
         userrecylcer = (RecyclerView) view.findViewById(R.id.horizontallayoutholder);
         msgrecyler = (RecyclerView) view.findViewById(R.id.friendListRecyclerView);
@@ -173,7 +171,8 @@ public class Fragment_MainPage extends Fragment {
                 mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(mid).setValue("true");
 
                 // For removing from live
-                // mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(((MainActivity) getActivity()).me.getUid()).setValue(null);
+                // mFirebaseDatabaseReferenceForLiveCount.child("live_user")
+                // .child(((MainActivity) getActivity()).me.getUid()).setValue(null);
 
 
                 Fragment_Live fragment4 = new Fragment_Live();
@@ -201,12 +200,10 @@ public class Fragment_MainPage extends Fragment {
         AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarmain);
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        float density=getResources().getDisplayMetrics().density;
-        if(density<2.5)
-        {
+        float density = getResources().getDisplayMetrics().density;
+        if (density < 2.5) {
             params.height = 156;
-        }
-        else params.height=216;
+        } else params.height = 216;
         //this will be changed based on device dpi
 
 
@@ -247,7 +244,7 @@ public class Fragment_MainPage extends Fragment {
             });
 
 
-        } else if( reqStatus == 2 ){
+        } else if (reqStatus == 2) {
 
             final String chatRoomId = Compare.getRoomName(user.getUid(), myself.getUid());
             final ChatRoom chatRoom = databaseHelper.getRoom(chatRoomId);
@@ -277,23 +274,22 @@ public class Fragment_MainPage extends Fragment {
                             .setValue(chatRoomForSender);
 
 
-
-
                     StartP2p(chatRoomId, chatRoom.getName());
                     dialog.dismiss();
                 }
             });
 
-        } else if( reqStatus == 0 ){
+        } else if (reqStatus == 0) {
 
             alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                }});
+                }
+            });
 
 
-        }else {
+        } else {
 
             alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
                 @Override
@@ -321,7 +317,7 @@ public class Fragment_MainPage extends Fragment {
                     chatRoomForMe.setPhotoUrl(user.getPhotoUrl());
                     chatRoomForMe.setRequestStatus(0);
 
-                    databaseHelper.addRoom( chatRoomId,user.getName(),user.getPhotoUrl(),0 );
+                    databaseHelper.addRoom(chatRoomId, user.getName(), user.getPhotoUrl(), 0);
 
 
                     mFirebaseDatabaseReferenceForRequest.child("users_chat_room")
@@ -340,7 +336,6 @@ public class Fragment_MainPage extends Fragment {
         alertadd.show();
 
     }
-
 
 
     public void StartP2p(String roomId, String name) {
@@ -364,70 +359,95 @@ public class Fragment_MainPage extends Fragment {
     public void init() {
 
         userArrayList.clear();
-        userArrayList.addAll(((MainActivity) getActivity()).databaseHelper.getAllRoombyStatus(1));
+        userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
 
 
         chatRequests.clear();
-        chatRequests.addAll(((MainActivity) getActivity()).databaseHelper.getAllRoombyStatus(2));
-
+        chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
 
 
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid()).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-                if (userArrayList.contains(chatroom) || chatRequests.contains(chatroom) ) {
+        mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid())
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
+                        if (userArrayList.contains(chatroom) || chatRequests.contains(chatroom)) {
 
-                } else {
-                    ((MainActivity) getActivity()).databaseHelper.addRoom(chatroom.getRoomId(), chatroom.getName(), chatroom.getPhotoUrl(), chatroom.getRequestStatus());
+                        } else {
+                            databaseHelper.addRoom(chatroom.getRoomId(),
+                                            chatroom.getName(),
+                                            chatroom.getPhotoUrl(),
+                                            chatroom.getRequestStatus());
 
-                    if(chatroom.getRequestStatus() == 1) {
-                        userArrayList.add(chatroom);
-                    } else if(chatroom.getRequestStatus() == 2){
-                        chatRequests.add(chatroom);
+                            if (chatroom.getRequestStatus() == 1) {
+                                userArrayList.add(chatroom);
+                            } else if (chatroom.getRequestStatus() == 2) {
+                                chatRequests.add(chatroom);
+                            }
+
+                        }
+
+                        //roomListAdapter.notifyDataSetChanged();
+                        //chatRequestsAdapter.notifyDataSetChanged();
+
+
                     }
 
-                }
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                        ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
+
+                        if (chatRequests.contains(chatroom)) {
+
+                            if (chatroom.getRequestStatus() == 1) {
+
+                                databaseHelper.addRoom(chatroom.getRoomId(),
+                                                chatroom.getName(),
+                                                chatroom.getPhotoUrl(),
+                                                chatroom.getRequestStatus());
+
+                                chatRequests.remove(chatroom);
+                                userArrayList.add(chatroom);
+                            }
+
+                        }
 
 
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-
-                if ( chatRequests.contains(chatroom) ) {
-
-                    ((MainActivity) getActivity()).databaseHelper.addRoom(chatroom.getRoomId(), chatroom.getName(), chatroom.getPhotoUrl(), chatroom.getRequestStatus());
-
-                    if(chatroom.getRequestStatus() == 1) {
-                        chatRequests.remove(chatroom);
-                        userArrayList.add(chatroom);
                     }
 
-                }
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
+
+                        if( chatroom != null && chatroom.getRoomId() != null ){
+                            databaseHelper.addRoom(chatroom.getRoomId(),
+                                    chatroom.getName(),
+                                    chatroom.getPhotoUrl(),
+                                    100);
+
+                            if(chatRequests.contains(chatroom)){
+                                chatRequests.remove(chatroom);
+                            }
+                            if(userArrayList.contains(chatroom)){
+                                userArrayList.remove(chatroom);
+                            }
+                        }
 
 
+                    }
 
-            }
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    }
 
-            }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+                    }
+                });
 
 
         roomListAdapter = new RoomListAdapter(getActivity(), userArrayList, Fragment_MainPage.this);
@@ -438,8 +458,7 @@ public class Fragment_MainPage extends Fragment {
         msgrecyler.setAdapter(roomListAdapter);
 
 
-
-        chatRequestsAdapter = new IncomingChatRequestsAdapter(getActivity(), chatRequests, Fragment_MainPage.this);
+        chatRequestsAdapter = new IncomingChatRequestsAdapter(getActivity(), chatRequests, Fragment_MainPage.this, myself);
         chatReqrecyler.setNestedScrollingEnabled(false);
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -449,42 +468,44 @@ public class Fragment_MainPage extends Fragment {
         chatReqrecyler.setAdapter(chatRequestsAdapter);
 
 
-
-
         LiveChips();
 
     }
-private void LiveChips()
-{
-   // liveUser=((MainActivity)getActivity()).finalliveusers;
-    liveUserListAdapter = new LiveUserListAdapter(getActivity(), liveUser, ((MainActivity) getActivity()).databaseHelper, Fragment_MainPage.this);
-    userrecylcer.setAdapter(liveUserListAdapter);
-    onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
-    if(liveUser.size()>0)liveHeader.setVisibility(View.VISIBLE);
-}
+
+    private void LiveChips() {
+
+        // liveUser=((MainActivity)getActivity()).finalliveusers;
+        liveUserListAdapter = new LiveUserListAdapter(
+                getActivity(),
+                liveUser,
+                databaseHelper,
+                Fragment_MainPage.this);
+
+        userrecylcer.setAdapter(liveUserListAdapter);
+        onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
+        if (liveUser.size() > 0) liveHeader.setVisibility(View.VISIBLE);
+    }
+
     @Subscribe
     public void onEvent(EventReceived event) {
 
-        if(event.isLoginSuccessful())
-        {
-            if(liveUser.contains(event.getResponseMessage()))
-            {
+        if (event.isLoginSuccessful()) {
+            if (liveUser.contains(event.getResponseMessage())) {
                 liveUser.remove(event.getResponseMessage());
             }
-            liveUser.add(0,event.getResponseMessage());
+            liveUser.add(0, event.getResponseMessage());
             liveHeader.setVisibility(View.VISIBLE);
             //setLiveusercount(liveusercount=liveUser.size());
             liveusercount++;
             onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
             liveUserListAdapter.notifyDataSetChanged();
 
-        }
-        else {
+        } else {
             liveUser.remove(event.getResponseMessage());
             liveusercount--;
             onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
-            if(liveUser.size()==0)liveHeader.setVisibility(View.GONE);
-         //  setLiveusercount(liveusercount=liveUser.size());
+            if (liveUser.size() == 0) liveHeader.setVisibility(View.GONE);
+            //  setLiveusercount(liveusercount=liveUser.size());
             // liveUser.remove(event.getResponseMessage());
             liveUserListAdapter.notifyDataSetChanged();
 
@@ -493,6 +514,7 @@ private void LiveChips()
         //check if login was successful
 
     }
+
     @Override
     public void onResume() {
         super.onResume();

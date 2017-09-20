@@ -12,10 +12,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -25,10 +26,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,14 +39,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cipherthinkers.shapeflyer.ShapeFlyer;
@@ -70,16 +67,17 @@ import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.LiveListAdapter;
 import com.grameenphone.hello.Adapter.LiveUserListAdapterInside;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.Utils.Constant;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.Chat;
+import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.EventReceived;
 import com.grameenphone.hello.model.FileModel;
 import com.grameenphone.hello.model.User;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -104,27 +102,34 @@ import static android.app.Activity.RESULT_OK;
 public class Fragment_Live extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-     public static String CHAT_ROOMS_CHILD = "chat_rooms";
+    public static String CHAT_ROOMS_CHILD = "chat_rooms";
     public static String MESSAGES_CHILD = "mars_live";
+
+
+
+
+    FragmentManager fragmentManager;
+
+    private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
 
     private ImageView mSendButton;
     private RelativeLayout msendback;
     private RecyclerView mMessageRecyclerView;
-    private LinearLayoutManager mLinearLayoutManager,linearLayoutManager;
-    private int initial=100;
-    private int eachtime=50;
+    private LinearLayoutManager mLinearLayoutManager, linearLayoutManager;
+    private int initial = 100;
+    private int eachtime = 50;
     private String receivedKey;
     private Button jumpToBottom;
-    private ArrayList<Integer> userArrayList2=new ArrayList<>();
+    private ArrayList<Integer> userArrayList2 = new ArrayList<>();
     private View rootView;
     EmojiconEditText emojiconEditText;
-    public static Boolean isActive=false;
+    public static Boolean isActive = false;
     private User sender;
 
     private DatabaseHelper dbHelper;
     private Toolbar toolbar;
     private ImageButton Back;
-    private int loadCalled=0;
+    private int loadCalled = 0;
 
     ArrayList<String> liveUser = new ArrayList<String>();
     private static final String TAG = Fragment_Live.class.getSimpleName();
@@ -133,24 +138,23 @@ public class Fragment_Live extends Fragment {
     private static final int IMAGE_GALLERY_REQUEST = 101;
     private View borderbottom;
 
-    int eachreduced=eachtime;
-    private ArrayList<Chat>userArrayLiveList=new ArrayList<>();
+    int eachreduced = eachtime;
+    private ArrayList<Chat> userArrayLiveList = new ArrayList<>();
     public static FirebaseUser mFirebaseUser;
     private FirebaseAuth mFirebaseAuth;
 
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private Toolbar toolbarlive;
-    private DatabaseReference mFirebaseDatabaseReference,mFirebaseDatabaseReferenceForLiveCount;
     private LiveListAdapter chatLiveAdapter;
     private ProgressBar LivePrg;
     private ImageButton attach;
 
     private RecyclerView userrecylcer;
     private LiveUserListAdapterInside liveUserListAdapter;
-private View fragmentView;
+    private View fragmentView;
     private Button LoadMsg;
     ShapeFlyer mShapeFlyer;
-   private FlyBluePrint linearBluePrint;
+    private FlyBluePrint linearBluePrint;
     private static int liveusercount;
 
     public static int getLiveusercount() {
@@ -164,6 +168,7 @@ private View fragmentView;
     public Fragment_Live() {
         // Required empty public constructor
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -178,12 +183,11 @@ private View fragmentView;
     }
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window =getActivity().getWindow();
+            Window window = getActivity().getWindow();
             Drawable background = getResources().getDrawable(R.drawable.gradient);
             window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -193,28 +197,31 @@ private View fragmentView;
         }
         EventBus.getDefault().register(this);
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
 
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-        ActionBar actionBar= ((AppCompatActivity)getActivity()).getSupportActionBar();
-       ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator ( R.drawable.ic_backiconsmall );
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_backiconsmall);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-     setActionBarTitle("লাইভ");
+        setActionBarTitle("লাইভ");
     }
 
 
     public void setActionBarTitle(String title) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
 
     }
+
     public void setActionBarSubTitle(String title) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle(title+ " জন একটিভ");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(title + " জন একটিভ");
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
@@ -224,11 +231,12 @@ private View fragmentView;
 
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        if (fragmentView == null){
+        if (fragmentView == null) {
 
 
             fragmentView = inflater.inflate(R.layout.fragment_mars_live,
@@ -239,42 +247,42 @@ private View fragmentView;
 
         return fragmentView;
     }
+
     private void bindViews(View view) {
 
-        LivePrg=(ProgressBar)view.findViewById(R.id.liveprogress);
-        userrecylcer=(RecyclerView)view.findViewById(R.id.horizontallayoutholder);
-        toolbarlive=(Toolbar)getActivity().findViewById(R.id.toolbar);
-        LoadMsg=(Button)view.findViewById(R.id.jump_totop);
+        LivePrg = (ProgressBar) view.findViewById(R.id.liveprogress);
+        userrecylcer = (RecyclerView) view.findViewById(R.id.horizontallayoutholder);
+        toolbarlive = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        LoadMsg = (Button) view.findViewById(R.id.jump_totop);
         LoadMsg.setVisibility(View.GONE);
 
-        toolbarlive.setContentInsetsAbsolute(0,0);
+        toolbarlive.setContentInsetsAbsolute(0, 0);
         toolbarlive.setContentInsetStartWithNavigation(0);
         toolbarlive.setOverflowIcon(null);
-        attach=(ImageButton)view.findViewById(R.id.attachment);
+        attach = (ImageButton) view.findViewById(R.id.attachment);
         attach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             //   photoGalleryIntent();
+                //   photoGalleryIntent();
                 mShapeFlyer.startAnimation(R.drawable.laila);
             }
         });
 
         progressDialog = new ProgressDialog(getActivity());
-        AppBarLayout appBarLayout=(AppBarLayout)getActivity().findViewById(R.id.appbarmain);
+        AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarmain);
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        float density=getResources().getDisplayMetrics().density;
-        if(density<2.5)
-        {
+        float density = getResources().getDisplayMetrics().density;
+        if (density < 2.5) {
             params.height = 106;
-        }
-        else
-        params.height=156;
+        } else
+            params.height = 156;
 
 
-        params.width=ViewGroup.LayoutParams.MATCH_PARENT;;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        ;
         appBarLayout.setLayoutParams(params);
-        FloatingActionsMenu floatingActionsMenu=  (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
+        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
         floatingActionsMenu.setVisibility(View.GONE);
 
         emojiconEditText = (EmojiconEditText) view.findViewById(R.id.messageEditText);
@@ -318,7 +326,7 @@ private View fragmentView;
 
             @Override
             public void onKeyboardClose() {
-                if(popup.isShowing())
+                if (popup.isShowing())
                     popup.dismiss();
             }
         });
@@ -393,16 +401,16 @@ private View fragmentView;
             public void onClick(View v) {
 
                 //If popup is not showing => emoji keyboard is not visible, we need to show it
-                if(!popup.isShowing()){
+                if (!popup.isShowing()) {
 
                     //If keyboard is visible, simply show the emoji popup
-                    if(popup.isKeyBoardOpen()){
+                    if (popup.isKeyBoardOpen()) {
                         popup.showAtBottom();
                         changeEmojiKeyboardIcon(emojiButton, R.drawable.ic_keyboard);
                     }
 
                     //else, open the text keyboard first and immediately after that show the emoji popup
-                    else{
+                    else {
                         emojiconEditText.setFocusableInTouchMode(true);
                         emojiconEditText.requestFocus();
                         popup.showAtBottomPending();
@@ -413,7 +421,7 @@ private View fragmentView;
                 }
 
                 //If popup is showing, simply dismiss it to show the undelying text keyboard
-                else{
+                else {
                     popup.dismiss();
                 }
             }
@@ -426,22 +434,21 @@ private View fragmentView;
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-              if (charSequence.toString().trim().length() > 0) {
+                if (charSequence.toString().trim().length() > 0) {
 
                     mSendButton.setVisibility(View.VISIBLE);
                     msendback.setBackgroundResource(R.drawable.circular_shape);
 
                     mSendButton.setEnabled(true);
                     msendback.setEnabled(true);
-                    mSendButton.setColorFilter(  ContextCompat.getColor(getActivity().getApplicationContext(),R.color.white)  );
-
+                    mSendButton.setColorFilter(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.white));
 
 
                 } else {
-                  msendback.setEnabled(false);
-                  msendback.setBackgroundResource(R.drawable.circular_shape);
+                    msendback.setEnabled(false);
+                    msendback.setBackgroundResource(R.drawable.circular_shape);
                     mSendButton.setVisibility(View.VISIBLE);
-                   mSendButton.setEnabled(false);
+                    mSendButton.setEnabled(false);
 
                 }
             }
@@ -482,12 +489,11 @@ private View fragmentView;
         });
 
 
-
         mSendButton = (ImageView) view.findViewById(R.id.send_button);
         mSendButton.setEnabled(false);
         //mSendButton.setColorFilter(  ContextCompat.getColor(getActivity().getApplicationContext(),R.color.white)  );
 
-        msendback=(RelativeLayout)view.findViewById(R.id.sendbackground);
+        msendback = (RelativeLayout) view.findViewById(R.id.sendbackground);
         msendback.setBackgroundResource(R.drawable.circular_shape);
         msendback.setEnabled(false);
         msendback.setOnClickListener(new View.OnClickListener() {
@@ -510,34 +516,29 @@ private View fragmentView;
         });
 
 
-
-
-
     }
+
     @Subscribe
     public void onEvent(EventReceived event) {
 
-        if(event.isLoginSuccessful())
-        {
-                if(liveUser.contains(event.getResponseMessage()))
-                {
-                    liveUser.remove(event.getResponseMessage());
-                }
-                liveUser.add( event.getResponseMessage());
-                //setLiveusercount(liveusercount=liveUser.size());
-                liveusercount++;
-                setActionBarSubTitle(EToB(String.valueOf(liveUser.size())));
-                userrecylcer.smoothScrollToPosition(liveUser.size()-1);
-                liveUserListAdapter.notifyDataSetChanged();
+        if (event.isLoginSuccessful()) {
+            if (liveUser.contains(event.getResponseMessage())) {
+                liveUser.remove(event.getResponseMessage());
+            }
+            liveUser.add(event.getResponseMessage());
+            //setLiveusercount(liveusercount=liveUser.size());
+            liveusercount++;
+            setActionBarSubTitle(EToB(String.valueOf(liveUser.size())));
+            userrecylcer.smoothScrollToPosition(liveUser.size() - 1);
+            liveUserListAdapter.notifyDataSetChanged();
 
-        }
-        else {
+        } else {
             liveUser.remove(event.getResponseMessage());
             liveusercount--;
             setActionBarSubTitle(EToB(String.valueOf(liveUser.size())));
             //  setLiveusercount(liveusercount=liveUser.size());
             // liveUser.remove(event.getResponseMessage());
-            userrecylcer.smoothScrollToPosition(liveUser.size()-1);
+            userrecylcer.smoothScrollToPosition(liveUser.size() - 1);
             liveUserListAdapter.notifyDataSetChanged();
 
         }
@@ -545,41 +546,167 @@ private View fragmentView;
         //check if login was successful
 
     }
+
     private void photoGalleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture_title)), IMAGE_GALLERY_REQUEST);
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         init();
     }
-    public void openDialogue(User user)
-    {
+
+
+    public void openDialogue(final User user, int reqStatus) {
         AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
         LayoutInflater factory = LayoutInflater.from(getActivity());
         final View view = factory.inflate(R.layout.req_layout, null);
-        TextView name=(TextView) view.findViewById(R.id.profile_name);
+        TextView name = (TextView) view.findViewById(R.id.profile_name);
         name.setText(user.getName());
-                ImageView profile=(ImageView)view.findViewById(R.id.profile_picture);
-        Glide.with(getActivity()).load( user.getPhotoUrl() ).bitmapTransform(new CropCircleTransformation(getActivity()))
+        ImageView profile = (ImageView) view.findViewById(R.id.profile_picture);
+        Glide.with(getActivity()).load(user.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity()))
                 .placeholder(R.drawable.hello1)
                 .into(profile);
         alertadd.setView(view);
 
 
+        if (reqStatus == 1) {
+
+            final String chatRoomId = Compare.getRoomName(user.getUid(), sender.getUid());
+            final ChatRoom chatRoom = dbHelper.getRoom(chatRoomId);
+
+            alertadd.setPositiveButton("ম্যাসেজ পাঠান", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    StartP2p(chatRoomId, chatRoom.getName());
+                    dialog.dismiss();
+                }
+            });
+
+
+        } else if (reqStatus == 2) {
+
+            final String chatRoomId = Compare.getRoomName(user.getUid(), sender.getUid());
+            final ChatRoom chatRoom = dbHelper.getRoom(chatRoomId);
+
+            alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    chatRoom.setRequestStatus(1);
+
+                    mFirebaseDatabaseReferenceForRequest.child("users_chat_room")
+                            .child(sender.getUid())
+                            .child(chatRoomId)
+                            .setValue(chatRoom);
+
+
+                    final ChatRoom chatRoomForSender = new ChatRoom();
+
+                    chatRoomForSender.setName(sender.getName());
+                    chatRoomForSender.setRoomId(chatRoomId);
+                    chatRoomForSender.setPhotoUrl(sender.getPhotoUrl());
+                    chatRoomForSender.setRequestStatus(1);
+
+
+                    mFirebaseDatabaseReferenceForRequest.child("users_chat_room")
+                            .child(user.getUid())
+                            .child(chatRoomId)
+                            .setValue(chatRoomForSender);
+
+
+                    StartP2p(chatRoomId, chatRoom.getName());
+                    dialog.dismiss();
+                }
+            });
+
+        } else if (reqStatus == 0) {
+
+            alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+
+        } else {
+
+            alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    final String chatRoomId = Compare.getRoomName(user.getUid(), sender.getUid());
+                    final ChatRoom chatRoomForSender = new ChatRoom();
+
+                    chatRoomForSender.setName(sender.getName());
+                    chatRoomForSender.setRoomId(chatRoomId);
+                    chatRoomForSender.setPhotoUrl(sender.getPhotoUrl());
+                    chatRoomForSender.setRequestStatus(2);
+
+
+                    mFirebaseDatabaseReferenceForRequest.child("users_chat_room")
+                            .child(user.getUid())
+                            .child(chatRoomId)
+                            .setValue(chatRoomForSender);
+
+
+                    final ChatRoom chatRoomForMe = new ChatRoom();
+
+                    chatRoomForMe.setName(user.getName());
+                    chatRoomForMe.setRoomId(chatRoomId);
+                    chatRoomForMe.setPhotoUrl(user.getPhotoUrl());
+                    chatRoomForMe.setRequestStatus(0);
+
+                    dbHelper.addRoom(chatRoomId, user.getName(), user.getPhotoUrl(), 0);
+
+
+                    mFirebaseDatabaseReferenceForRequest.child("users_chat_room")
+                            .child(sender.getUid())
+                            .child(chatRoomId)
+                            .setValue(chatRoomForMe);
+
+
+                    dialog.dismiss();
+                }
+            });
+
+        }
+
+
         alertadd.show();
 
     }
-    public void init()
-    {
 
 
-        liveUser=((MainActivity)getActivity()).getFinalliveusers();
+    public void StartP2p(String roomId, String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString("room_uid", roomId);
+        bundle.putString("room_name", name);
+
+        Fragment_PrivateChat fragmentp = new Fragment_PrivateChat();
+
+        fragmentp.setArguments(bundle);
+        fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragmentp);
+        fragmentTransaction.addToBackStack("p2p");
+        fragmentTransaction.commit();
+        //    transaction.addToBackStack(null);
+
+
+    }
+
+
+    public void init() {
+
+
+        liveUser = ((MainActivity) getActivity()).getFinalliveusers();
         setActionBarSubTitle(EToB(String.valueOf(liveUser.size())));
-        liveUserListAdapter = new LiveUserListAdapterInside(getActivity(), liveUser,((MainActivity) getActivity()).databaseHelper,Fragment_Live.this);
+        liveUserListAdapter = new LiveUserListAdapterInside(getActivity(), liveUser, ((MainActivity) getActivity()).databaseHelper, Fragment_Live.this);
         userrecylcer.smoothScrollToPosition(0);
         userrecylcer.setAdapter(liveUserListAdapter);
 
@@ -628,12 +755,10 @@ private View fragmentView;
         });
 */
 
-loadinitial();
+        loadinitial();
 
 
-
-
-        chatLiveAdapter = new LiveListAdapter(getActivity(), userArrayLiveList,Fragment_Live.this,dbHelper);
+        chatLiveAdapter = new LiveListAdapter(getActivity(), userArrayLiveList, Fragment_Live.this, dbHelper);
 
 
         chatLiveAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -657,7 +782,6 @@ loadinitial();
         mMessageRecyclerView.setAdapter(chatLiveAdapter);
 
 
-
         mMessageRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -673,18 +797,15 @@ loadinitial();
                     jumpToBottom.setVisibility(View.GONE);
 
                 }
-                if(loadCalled>0)
-                {
-                    lastVisiblePosition=lastVisiblePosition+initial;
+                if (loadCalled > 0) {
+                    lastVisiblePosition = lastVisiblePosition + initial;
                     if (lastVisiblePosition < (chatCount - 30) && (lastVisiblePosition != -1)) {
                         LoadMsg.setVisibility(View.VISIBLE);
                     } else {
                         LoadMsg.setVisibility(View.GONE);
 
                     }
-                }
-                else if(loadCalled==0)
-                {
+                } else if (loadCalled == 0) {
                     if (lastVisiblePosition < (chatCount - 30) && (lastVisiblePosition != -1)) {
                         LoadMsg.setVisibility(View.VISIBLE);
                     } else {
@@ -700,7 +821,7 @@ loadinitial();
         jumpToBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-             int lastPosition =
+                int lastPosition =
                         mLinearLayoutManager.getItemCount();
                 mMessageRecyclerView.scrollToPosition(lastPosition - 1);
 
@@ -710,27 +831,24 @@ loadinitial();
             @Override
             public void onClick(View view) {
                 LivePrg.setVisibility(View.VISIBLE);
-               eachreduced= 0;
-               loadMore();
+                eachreduced = 0;
+                loadMore();
 
             }
         });
 
 
-
-
     }
-    private void loadinitial()
-    {
+
+    private void loadinitial() {
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReference.child(CHAT_ROOMS_CHILD).child(MESSAGES_CHILD).orderByKey().limitToLast(initial).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Chat chat = dataSnapshot.getValue(Chat.class);
 
-                if(userArrayLiveList.size()==0)
-                {
-                    receivedKey=dataSnapshot.getKey();
+                if (userArrayLiveList.size() == 0) {
+                    receivedKey = dataSnapshot.getKey();
                 }
 
                 userArrayLiveList.add(chat);
@@ -763,31 +881,30 @@ loadinitial();
         });
         LivePrg.setVisibility(View.GONE);
     }
-    private void loadMore()
-    {
+
+    private void loadMore() {
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        initial=initial+eachtime*loadCalled;
+        initial = initial + eachtime * loadCalled;
         loadCalled++;
 
         mFirebaseDatabaseReference.child(CHAT_ROOMS_CHILD).child(MESSAGES_CHILD).orderByKey().endAt(receivedKey).limitToLast(eachtime).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Chat chat = dataSnapshot.getValue(Chat.class);
-                if(userArrayLiveList.size()==initial)
-                {
-                    receivedKey=dataSnapshot.getKey();
+                if (userArrayLiveList.size() == initial) {
+                    receivedKey = dataSnapshot.getKey();
                 }
-               if(eachreduced<49){
-                   LivePrg.setVisibility(View.GONE);
-                   userArrayLiveList.add(eachreduced++,chat);
+                if (eachreduced < 49) {
+                    LivePrg.setVisibility(View.GONE);
+                    userArrayLiveList.add(eachreduced++, chat);
 
-               }
+                }
 
 
                 chatLiveAdapter.notifyDataSetChanged();
                 int lastPosition =
                         mLinearLayoutManager.getItemCount();
-                mMessageRecyclerView.scrollToPosition(lastPosition-(lastPosition-48));
+                mMessageRecyclerView.scrollToPosition(lastPosition - (lastPosition - 48));
 
             }
 
@@ -813,13 +930,14 @@ loadinitial();
         });
 
     }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // Do something here. This is the event fired when up button is pressed.
 
                 // mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(((MainActivity) getActivity()).me.getUid()).setValue(null);
-               // Toast.makeText(getActivity(),"left",Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getActivity(),"left",Toast.LENGTH_SHORT).show();
                 getActivity().onBackPressed();
                 onStop();
 
@@ -828,7 +946,7 @@ loadinitial();
         return super.onOptionsItemSelected(item);
     }
 
-    private void changeEmojiKeyboardIcon(ImageView iconToBeChanged, int drawableResourceId){
+    private void changeEmojiKeyboardIcon(ImageView iconToBeChanged, int drawableResourceId) {
         iconToBeChanged.setImageResource(drawableResourceId);
     }
 
@@ -866,6 +984,7 @@ loadinitial();
         }
         return concatResult;
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
