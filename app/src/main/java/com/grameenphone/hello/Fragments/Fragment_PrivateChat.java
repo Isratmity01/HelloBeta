@@ -9,7 +9,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -28,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -48,6 +53,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -60,6 +68,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.ChatRoomAdapter;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Constant;
@@ -83,6 +92,7 @@ import github.ankushsachdeva.emojicon.EmojiconGridView;
 import github.ankushsachdeva.emojicon.EmojiconsPopup;
 import github.ankushsachdeva.emojicon.StickerGridView;
 import github.ankushsachdeva.emojicon.emoji.Emojicon;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -180,8 +190,10 @@ public class Fragment_PrivateChat extends Fragment {
     private IntentFilter mIntent;
     Chat c;
     private static Context context;
+    private Bitmap bitmapfinal;
     Calendar calendar;
     Boolean IsSent=false;
+    private Toolbar toolbarp2p;
     private static String sChatRoomName = "";
     View fragmentView;
     private int currentPage = 0;
@@ -208,9 +220,51 @@ public class Fragment_PrivateChat extends Fragment {
         sender = dbHelper.getMe();
         receiver_uid = (MESSAGES_CHILD.replace(sender.getUid(), "")).replace("_", "");
         receiver = dbHelper.getUser(receiver_uid);
+        Glide.with(getActivity()).load(receiver.getPhotoUrl()).asBitmap().centerCrop().transform(new CropCircleTransformation(getActivity())).into(new SimpleTarget<Bitmap>(35,35) {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                bitmapfinal=resource;
+ Drawable drawable = new Drawable() {
+            @Override
+            public void draw(Canvas canvas) {
+
+                int width = canvas.getWidth();
+                int height = canvas.getHeight();
+
+                Bitmap bMap =  bitmapfinal;
+                canvas.drawBitmap(bMap,(width-(bMap.getWidth())), (height/2)-(bMap.getHeight()/2), null);
+                Bitmap bMap2 = BitmapFactory.decodeResource(getResources(), R.drawable.back);
+                canvas.drawBitmap(bMap2,5, (height/2)-(bMap2.getHeight()/2), null);
+
+            }
+
+            @Override
+            public void setAlpha(int i) {
+
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+
+            }
+
+            @Override
+            public int getOpacity() {
+                return PixelFormat.TRANSLUCENT;
+            }
+        };
+        try{
+
+            toolbarp2p.setNavigationIcon(drawable);
+        }catch (Exception e)
+        {
+
+        }
+            }
+        });
         android.support.v7.app.ActionBar ab =  ((AppCompatActivity)getActivity()).getSupportActionBar();
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator ( R.drawable.ic_backiconsmall );
+      //  ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator ( R.drawable.ic_backiconsmall );
         //  ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.bell);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -228,7 +282,7 @@ public class Fragment_PrivateChat extends Fragment {
         return true;
     }
     public void setActionBarTitle(String title) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("  "+title);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -250,6 +304,8 @@ public class Fragment_PrivateChat extends Fragment {
         context = getActivity().getApplicationContext();
 
         emojiconEditText = (EmojiconEditText) view.findViewById(R.id.messageEditText);
+        toolbarp2p=(Toolbar)getActivity().findViewById(R.id.toolbar);
+
         jumpToBottom = (Button) view.findViewById(R.id.jump_bottom);
         LoadMore=(Button)view.findViewById(R.id.jump_totop) ;
         mSendButton = (ImageView) view.findViewById(R.id.send_button);
@@ -488,12 +544,61 @@ public class Fragment_PrivateChat extends Fragment {
         AppBarLayout appBarLayout=(AppBarLayout)getActivity().findViewById(R.id.appbarmain);
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        params.height=146;
+        float density = getResources().getDisplayMetrics().density;
+        if(density<=1.5)
+        {
+            params.height = 90;
+        }
+        else  if(density>1.5 && density<2.5)
+        {
+            params.height = 106;
+        }
+        else
+            params.height=156;
 
 
         params.width=ViewGroup.LayoutParams.MATCH_PARENT;;
         appBarLayout.setLayoutParams(params);
         setActionBarTitle(roomName);
+        if(bitmapfinal!=null) {
+            Drawable drawable = new Drawable() {
+                @Override
+                public void draw(Canvas canvas) {
+
+                    int width = canvas.getWidth();
+                    int height = canvas.getHeight();
+
+                    Bitmap bMap = bitmapfinal;
+                    canvas.drawBitmap(bMap, (width - (bMap.getWidth())), (height / 2) - (bMap.getHeight() / 2), null);
+                    Bitmap bMap2 = BitmapFactory.decodeResource(getResources(), R.drawable.back);
+                    canvas.drawBitmap(bMap2, 5, (height / 2) - (bMap2.getHeight() / 2), null);
+
+                }
+
+                @Override
+                public void setAlpha(int i) {
+
+                }
+
+                @Override
+                public void setColorFilter(ColorFilter colorFilter) {
+
+                }
+
+                @Override
+                public int getOpacity() {
+                    return PixelFormat.TRANSLUCENT;
+                }
+            };
+            try {
+
+                toolbarp2p.setNavigationIcon(drawable);
+            } catch (Exception e) {
+
+            }
+
+
+        }
         init();
     }
     public void load()

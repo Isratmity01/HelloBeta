@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -204,7 +207,7 @@ public class Fragment_Live extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_backiconsmall);
+     //   ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_backiconsmall);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -259,6 +262,37 @@ public class Fragment_Live extends Fragment {
         toolbarlive.setContentInsetsAbsolute(0, 0);
         toolbarlive.setContentInsetStartWithNavigation(0);
         toolbarlive.setOverflowIcon(null);
+        Drawable drawable = new Drawable() {
+            @Override
+            public void draw(Canvas canvas) {
+
+                int width = canvas.getWidth();
+                int height = canvas.getHeight();
+
+                Bitmap bMap =  BitmapFactory.decodeResource(getActivity().getResources(),
+                        R.drawable.ic_trending_up_white_18dp);
+                canvas.drawBitmap(bMap,(width-(bMap.getWidth())), (height/2)-(bMap.getHeight()/2), null);
+                
+                Bitmap bMap2 = BitmapFactory.decodeResource(getResources(), R.drawable.ic_arrow_back_white_24dp);
+                canvas.drawBitmap(bMap2,5, (height/2)-(bMap2.getHeight()/2)+5, null);
+            }
+
+            @Override
+            public void setAlpha(int i) {
+
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+
+            }
+
+            @Override
+            public int getOpacity() {
+                return PixelFormat.TRANSLUCENT;
+            }
+        };
+        toolbarlive.setNavigationIcon(drawable);
         attach = (ImageButton) view.findViewById(R.id.attachment);
         attach.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,10 +307,16 @@ public class Fragment_Live extends Fragment {
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         float density = getResources().getDisplayMetrics().density;
-        if (density < 2.5) {
+        if(density<=1.5)
+        {
+            params.height = 90;
+        }
+        else  if(density>1.5 && density<2.5)
+        {
             params.height = 106;
-        } else
-            params.height = 156;
+        }
+        else
+            params.height=156;
 
 
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
