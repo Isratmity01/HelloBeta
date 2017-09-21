@@ -3,7 +3,7 @@
     <dimen name="fab_icon_size">18dp</dimen>
     <dimen name="banner_spacing">5dp</dimen>
     <dimen name="home_spacing">8dp</dimen>
-    <dimen name="maincardheight">125dp</dimen>
+    <dimen name="maincardheight">120dp</dimen>
     <dimen name="sendbuttonsouter">25dp</dimen>
     <dimen name="sendbuttonsinside">10dp</dimen>
     <dimen name="activity_horizontal_margin">10dp</dimen>
