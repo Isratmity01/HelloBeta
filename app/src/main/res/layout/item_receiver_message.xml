@@ -24,14 +24,7 @@
 
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:id="@+id/receiversphoto"
 
-
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_height="40dp" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -44,8 +37,9 @@
                 android:paddingEnd="10dp"
                 android:paddingRight="10dp"
 
-                android:layout_toEndOf="@+id/receiversphoto"
-                android:layout_toRightOf="@+id/receiversphoto">
+
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
 
                 <github.ankushsachdeva.emojicon.EmojiconTextView
                     android:id="@+id/receiversMessage"
