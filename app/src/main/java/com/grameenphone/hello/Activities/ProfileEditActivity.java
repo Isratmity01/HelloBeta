@@ -337,6 +337,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.setHasAlpha(true);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             byte[] data = outputStream.toByteArray();
 

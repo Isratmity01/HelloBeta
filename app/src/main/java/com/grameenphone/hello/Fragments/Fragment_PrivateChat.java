@@ -71,6 +71,7 @@ import com.google.firebase.storage.UploadTask;
 import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.ChatRoomAdapter;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.CircularTransform;
 import com.grameenphone.hello.Utils.Constant;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.Chat;
@@ -185,10 +186,11 @@ public class Fragment_PrivateChat extends Fragment {
     public ChatRoomAdapter chatRoomAdapter;
     public ArrayList<Chat> chats = new ArrayList<Chat>();
 
-
+    private int width,height;
     private BroadcastReceiver statusReceiver;
     private IntentFilter mIntent;
     Chat c;
+    private float density;
     private static Context context;
     private Bitmap bitmapfinal;
     Calendar calendar;
@@ -216,11 +218,28 @@ public class Fragment_PrivateChat extends Fragment {
         dbHelper = new DatabaseHelper(getActivity());
         MESSAGES_CHILD = room_id;
         me = dbHelper.getMe();
+         density = getResources().getDisplayMetrics().density;
+        if(density<=1.5)
+        {
+           width=35;
+            height=35;
+        }
+        else  if(density>1.5 && density<2.5)
+        {
+            width=35;
+            height=35;
+        }
+        else
+        {
+            width=60;
+            height=60;
+        }
+
         dbHelper.updateNotificationStateOfRoom(MESSAGES_CHILD, 0);
         sender = dbHelper.getMe();
         receiver_uid = (MESSAGES_CHILD.replace(sender.getUid(), "")).replace("_", "");
         receiver = dbHelper.getUser(receiver_uid);
-        Glide.with(getActivity()).load(receiver.getPhotoUrl()).asBitmap().centerCrop().transform(new CropCircleTransformation(getActivity())).into(new SimpleTarget<Bitmap>(35,35) {
+        Glide.with(getActivity()).load(receiver.getPhotoUrl()).asBitmap().transform(new CircularTransform(getActivity())).into(new SimpleTarget<Bitmap>(width,height) {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                 bitmapfinal=resource;
@@ -548,7 +567,7 @@ public class Fragment_PrivateChat extends Fragment {
         AppBarLayout appBarLayout=(AppBarLayout)getActivity().findViewById(R.id.appbarmain);
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        float density = getResources().getDisplayMetrics().density;
+
         if(density<=1.5)
         {
             params.height = 90;
