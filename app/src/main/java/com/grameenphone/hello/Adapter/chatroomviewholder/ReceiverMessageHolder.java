@@ -12,12 +12,10 @@ public class ReceiverMessageHolder extends RecyclerView.ViewHolder {
 
 
     public TextView receiversMessage;
-    public ImageView ReceiversImage;
     public TextView timestamp;
 
     public ReceiverMessageHolder(View itemView) {
         super(itemView);
-        ReceiversImage=(ImageView)itemView.findViewById(R.id.receiversphoto);
         receiversMessage = (TextView) itemView.findViewById(R.id.receiversMessage);
         timestamp = (TextView) itemView.findViewById(R.id.receiversmsgName);
     }
