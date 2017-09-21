@@ -309,7 +309,7 @@ public class Fragment_Live extends Fragment {
         float density = getResources().getDisplayMetrics().density;
         if(density<=1.5)
         {
-            params.height = 90;
+            params.height = 80;
         }
         else  if(density>1.5 && density<2.5)
         {

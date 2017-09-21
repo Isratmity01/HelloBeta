@@ -202,9 +202,14 @@ public class Fragment_MainPage extends Fragment {
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         float density = getResources().getDisplayMetrics().density;
-        if (density < 2.5) {
+        if(density<=1.5)
+        {
+            params.height = 116;
+        }
+        else  if(density>1.5 && density<2.5){
             params.height = 156;
-        } else params.height = 216;
+        }
+        else params.height = 216;
         //this will be changed based on device dpi
 
 
