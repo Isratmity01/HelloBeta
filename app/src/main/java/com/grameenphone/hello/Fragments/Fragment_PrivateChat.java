@@ -224,42 +224,46 @@ public class Fragment_PrivateChat extends Fragment {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                 bitmapfinal=resource;
- Drawable drawable = new Drawable() {
-            @Override
-            public void draw(Canvas canvas) {
+                try {
+                    Drawable drawable = new Drawable() {
+                        @Override
+                        public void draw(Canvas canvas) {
 
-                int width = canvas.getWidth();
-                int height = canvas.getHeight();
+                            int width = canvas.getWidth();
+                            int height = canvas.getHeight();
 
-                Bitmap bMap =  bitmapfinal;
-                canvas.drawBitmap(bMap,(width-(bMap.getWidth())), (height/2)-(bMap.getHeight()/2), null);
-                Bitmap bMap2 = BitmapFactory.decodeResource(getResources(), R.drawable.back);
-                canvas.drawBitmap(bMap2,5, (height/2)-(bMap2.getHeight()/2), null);
+                            Bitmap bMap = bitmapfinal;
+                            canvas.drawBitmap(bMap, (width - (bMap.getWidth())), (height / 2) - (bMap.getHeight() / 2), null);
+                            Bitmap bMap2 = BitmapFactory.decodeResource(getResources(), R.drawable.back);
+                            canvas.drawBitmap(bMap2, 5, (height / 2) - (bMap2.getHeight() / 2), null);
 
-            }
+                        }
 
-            @Override
-            public void setAlpha(int i) {
+                        @Override
+                        public void setAlpha(int i) {
 
-            }
+                        }
 
-            @Override
-            public void setColorFilter(ColorFilter colorFilter) {
+                        @Override
+                        public void setColorFilter(ColorFilter colorFilter) {
 
-            }
+                        }
 
-            @Override
-            public int getOpacity() {
-                return PixelFormat.TRANSLUCENT;
-            }
-        };
-        try{
+                        @Override
+                        public int getOpacity() {
+                            return PixelFormat.TRANSLUCENT;
+                        }
+                    };
+                    try {
 
-            toolbarp2p.setNavigationIcon(drawable);
-        }catch (Exception e)
-        {
+                        toolbarp2p.setNavigationIcon(drawable);
+                    } catch (Exception e) {
 
-        }
+                    }
+                }catch (Exception e)
+                {
+
+                }
             }
         });
         android.support.v7.app.ActionBar ab =  ((AppCompatActivity)getActivity()).getSupportActionBar();
