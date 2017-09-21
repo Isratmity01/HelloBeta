@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
 
                     android:layout_alignParentTop="true"
-
+                    android:autoLink="email|web|map|phone"
                     android:gravity="start"
                     android:text=" এই যে চলছে বেশ ভালোই। শোন, আমার টাকা পয়সা বেশী হয়ে গেছে, বুঝলি? চল তোরে ট্রিট দেই! কই খাইতে চাস? বার্গার কিং? "
                     android:textColor="@color/common_google_signin_btn_text_dark_focused"
