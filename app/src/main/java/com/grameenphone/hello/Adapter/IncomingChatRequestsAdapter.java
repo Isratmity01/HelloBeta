@@ -120,6 +120,7 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
                         .setValue(1);
 
                 Toast.makeText(context,"আপনি ম্যাসেজ রিকুয়েস্ট এক্সেপ্ট করেছেন", Toast.LENGTH_SHORT).show();
+               // IncomingChatRequestsAdapter.this.notify();
 
             }
         });
