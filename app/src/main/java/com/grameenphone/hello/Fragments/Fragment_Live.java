@@ -272,7 +272,7 @@ public class Fragment_Live extends Fragment {
                 Bitmap bMap =  BitmapFactory.decodeResource(getActivity().getResources(),
                         R.drawable.ic_trending_up_white_18dp);
                 canvas.drawBitmap(bMap,(width-(bMap.getWidth())), (height/2)-(bMap.getHeight()/2), null);
-                
+
                 Bitmap bMap2 = BitmapFactory.decodeResource(getResources(), R.drawable.ic_arrow_back_white_24dp);
                 canvas.drawBitmap(bMap2,5, (height/2)-(bMap2.getHeight()/2)+5, null);
             }
