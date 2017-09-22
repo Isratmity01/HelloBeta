@@ -130,7 +130,7 @@ public class Fragment_Live extends Fragment {
     private User sender;
 
     private DatabaseHelper dbHelper;
-    private Toolbar toolbar;
+
     private ImageButton Back;
     private int loadCalled = 0;
 
@@ -157,6 +157,8 @@ public class Fragment_Live extends Fragment {
     private View fragmentView;
     private Button LoadMsg;
     ShapeFlyer mShapeFlyer;
+    private TextView titleText,livepeople;
+    private ImageView receiverPhoto;
     private FlyBluePrint linearBluePrint;
     private static int liveusercount;
 
@@ -259,40 +261,6 @@ public class Fragment_Live extends Fragment {
         LoadMsg = (Button) view.findViewById(R.id.jump_totop);
         LoadMsg.setVisibility(View.GONE);
 
-        toolbarlive.setContentInsetsAbsolute(0, 0);
-        toolbarlive.setContentInsetStartWithNavigation(0);
-        toolbarlive.setOverflowIcon(null);
-        Drawable drawable = new Drawable() {
-            @Override
-            public void draw(Canvas canvas) {
-
-                int width = canvas.getWidth();
-                int height = canvas.getHeight();
-
-                Bitmap bMap =  BitmapFactory.decodeResource(getActivity().getResources(),
-                        R.drawable.ic_trending_up_white_18dp);
-                canvas.drawBitmap(bMap,(width-(bMap.getWidth())), (height/2)-(bMap.getHeight()/2), null);
-
-                Bitmap bMap2 = BitmapFactory.decodeResource(getResources(), R.drawable.ic_arrow_back_white_24dp);
-                canvas.drawBitmap(bMap2,5, (height/2)-(bMap2.getHeight()/2)+5, null);
-            }
-
-            @Override
-            public void setAlpha(int i) {
-
-            }
-
-            @Override
-            public void setColorFilter(ColorFilter colorFilter) {
-
-            }
-
-            @Override
-            public int getOpacity() {
-                return PixelFormat.TRANSLUCENT;
-            }
-        };
-        toolbarlive.setNavigationIcon(drawable);
         attach = (ImageButton) view.findViewById(R.id.attachment);
         attach.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -320,10 +288,9 @@ public class Fragment_Live extends Fragment {
 
 
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        ;
+
         appBarLayout.setLayoutParams(params);
-        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
-        floatingActionsMenu.setVisibility(View.GONE);
+
 
         emojiconEditText = (EmojiconEditText) view.findViewById(R.id.messageEditText);
         dbHelper = new DatabaseHelper(getActivity().getApplicationContext());
@@ -568,14 +535,14 @@ public class Fragment_Live extends Fragment {
             liveUser.add(event.getResponseMessage());
             //setLiveusercount(liveusercount=liveUser.size());
             liveusercount++;
-            setActionBarSubTitle(EToB(String.valueOf(liveUser.size())));
+            livepeople.setText(EToB(String.valueOf(liveUser.size()))+" জন একটিভ");
             userrecylcer.smoothScrollToPosition(liveUser.size() - 1);
             liveUserListAdapter.notifyDataSetChanged();
 
         } else {
             liveUser.remove(event.getResponseMessage());
             liveusercount--;
-            setActionBarSubTitle(EToB(String.valueOf(liveUser.size())));
+            livepeople.setText(EToB(String.valueOf(liveUser.size()))+" জন একটিভ");
             //  setLiveusercount(liveusercount=liveUser.size());
             // liveUser.remove(event.getResponseMessage());
             userrecylcer.smoothScrollToPosition(liveUser.size() - 1);
@@ -597,6 +564,28 @@ public class Fragment_Live extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
+        floatingActionsMenu.setVisibility(View.GONE);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
+        toolbarlive.addView(mCustomView,0);
+        titleText=(TextView)toolbarlive.findViewById(R.id.action_bar_title_1);
+        livepeople=(TextView)toolbarlive.findViewById(R.id.action_bar_title_2);
+        livepeople.setVisibility(View.VISIBLE);
+        livepeople.setText(EToB(String.valueOf(liveUser.size()))+" জন একটিভ");
+        receiverPhoto=(ImageView)toolbarlive.findViewById(R.id.conversation_contact_photo);
+        receiverPhoto.setImageResource(R.drawable.ic_trending_up_white_18dp);
+        titleText.setText("লাইভ");
+        toolbarlive.setContentInsetsAbsolute(0, 0);
+        toolbarlive.setContentInsetStartWithNavigation(0);
+        toolbarlive.setOverflowIcon(null);
+
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbarlive);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
+
         init();
     }
 

@@ -51,6 +51,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -185,7 +186,8 @@ public class Fragment_PrivateChat extends Fragment {
     SharedPreferences.Editor editor;
     public ChatRoomAdapter chatRoomAdapter;
     public ArrayList<Chat> chats = new ArrayList<Chat>();
-
+    private TextView titletext;
+    private ImageView receiverPhoto;
     private int width,height;
     private BroadcastReceiver statusReceiver;
     private IntentFilter mIntent;
@@ -239,67 +241,26 @@ public class Fragment_PrivateChat extends Fragment {
         sender = dbHelper.getMe();
         receiver_uid = (MESSAGES_CHILD.replace(sender.getUid(), "")).replace("_", "");
         receiver = dbHelper.getUser(receiver_uid);
-        Glide.with(getActivity()).load(receiver.getPhotoUrl()).asBitmap().transform(new CircularTransform(getActivity())).into(new SimpleTarget<Bitmap>(width,height) {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                bitmapfinal=resource;
-                try {
-                    Drawable drawable = new Drawable() {
-                        @Override
-                        public void draw(Canvas canvas) {
 
-                            int width = canvas.getWidth();
-                            int height = canvas.getHeight();
-
-                            Bitmap bMap = bitmapfinal;
-                            canvas.drawBitmap(bMap, (width - (bMap.getWidth())), (height / 2) - (bMap.getHeight() / 2), null);
-                            Bitmap bMap2 = BitmapFactory.decodeResource(getResources(), R.drawable.back);
-                            canvas.drawBitmap(bMap2, 5, (height / 2) - (bMap2.getHeight() / 2), null);
-
-                        }
-
-                        @Override
-                        public void setAlpha(int i) {
-
-                        }
-
-                        @Override
-                        public void setColorFilter(ColorFilter colorFilter) {
-
-                        }
-
-                        @Override
-                        public int getOpacity() {
-                            return PixelFormat.TRANSLUCENT;
-                        }
-                    };
-                    try {
-
-                        toolbarp2p.setNavigationIcon(drawable);
-                    } catch (Exception e) {
-
-                    }
-                }catch (Exception e)
-                {
-
-                }
-            }
-        });
-        android.support.v7.app.ActionBar ab =  ((AppCompatActivity)getActivity()).getSupportActionBar();
 
       //  ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator ( R.drawable.ic_backiconsmall );
         //  ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.bell);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
+      ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
-        setActionBarTitle(roomName);
+       //
 
       //  setActionBarTitle("নোটিফিকেশন সেটিংস");
 
     }
-
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.chat_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
     public boolean onSupportNavigateUp(){
         getActivity().getSupportFragmentManager().popBackStack();
         return true;
@@ -328,6 +289,21 @@ public class Fragment_PrivateChat extends Fragment {
 
         emojiconEditText = (EmojiconEditText) view.findViewById(R.id.messageEditText);
         toolbarp2p=(Toolbar)getActivity().findViewById(R.id.toolbar);
+        LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
+
+        android.support.v7.app.ActionBar ab =  ((AppCompatActivity)getActivity()).getSupportActionBar();
+        //toolbarp2p.removeAllViews();
+        //toolbarp2p.addView(mCustomView);
+        toolbarp2p.addView(mCustomView,0);
+        titletext=(TextView)toolbarp2p.findViewById(R.id.action_bar_title_1);
+
+        receiverPhoto=(ImageView)toolbarp2p.findViewById(R.id.conversation_contact_photo);
+        toolbarp2p.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        titletext.setText(roomName) ;
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbarp2p);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         jumpToBottom = (Button) view.findViewById(R.id.jump_bottom);
         LoadMore=(Button)view.findViewById(R.id.jump_totop) ;
@@ -548,7 +524,7 @@ public class Fragment_PrivateChat extends Fragment {
         mLinearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         mLinearLayoutManager.setStackFromEnd(true);
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-
+        Glide.with(getActivity()).load(receiver.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity())).into(receiverPhoto);
 
     }
 
@@ -565,6 +541,8 @@ public class Fragment_PrivateChat extends Fragment {
             //window.setBackgroundDrawable(background);
         }
         AppBarLayout appBarLayout=(AppBarLayout)getActivity().findViewById(R.id.appbarmain);
+
+
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
 
@@ -582,48 +560,11 @@ public class Fragment_PrivateChat extends Fragment {
 
         params.width=ViewGroup.LayoutParams.MATCH_PARENT;;
         appBarLayout.setLayoutParams(params);
-        setActionBarTitle(roomName);
-        if(bitmapfinal!=null) {
-            Drawable drawable = new Drawable() {
-                @Override
-                public void draw(Canvas canvas) {
+        //setActionBarTitle(roomName);
 
-                    int width = canvas.getWidth();
-                    int height = canvas.getHeight();
-
-                    Bitmap bMap = bitmapfinal;
-                    canvas.drawBitmap(bMap, (width - (bMap.getWidth())), (height / 2) - (bMap.getHeight() / 2), null);
-                    Bitmap bMap2 = BitmapFactory.decodeResource(getResources(), R.drawable.back);
-                    canvas.drawBitmap(bMap2, 5, (height / 2) - (bMap2.getHeight() / 2), null);
-
-                }
-
-                @Override
-                public void setAlpha(int i) {
-
-                }
-
-                @Override
-                public void setColorFilter(ColorFilter colorFilter) {
-
-                }
-
-                @Override
-                public int getOpacity() {
-                    return PixelFormat.TRANSLUCENT;
-                }
-            };
-            try {
-
-                toolbarp2p.setNavigationIcon(drawable);
-            } catch (Exception e) {
-
-            }
-
-
-        }
         init();
     }
+
     public void load()
     {
         mFirebaseDatabaseReference.child("chat_rooms").child(MESSAGES_CHILD) .startAt(currentPage*TOTAL_ITEM_EACH_LOAD)
@@ -1098,12 +1039,7 @@ public class Fragment_PrivateChat extends Fragment {
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.chat_menu, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -1136,7 +1072,9 @@ public class Fragment_PrivateChat extends Fragment {
 
     }
 
-
+    public void setActionBarSubTitle(String title) {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(null);
+    }
     private void changeEmojiKeyboardIcon(ImageView iconToBeChanged, int drawableResourceId) {
         iconToBeChanged.setImageResource(drawableResourceId);
     }

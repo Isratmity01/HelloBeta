@@ -53,7 +53,8 @@ public class Fragment_UserProfile extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private RecyclerView userrecylcer,msgrecyler;
     private LiveUserListAdapter liveUserListAdapter;
-
+    private static TextView titleText;
+    private ImageView receiver;
     private RoomListAdapter roomListAdapter;
     private ArrayList<Integer> userArrayList=new ArrayList<>();
     RecyclerView allusers;
@@ -88,15 +89,11 @@ public class Fragment_UserProfile extends Fragment {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
-
        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
 
-
-       setActionBarTitle("ইউজার প্রোফাইল");
 
     }
     @Override
@@ -133,6 +130,7 @@ public class Fragment_UserProfile extends Fragment {
     }
     private void bindViews(View view) {
         notificationCardView = (CardView) view.findViewById(R.id.notification_card);
+        toolbar=(Toolbar) getActivity().findViewById(R.id.toolbar);
         privacyCardView = (CardView) view.findViewById(R.id.privacy_card);
         helpAboutCardView = (CardView) view.findViewById(R.id.help_about_card);
         signoutCard = (CardView) view.findViewById(R.id.signout_card);
@@ -170,7 +168,14 @@ public class Fragment_UserProfile extends Fragment {
         Glide.with(getActivity()).load( me.getPhotoUrl() ).bitmapTransform(new CropCircleTransformation(getActivity()))
                 .placeholder(R.drawable.hello1)
                 .into(usersPhoto);
+        LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
+        toolbar.addView(mCustomView,0);
+        titleText=(TextView)toolbar.findViewById(R.id.action_bar_title_1);
+        receiver=(ImageView) toolbar.findViewById(R.id.conversation_contact_photo);
+        receiver.setVisibility(View.GONE);
 
+        titleText.setText("ইউজার প্রোফাইল");
     }
     public void init()
     {
