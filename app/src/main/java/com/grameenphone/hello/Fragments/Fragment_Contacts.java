@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,7 +61,11 @@ public class Fragment_Contacts extends Fragment {
     ArrayList<SelectUser> distinctselectUsers = new ArrayList<SelectUser>();
     ArrayList<User> helloUsers = new ArrayList<>();
     List<SelectUser> temp;
-    List<String> hellophones = new ArrayList<>();
+
+    private ProgressBar contactsLoader;
+    private Toolbar toolbar;
+    List<String>hellophones=new ArrayList<>();;
+  
     View fragmentView;
     // Pop up
     ContentResolver resolver;
@@ -140,9 +145,13 @@ public class Fragment_Contacts extends Fragment {
     }
 
     private void bindViews(View view) {
-        databaseHelper = new DatabaseHelper(getActivity());
-        contactsLoader = (ProgressBar) view.findViewById(R.id.contactsloader);
-        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
+
+        toolbar=(Toolbar)getActivity().findViewById(R.id.toolbar);
+
+        databaseHelper=new DatabaseHelper(getActivity());
+        contactsLoader=(ProgressBar)view.findViewById(R.id.contactsloader);
+        FloatingActionsMenu floatingActionsMenu=  (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
+      
         floatingActionsMenu.setVisibility(View.GONE);
         listView = (RecyclerView) view.findViewById(R.id.contacts_list);
         MatrixCursor mc = new MatrixCursor(new String[]{
@@ -178,7 +187,13 @@ public class Fragment_Contacts extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
+        toolbar.addView(mCustomView,0);
+        TextView titleText = (TextView) toolbar.findViewById(R.id.action_bar_title_1);
+        ImageView receiver = (ImageView) toolbar.findViewById(R.id.conversation_contact_photo);
+        receiver.setVisibility(View.GONE);
+        titleText.setText("নতুন ম্যাসেজ");
         init();
     }
 

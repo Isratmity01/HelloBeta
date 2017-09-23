@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -431,6 +432,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             if (!doubleBackToExitPressedOnce) {
                 this.doubleBackToExitPressedOnce = true;
                 Toast.makeText(this, "অ্যাপ বন্ধ করতে আরেকবার ব্যাক চাপুন", Toast.LENGTH_SHORT).show();
+
 
                 new Handler().postDelayed(new Runnable() {
 

@@ -10,24 +10,15 @@ import com.grameenphone.hello.R;
 
 public class ReceiverStickerHolder extends RecyclerView.ViewHolder {
 
-    public ImageView circleImageView;
     public ImageView sticker;
     public TextView timestamp;
 
     public ReceiverStickerHolder(View itemView) {
         super(itemView);
-        circleImageView = (ImageView) itemView.findViewById(R.id.receiversphoto);
         sticker = (ImageView) itemView.findViewById(R.id.stickerimage_recevier);
         timestamp = (TextView) itemView.findViewById(R.id.receiversstkName);
     }
 
-    public ImageView getCircleImageView() {
-        return circleImageView;
-    }
-
-    public void setCircleImageView(ImageView circleImageView) {
-        this.circleImageView = circleImageView;
-    }
 
     public ImageView getReceiversMessage() {
         return sticker;

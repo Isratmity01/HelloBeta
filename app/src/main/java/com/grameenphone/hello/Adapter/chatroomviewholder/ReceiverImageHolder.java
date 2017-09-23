@@ -11,7 +11,6 @@ import com.grameenphone.hello.R;
 
 public class ReceiverImageHolder extends RecyclerView.ViewHolder {
 
-    public ImageView circleImageView;
     public ImageView imageFileView;
     public TextView timestamp;
     public ImageView downloadImage;
@@ -19,7 +18,6 @@ public class ReceiverImageHolder extends RecyclerView.ViewHolder {
 
     public ReceiverImageHolder(View itemView) {
         super(itemView);
-        circleImageView = (ImageView) itemView.findViewById(R.id.receiversphoto);
         imageFileView = (ImageView) itemView.findViewById(R.id.receivers_image_view);
         timestamp = (TextView) itemView.findViewById(R.id.receiversName);
         downloadImage=(ImageView)itemView.findViewById(R.id.downloadimage);
@@ -28,13 +26,7 @@ public class ReceiverImageHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public ImageView getCircleImageView() {
-        return circleImageView;
-    }
 
-    public void setCircleImageView(ImageView circleImageView) {
-        this.circleImageView = circleImageView;
-    }
 
     public ImageView getReceiversMessage() {
         return imageFileView;
