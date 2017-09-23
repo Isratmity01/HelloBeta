@@ -75,7 +75,7 @@ public class Fragment_MainPage extends Fragment {
 
     RecyclerView allusers;
     private MenuItem item;
-    private TextView liveHeader;
+    private TextView liveHeader,msgreqHeader;
     private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
     View fragmentView;
     private DatabaseHelper databaseHelper;
@@ -156,7 +156,8 @@ public class Fragment_MainPage extends Fragment {
         liveusercount = 0;
 
         liveHeader = (TextView) view.findViewById(R.id.liveuserheader);
-
+        msgreqHeader=(TextView)view.findViewById(R.id.incoming_chat_request_header);
+        msgreqHeader.setVisibility(View.GONE);
         userrecylcer = (RecyclerView) view.findViewById(R.id.horizontallayoutholder);
         msgrecyler = (RecyclerView) view.findViewById(R.id.friendListRecyclerView);
         chatReqrecyler = (RecyclerView) view.findViewById(R.id.incoming_chat_request_recyclerView);
@@ -201,9 +202,14 @@ public class Fragment_MainPage extends Fragment {
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         float density = getResources().getDisplayMetrics().density;
-        if (density < 2.5) {
+        if(density<=1.5)
+        {
+            params.height = 116;
+        }
+        else  if(density>1.5 && density<2.5){
             params.height = 156;
-        } else params.height = 216;
+        }
+        else params.height = 216;
         //this will be changed based on device dpi
 
 
@@ -384,6 +390,7 @@ public class Fragment_MainPage extends Fragment {
                                 userArrayList.add(chatroom);
                             } else if (chatroom.getRequestStatus() == 2) {
                                 chatRequests.add(chatroom);
+                                msgreqHeader.setVisibility(View.VISIBLE);
                             }
 
                         }

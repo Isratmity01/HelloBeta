@@ -90,7 +90,7 @@ public class Fragment_ChatProfile extends Fragment {
     private Switch Lanswitch;
     private TextView blockedusername;
     private String mUsername;
-    private Toolbar toolbar;
+    private Toolbar toolbarchat;
     ImageButton ProfileEdit;
     private GridView gridView;
     private ProgressBar progressBar;
@@ -161,6 +161,8 @@ public class Fragment_ChatProfile extends Fragment {
         progressBar=(ProgressBar)view.findViewById(R.id.imageloader);
         ImageCount=(TextView)view.findViewById(R.id.imagecount);
         notificationCardView = (CardView) view.findViewById(R.id.notification_card);
+        toolbarchat=(Toolbar)getActivity().findViewById(R.id.toolbar);
+        toolbarchat.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         gallaryCard = (CardView) view.findViewById(R.id.gallary_card);
         gridView=(GridView)view.findViewById(R.id.sharedimageholder);
         blockCard = (CardView) view.findViewById(R.id.block_card);
@@ -304,7 +306,16 @@ public class Fragment_ChatProfile extends Fragment {
         AppBarLayout appBarLayout=(AppBarLayout)getActivity().findViewById(R.id.appbarmain);
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        params.height=186;
+        float density=getResources().getDisplayMetrics().density;
+        if(density<=1.5)
+        {
+            params.height = 116;
+        }
+        else  if(density>1.5 && density<2.5)
+        {
+            params.height = 156;
+        }
+        else params.height=216;
 
 
         params.width=ViewGroup.LayoutParams.MATCH_PARENT;;

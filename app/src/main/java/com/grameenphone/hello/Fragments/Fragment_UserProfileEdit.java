@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -109,7 +111,7 @@ public class Fragment_UserProfileEdit extends Fragment  {
     public static final String ATTACHMENT = "attachments";
 
     private Boolean gridClicked=false;
-
+    private Toolbar toolbar;
 
     public Fragment_UserProfileEdit() {
         // Required empty public constructor
@@ -130,9 +132,6 @@ public class Fragment_UserProfileEdit extends Fragment  {
         username = bundle.getString("name");
         photourl = bundle.getString("photoUrl");
 
-
-
-        setActionBarTitle("প্রোফাইল এডিট করুন");
 
     }
     @Override
@@ -165,6 +164,9 @@ public class Fragment_UserProfileEdit extends Fragment  {
         return fragmentView;
     }
     private void bindViews(View view) {
+        toolbar=(Toolbar)getActivity().findViewById(R.id.toolbar);
+        TextView textView=(TextView)toolbar.getRootView().findViewById(R.id.action_bar_title_1);
+        textView.setText("প্রোফাইল এডিট করুন");
         gridView=(GridView)view.findViewById(R.id.gridView);
         userPic=(CircleImageView) view.findViewById(R.id.user_pic);
         name = (EditText) view.findViewById(R.id.name_field);

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -89,7 +92,10 @@ public class ProfileEditActivity extends AppCompatActivity {
     private GridView gridView;
     private ProgressDialog progressDialog;
     private static final int IMAGE_GALLERY_REQUEST = 101;
+    private Bitmap bitmap;
+    private Boolean gridClicked=false;
 
+    StorageReference storageRef;
     private final int[] avater = { R.drawable.avatar_airplane, R.drawable.avatar_balloon,
             R.drawable.avatar_cycle, R.drawable.avatar_forest,
             R.drawable.avatar_fountain, R.drawable.avatar_house,
@@ -108,6 +114,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         photoUrl = intent.getStringExtra("photoUrl");
         Name = intent.getStringExtra("name");
 
+        storageRef = storage.getReferenceFromUrl(STORAGE_URL).child(ATTACHMENT);
         profilePic = (CircleImageView) findViewById(R.id.user_pic);
         gallery=(ImageView)findViewById(R.id.gallary_upload);
 
@@ -131,12 +138,14 @@ public class ProfileEditActivity extends AppCompatActivity {
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                gridClicked=false;
                 photoGalleryIntent();
             }
         });
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                gridClicked=false;
                 photoGalleryIntent();
             }
         });
@@ -145,7 +154,12 @@ public class ProfileEditActivity extends AppCompatActivity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveInfo(view);
+
+                if(gridClicked){
+                    sendPhotoFirebase(storageRef,bitmap);
+                }
+                else
+                    saveInfo();
             }
         });
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -154,26 +168,57 @@ public class ProfileEditActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
 
-                avatarAdapter.setSelected_position(position);
                 // TODO Auto-generated method stub
                 Glide.with(ProfileEditActivity.this).load(avatars[position])
                         .into(profilePic);
             }
         });
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                gridClicked=true;
+
+                avatarAdapter.setSelected_position(position);
+                // TODO Auto-generated method stub
+                Glide.with(ProfileEditActivity.this)
+                        .load(avatars[position])
+                        .asBitmap().transform(new CircularTransform(ProfileEditActivity.this))
+                        .into(new SimpleTarget<Bitmap>(200,200) {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+
+                                bitmap=resource;
+                                profilePic.setImageBitmap(resource);
+                            }
+                        });
+            }
+        });
     }
     public void populateList()
     {  randomnumber=Randomnumber();
 
         avatarAdapter=new AvatarAdapter(ProfileEditActivity.this,avatars,randomnumber);
-        Glide.with(this).load(avatars[randomnumber]).into(profilePic);
+        gridClicked=true;
+        Glide.with(ProfileEditActivity.this)
+                .load(avatars[randomnumber])
+                .asBitmap().transform(new CircularTransform(ProfileEditActivity.this))
+                .into(new SimpleTarget<Bitmap>(200,200) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+
+                        bitmap=resource;
+                        profilePic.setImageBitmap(resource);
+                    }
+                });
         gridView.setAdapter(avatarAdapter);
         // gridView.setItemChecked(randomnumber,true);
 
         //
 
     }
-    public void saveInfo(View v) {
+    public void saveInfo() {
         String user_name = name.getText().toString();
 
         if ((!user_name.isEmpty() && photoUrl != null) || (!user_name.isEmpty() && profilepicUrl != null)) {
@@ -292,7 +337,8 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            bitmap.setHasAlpha(true);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             byte[] data = outputStream.toByteArray();
 
 
@@ -312,7 +358,7 @@ public class ProfileEditActivity extends AppCompatActivity {
                     progressDialog.dismiss();
 
                     profilepicUrl = taskSnapshot.getDownloadUrl().toString();
-
+                    if(gridClicked)saveInfo();
 
                 }
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {

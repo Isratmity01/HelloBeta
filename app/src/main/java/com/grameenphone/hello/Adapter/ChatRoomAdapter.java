@@ -203,7 +203,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void configureReceiverMessageHolder(ReceiverMessageHolder receiverMessageHolder, int position){
 
         if(receiver != null){
-            Glide.with(context).load(receiver.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(context)).into(receiverMessageHolder.ReceiversImage);
             receiverMessageHolder.getReceiversMessage()
                     .setText(
                             chats.get(position).getMessage()
@@ -248,7 +247,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             path = chats.get(position).getMessage();
             path=path.substring(path.lastIndexOf(".") + 1);
-            Glide.with(context).load(receiver.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(context)).into(receiverStickerHolder.circleImageView);
 
             Glide.with(context).load(getImage(path)).into(receiverStickerHolder.sticker);
 
@@ -295,7 +293,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         downClicked=false;
         if(receiver != null){
 
-            Glide.with(context).load(receiver.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(context)).into(receiverImageHolder.circleImageView);
             wallpaperDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString() + "/Camera/Hello/HelloImages");
             filename=chats.get(position).getFile().getUrl_file();
             String  photoUrl=filename.substring(filename.lastIndexOf("/") + 1);

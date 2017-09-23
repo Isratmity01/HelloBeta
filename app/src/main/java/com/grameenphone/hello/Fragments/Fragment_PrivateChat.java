@@ -9,7 +9,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -28,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -46,8 +51,12 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -60,8 +69,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.ChatRoomAdapter;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.CircularTransform;
 import com.grameenphone.hello.Utils.Constant;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.Chat;
@@ -83,6 +94,7 @@ import github.ankushsachdeva.emojicon.EmojiconGridView;
 import github.ankushsachdeva.emojicon.EmojiconsPopup;
 import github.ankushsachdeva.emojicon.StickerGridView;
 import github.ankushsachdeva.emojicon.emoji.Emojicon;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -174,14 +186,18 @@ public class Fragment_PrivateChat extends Fragment {
     SharedPreferences.Editor editor;
     public ChatRoomAdapter chatRoomAdapter;
     public ArrayList<Chat> chats = new ArrayList<Chat>();
-
-
+    private TextView titletext;
+    private ImageView receiverPhoto;
+    private int width,height;
     private BroadcastReceiver statusReceiver;
     private IntentFilter mIntent;
     Chat c;
+    private float density;
     private static Context context;
+    private Bitmap bitmapfinal;
     Calendar calendar;
     Boolean IsSent=false;
+    private Toolbar toolbarp2p;
     private static String sChatRoomName = "";
     View fragmentView;
     private int currentPage = 0;
@@ -204,31 +220,53 @@ public class Fragment_PrivateChat extends Fragment {
         dbHelper = new DatabaseHelper(getActivity());
         MESSAGES_CHILD = room_id;
         me = dbHelper.getMe();
+         density = getResources().getDisplayMetrics().density;
+        if(density<=1.5)
+        {
+           width=35;
+            height=35;
+        }
+        else  if(density>1.5 && density<2.5)
+        {
+            width=35;
+            height=35;
+        }
+        else
+        {
+            width=60;
+            height=60;
+        }
+
         dbHelper.updateNotificationStateOfRoom(MESSAGES_CHILD, 0);
         sender = dbHelper.getMe();
         receiver_uid = (MESSAGES_CHILD.replace(sender.getUid(), "")).replace("_", "");
         receiver = dbHelper.getUser(receiver_uid);
-        android.support.v7.app.ActionBar ab =  ((AppCompatActivity)getActivity()).getSupportActionBar();
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator ( R.drawable.ic_backiconsmall );
+
+      //  ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator ( R.drawable.ic_backiconsmall );
         //  ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.bell);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
+      ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
-        setActionBarTitle(roomName);
+       //
 
       //  setActionBarTitle("নোটিফিকেশন সেটিংস");
 
     }
-
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.chat_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
     public boolean onSupportNavigateUp(){
         getActivity().getSupportFragmentManager().popBackStack();
         return true;
     }
     public void setActionBarTitle(String title) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("  "+title);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -250,6 +288,23 @@ public class Fragment_PrivateChat extends Fragment {
         context = getActivity().getApplicationContext();
 
         emojiconEditText = (EmojiconEditText) view.findViewById(R.id.messageEditText);
+        toolbarp2p=(Toolbar)getActivity().findViewById(R.id.toolbar);
+        LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
+
+        android.support.v7.app.ActionBar ab =  ((AppCompatActivity)getActivity()).getSupportActionBar();
+        //toolbarp2p.removeAllViews();
+        //toolbarp2p.addView(mCustomView);
+        toolbarp2p.addView(mCustomView,0);
+        titletext=(TextView)toolbarp2p.findViewById(R.id.action_bar_title_1);
+
+        receiverPhoto=(ImageView)toolbarp2p.findViewById(R.id.conversation_contact_photo);
+        toolbarp2p.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        titletext.setText(roomName) ;
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbarp2p);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         jumpToBottom = (Button) view.findViewById(R.id.jump_bottom);
         LoadMore=(Button)view.findViewById(R.id.jump_totop) ;
         mSendButton = (ImageView) view.findViewById(R.id.send_button);
@@ -469,7 +524,7 @@ public class Fragment_PrivateChat extends Fragment {
         mLinearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         mLinearLayoutManager.setStackFromEnd(true);
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-
+        Glide.with(getActivity()).load(receiver.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity())).into(receiverPhoto);
 
     }
 
@@ -486,16 +541,30 @@ public class Fragment_PrivateChat extends Fragment {
             //window.setBackgroundDrawable(background);
         }
         AppBarLayout appBarLayout=(AppBarLayout)getActivity().findViewById(R.id.appbarmain);
+
+
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        params.height=146;
+
+        if(density<=1.5)
+        {
+            params.height = 80;
+        }
+        else  if(density>1.5 && density<2.5)
+        {
+            params.height = 106;
+        }
+        else
+            params.height=156;
 
 
         params.width=ViewGroup.LayoutParams.MATCH_PARENT;;
         appBarLayout.setLayoutParams(params);
-        setActionBarTitle(roomName);
+        //setActionBarTitle(roomName);
+
         init();
     }
+
     public void load()
     {
         mFirebaseDatabaseReference.child("chat_rooms").child(MESSAGES_CHILD) .startAt(currentPage*TOTAL_ITEM_EACH_LOAD)
@@ -970,12 +1039,7 @@ public class Fragment_PrivateChat extends Fragment {
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.chat_menu, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -1008,7 +1072,9 @@ public class Fragment_PrivateChat extends Fragment {
 
     }
 
-
+    public void setActionBarSubTitle(String title) {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(null);
+    }
     private void changeEmojiKeyboardIcon(ImageView iconToBeChanged, int drawableResourceId) {
         iconToBeChanged.setImageResource(drawableResourceId);
     }
