@@ -64,6 +64,7 @@ import com.grameenphone.hello.Adapter.ChatRoomAdapter;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Constant;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
+import com.grameenphone.hello.fcm.FcmNotificationBuilder;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.FileModel;
 import com.grameenphone.hello.model.User;
@@ -575,26 +576,22 @@ public class Fragment_PrivateChat extends Fragment {
                                     //dbHelper.addMessage(c,c.getChatId());
                                     c.setReadStatus(0);
 
-                                    try {
-                                        chatobject=populateJsonChat(chatobject);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+
                                     if(c.getMessageType()=="stk")
                                     {
-                                        sendPushNotificationToReceiver(chatobject,c.getSender(), "স্টিকার পাঠিয়েছেন",
+                                        sendPushNotificationToReceiver(c.getSender(), "স্টিকার পাঠিয়েছেন",
                                                 c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
                                     }
                                     else if(c.getMessageType()=="txt")
                                     {
-                                        sendPushNotificationToReceiver(chatobject,c.getSender(), "ম্যাসেজ দিয়েছেন",
+                                        sendPushNotificationToReceiver(c.getSender(), "ম্যাসেজ দিয়েছেন",
                                                 c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
                                     }
                                     else if (c.getMessageType()=="img")
                                     {
-                                        sendPushNotificationToReceiver(chatobject,c.getSender(), "ছবি পাঠিয়েছেন",
+                                        sendPushNotificationToReceiver(c.getSender(), "ছবি পাঠিয়েছেন",
                                                 c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
                                     }
@@ -756,26 +753,22 @@ public class Fragment_PrivateChat extends Fragment {
                                     //dbHelper.addMessage(c,c.getChatId());
                                     c.setReadStatus(0);
 
-                                    try {
-                                        chatobject=populateJsonChat(chatobject);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+
                                     if(c.getMessageType()=="stk")
                                     {
-                                        sendPushNotificationToReceiver(chatobject,c.getSender(), "স্টিকার পাঠিয়েছেন",
+                                        sendPushNotificationToReceiver(c.getSender(), "স্টিকার পাঠিয়েছেন",
                                                 c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
                                     }
                                     else if(c.getMessageType()=="txt")
                                     {
-                                        sendPushNotificationToReceiver(chatobject,c.getSender(), "ম্যাসেজ দিয়েছেন",
+                                        sendPushNotificationToReceiver(c.getSender(), "ম্যাসেজ দিয়েছেন",
                                                 c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
                                     }
                                     else if (c.getMessageType()=="img")
                                     {
-                                        sendPushNotificationToReceiver(chatobject,c.getSender(), "ছবি পাঠিয়েছেন",
+                                        sendPushNotificationToReceiver(c.getSender(), "ছবি পাঠিয়েছেন",
                                                 c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
                                     }
@@ -1054,22 +1047,21 @@ public class Fragment_PrivateChat extends Fragment {
     }
 
 
-    private void sendPushNotificationToReceiver(JSONObject chat, String roomTitle,
+    private void sendPushNotificationToReceiver(String roomTitle,
                                                 String message,
                                                 String sender,
                                                 String firebaseToken,
                                                 String receiverFirebaseToken,
                                                 String roomId) {
-     /*   EventBus.getDefault().post(new ChatSent("yes"));
+     //   EventBus.getDefault().post(new ChatSent("yes"));
         FcmNotificationBuilder.initialize()
                 .title(roomTitle)
                 .message(message)
                 .sender(sender)
-                .setReceived(chat)
                 .firebaseToken(firebaseToken)
                 .receiverFirebaseToken(receiverFirebaseToken)
                 .roomUid(roomId)
-                .send();*/
+                .send();
     }
 
 
@@ -1079,30 +1071,10 @@ public class Fragment_PrivateChat extends Fragment {
     public static String getChatRoomName() {
         return sChatRoomName;
     }
-    private JSONObject populateJsonChat (JSONObject chat) throws JSONException
-    {
-        chat.put("chatId", c.getChatId());
-        chat.put("receiver", c.getReceiver());
-        chat.put("receiverUid",c.getReceiverUid());
-        chat.put("sender", c.getSender());
-        chat.put("messageType", c.getMessageType());
-        chat.put("senderUid",c.getSenderUid());
-        chat.put("timestamp", c.getTimestamp());
-        chat.put("photoUrl", c.getPhotoUrl());
-        chat.put("message",c.getMessage());
-        chat.put("readStatus",c.getReadStatus());
 
-        if(c.getFile()!=null)
 
-        {
-            chat.put("type",c.getFile().getType());
-            chat.put("url_file", c.getFile().getUrl_file());
-            chat.put("name_file",c.getFile().getName_file());
-            chat.put("size_file",c.getFile().getSize_file());
-        }
 
-        return chat;
-    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 

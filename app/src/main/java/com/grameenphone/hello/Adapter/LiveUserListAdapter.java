@@ -75,7 +75,7 @@ public class LiveUserListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             @Override
             public void onClick(View view) {
 
-                if(current!=null) {
+                if(current!=null &&  !((current.getUid()).equals(me.getUid()) ) ) {
                     final String chatRoomId = Compare.getRoomName(current.getUid(), me.getUid());
 
                     final ChatRoom chatRoom = dbHelper.getRoom(chatRoomId);

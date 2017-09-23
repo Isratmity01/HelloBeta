@@ -76,6 +76,33 @@ public class CongratulationsActivity extends Activity {
                             user.setFirebaseToken(FirebaseInstanceId.getInstance().getToken());
                             mFirebaseDatabaseReference.child("users").child(mFirebaseUser.getUid()).setValue(user);
 
+                            mFirebaseDatabaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+
+                                        User user = child.getValue(User.class);
+
+
+                                        if (user != null && user.getUid().equals(mFirebaseUser.getUid())) {
+                                            dbHelper.addMe(user);
+                                        } else {
+                                            dbHelper.addUser(user);
+                                        }
+
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
+
 
                             profile.setText("হোম স্ক্রিনে যান");
                         }

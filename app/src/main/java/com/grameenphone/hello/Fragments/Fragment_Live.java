@@ -263,8 +263,8 @@ public class Fragment_Live extends Fragment {
         attach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //   photoGalleryIntent();
-                mShapeFlyer.startAnimation(R.drawable.laila);
+                photoGalleryIntent();
+                //mShapeFlyer.startAnimation(R.drawable.laila);
             }
         });
 

@@ -2,19 +2,19 @@ package com.grameenphone.hello.fcm;
 
 import android.util.Log;
 
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-/**
- * Author: Kartik Sharma
- * Created on: 10/16/2016 , 1:53 PM
- * Project: FirebaseChat
- */
+
 
 public class FcmNotificationBuilder {
     public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
@@ -34,7 +34,6 @@ public class FcmNotificationBuilder {
     private static final String KEY_FCM_TOKEN = "fcm_token";
     private static final String KEY_ROOM = "room_uid";
     private static final String KEY_SENDER = "sender";
-    private static final String KEY_CHATS ="whatposted";
     private String mTitle;
     private JSONObject received;
     private String mMessage;
@@ -68,7 +67,6 @@ public class FcmNotificationBuilder {
     }
 
 
-
     public FcmNotificationBuilder sender(String sender) {
         Sender = sender;
         return this;
@@ -89,7 +87,7 @@ public class FcmNotificationBuilder {
         return this;
     }
 
- /*   public void send() {
+    public void send() {
         RequestBody requestBody = null;
         try {
             requestBody = RequestBody.create(MEDIA_TYPE_JSON, getValidJsonBody().toString());
@@ -107,16 +105,17 @@ public class FcmNotificationBuilder {
         Call call = new OkHttpClient().newCall(request);
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(Request request, IOException e) {
                 Log.e(TAG, "onGetAllUsersFailure: " + e.getMessage());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Response response) throws IOException {
                 Log.e(TAG, "onResponse: " + response.body().string());
             }
+
         });
-    }*/
+    }
 
     private JSONObject getValidJsonBody() throws JSONException {
         JSONObject jsonObjectBody = new JSONObject();
@@ -129,7 +128,6 @@ public class FcmNotificationBuilder {
         jsonObjectData.put(KEY_FCM_TOKEN, mFirebaseToken);
         jsonObjectData.put(KEY_ROOM, roomUid);
 
-        jsonObjectData.put(KEY_CHATS, received);
         jsonObjectBody.put(KEY_DATA, jsonObjectData);
         return jsonObjectBody;
     }

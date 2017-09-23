@@ -75,7 +75,7 @@ public class Fragment_MainPage extends Fragment {
 
     RecyclerView allusers;
     private MenuItem item;
-    private TextView liveHeader;
+    private TextView liveHeader, requestHeader;
     private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
     View fragmentView;
     private DatabaseHelper databaseHelper;
@@ -156,6 +156,7 @@ public class Fragment_MainPage extends Fragment {
         liveusercount = 0;
 
         liveHeader = (TextView) view.findViewById(R.id.liveuserheader);
+        requestHeader = (TextView) view.findViewById(R.id.incoming_chat_request_header);
 
         userrecylcer = (RecyclerView) view.findViewById(R.id.horizontallayoutholder);
         msgrecyler = (RecyclerView) view.findViewById(R.id.friendListRecyclerView);
@@ -372,24 +373,31 @@ public class Fragment_MainPage extends Fragment {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-                        if (userArrayList.contains(chatroom) || chatRequests.contains(chatroom)) {
+                        if ( chatroom != null ) {
 
-                        } else {
+
                             databaseHelper.addRoom(chatroom.getRoomId(),
                                             chatroom.getName(),
                                             chatroom.getPhotoUrl(),
                                             chatroom.getRequestStatus());
 
-                            if (chatroom.getRequestStatus() == 1) {
-                                userArrayList.add(chatroom);
-                            } else if (chatroom.getRequestStatus() == 2) {
-                                chatRequests.add(chatroom);
-                            }
+                            userArrayList.clear();
+                            userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+
+
+                            chatRequests.clear();
+                            chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
 
                         }
 
-                        //roomListAdapter.notifyDataSetChanged();
-                        //chatRequestsAdapter.notifyDataSetChanged();
+                        roomListAdapter.notifyDataSetChanged();
+                        chatRequestsAdapter.notifyDataSetChanged();
+
+                        if(chatRequests.size() > 0) {
+                            requestHeader.setVisibility(View.VISIBLE);
+                        } else {
+                            requestHeader.setVisibility(View.GONE);
+                        }
 
 
                     }
@@ -399,7 +407,7 @@ public class Fragment_MainPage extends Fragment {
 
                         ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
 
-                        if (chatRequests.contains(chatroom)) {
+                        if (chatroom!=null) {
 
                             if (chatroom.getRequestStatus() == 1) {
 
@@ -408,11 +416,26 @@ public class Fragment_MainPage extends Fragment {
                                                 chatroom.getPhotoUrl(),
                                                 chatroom.getRequestStatus());
 
-                                chatRequests.remove(chatroom);
-                                userArrayList.add(chatroom);
+                                userArrayList.clear();
+                                userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+
+
+                                chatRequests.clear();
+                                chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
                             }
 
                         }
+
+                        roomListAdapter.notifyDataSetChanged();
+                        chatRequestsAdapter.notifyDataSetChanged();
+
+
+                        if(chatRequests.size() > 0) {
+                            requestHeader.setVisibility(View.VISIBLE);
+                        } else {
+                            requestHeader.setVisibility(View.GONE);
+                        }
+
 
 
                     }
@@ -427,12 +450,24 @@ public class Fragment_MainPage extends Fragment {
                                     chatroom.getPhotoUrl(),
                                     100);
 
-                            if(chatRequests.contains(chatroom)){
-                                chatRequests.remove(chatroom);
-                            }
-                            if(userArrayList.contains(chatroom)){
-                                userArrayList.remove(chatroom);
-                            }
+                            userArrayList.clear();
+                            userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+
+
+                            chatRequests.clear();
+                            chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
+
+
+                        }
+
+                        roomListAdapter.notifyDataSetChanged();
+                        chatRequestsAdapter.notifyDataSetChanged();
+
+
+                        if(chatRequests.size() > 0) {
+                            requestHeader.setVisibility(View.VISIBLE);
+                        } else {
+                            requestHeader.setVisibility(View.GONE);
                         }
 
 
@@ -466,6 +501,8 @@ public class Fragment_MainPage extends Fragment {
 
         chatReqrecyler.setLayoutManager(llm);
         chatReqrecyler.setAdapter(chatRequestsAdapter);
+
+        if(chatRequests.size() > 0) requestHeader.setVisibility(View.VISIBLE);
 
 
         LiveChips();

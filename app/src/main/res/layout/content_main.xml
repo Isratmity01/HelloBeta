@@ -133,7 +133,8 @@
                         android:paddingTop="@dimen/home_spacing"
                         android:text="মেসেজ রিকোয়েস্ট"
                         android:textColor="#de000000"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        android:visibility="gone" />
 
 
                     <android.support.v7.widget.RecyclerView
