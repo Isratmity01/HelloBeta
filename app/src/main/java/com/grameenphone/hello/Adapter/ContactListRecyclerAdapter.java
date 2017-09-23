@@ -15,7 +15,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.grameenphone.hello.Fragments.Fragment_Contacts;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
+import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.SelectUser;
 import com.grameenphone.hello.model.User;
 
@@ -41,6 +43,7 @@ public class ContactListRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
     private Fragment_Contacts fragment_contacts;
 
     private DatabaseHelper dbHelper;
+    private User me;
 
     private final static int FADE_DURATION = 1000 ;// in milliseconds
     public ContactListRecyclerAdapter(List<SelectUser> selectUsers, Context context,Fragment_Contacts fragmentContacts) {
@@ -49,6 +52,10 @@ public class ContactListRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         this.fragment_contacts=fragmentContacts;
         this.arraylist = new ArrayList<SelectUser>();
         this.arraylist.addAll(_data);
+
+        dbHelper = new DatabaseHelper(_c);
+        me = dbHelper.getMe();
+
     }
 
 
@@ -102,12 +109,23 @@ public class ContactListRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              //
-             //   Toast.makeText(_c,_data.get(position).getUid(),Toast.LENGTH_SHORT).show();
-                User user=new User(data.getUid(),data.getName(),data.getPhone(),data.getThumb());
-                (fragment_contacts).openDialogue(user);
-                 //if( gainedChatroom.getRoomId()!=null)
-                //(fragmentMainPage).StartP2p(gainedChatroom.getRoomId(), gainedChatroom.getName());
+
+
+                User current = new User(data.getUid(),data.getName(),data.getPhone(),data.getThumb());
+
+                if(current!=null && !(current.getUid()).equals(me.getUid()) ) {
+                    final String chatRoomId = Compare.getRoomName(current.getUid(), me.getUid());
+
+                    final ChatRoom chatRoom = dbHelper.getRoom(chatRoomId);
+
+                    if ( chatRoom != null && chatRoom.getName() !=null ){
+                        (fragment_contacts).openDialogue(current, chatRoom.getRequestStatus());
+                    } else {
+                        (fragment_contacts).openDialogue(current, 100);
+                    }
+                }
+
+
             }
         });
 

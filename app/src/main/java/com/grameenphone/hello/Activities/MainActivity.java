@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -16,10 +15,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -52,6 +48,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.grameenphone.hello.Fragments.Fragment_Contacts;
 import com.grameenphone.hello.Fragments.Fragment_Live;
 import com.grameenphone.hello.Fragments.Fragment_MainPage;
@@ -59,31 +56,33 @@ import com.grameenphone.hello.Fragments.Fragment_PrivateChat;
 import com.grameenphone.hello.Fragments.Fragment_UserProfile;
 import com.grameenphone.hello.Fragments.Fragment_UserProfileEdit;
 import com.grameenphone.hello.R;
-import com.grameenphone.hello.Utils.CircularTransform;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.EventReceived;
 import com.grameenphone.hello.model.User;
-import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
-    private Toolbar toolbar;
-    Drawable drawable;
-    boolean doubleBackToExitPressedOnce = false;
-    public User me;
-    private GoogleApiClient mGoogleApiClient;
     public static final String ANONYMOUS = "anonymous";
     private static final int PERMISSION_REQUEST_CONTACT = 1033;
+    public static FirebaseUser mFirebaseUser;
+    public static int liveusercount;
+    public User me;
+    public DatabaseHelper databaseHelper;
+    public ArrayList<String> finalliveusers = new ArrayList<>();
+    Drawable drawable;
+    boolean doubleBackToExitPressedOnce = false;
+    android.support.v4.app.FragmentManager fragmentManager;
+    android.support.v4.app.FragmentTransaction fragmentTransaction;
+    android.support.v4.app.FragmentManager fragmentManagerP2p;
+    android.support.v4.app.FragmentTransaction fragmentTransactionP2p;
+    private Toolbar toolbar;
+    private GoogleApiClient mGoogleApiClient;
     private DatabaseReference mFirebaseDatabaseReferenceForLiveCount;
     private MenuItem item;
     private String mUsername;
@@ -91,21 +90,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private ImageButton toolbarIcon;
     private ImageView transparentView;
     private ImageView liveBanner;
-    public DatabaseHelper databaseHelper;
     private FloatingActionsMenu menuMultipleActions;
     private FrameLayout frameLayout;
-    public static FirebaseUser mFirebaseUser;
-    public static int liveusercount;
     private DatabaseReference mFirebaseDatabaseReference;
-    public  ArrayList<String> finalliveusers = new ArrayList<>();
+    private FirebaseAuth mFirebaseAuth;
 
-    public  ArrayList<String> getFinalliveusers() {
+    public ArrayList<String> getFinalliveusers() {
         return finalliveusers;
     }
-
-    private FirebaseAuth mFirebaseAuth;
-    android.support.v4.app.FragmentManager fragmentManager;
-    android.support.v4.app.FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,12 +119,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseMessaging.getInstance().subscribeToTopic("weather");
+
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-
 
         toolbar.setContentInsetStartWithNavigation(0);
         fragmentManager = MainActivity.this.getSupportFragmentManager();
@@ -217,9 +210,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
         loadliveUsers();
+
+
+        Intent intent = getIntent();
+
+        String roomId = intent.getStringExtra("room_uid");
+        String roomName = intent.getStringExtra("room_name");
+
+        if (roomId != null && roomName != null) {
+            StartP2p(roomId, roomName);
+        }
+
+
     }
 
-   private void loadliveuserchips()
+    private void loadliveuserchips()
 
     {
         mFirebaseDatabaseReferenceForLiveCount.child("live_user").addChildEventListener(new ChildEventListener() {
@@ -236,11 +241,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     }
 
                     liveusercount++;
-                    if(Fragment_Live.isActive)
-                    {
+                    if (Fragment_Live.isActive) {
                         EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
-                    }
-                    else {
+                    } else {
                         EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
                     }
 
@@ -258,12 +261,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 finalliveusers.remove(dataSnapshot.getKey());
                 liveusercount--;
-                if(Fragment_Live.isActive)
-                {
+                if (Fragment_Live.isActive) {
                     EventBus.getDefault().post(new EventReceived(false, dataSnapshot.getKey()));
-                }
-                else
-               EventBus.getDefault().post(new EventReceived(false, dataSnapshot.getKey()));
+                } else
+                    EventBus.getDefault().post(new EventReceived(false, dataSnapshot.getKey()));
                 //  EventBus.getDefault().postSticky(new EventReceived(false, liveUser));
             }
 
@@ -278,17 +279,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
     }
-    private void loadContacts()
-    {
+
+    private void loadContacts() {
         Fragment_Contacts fragment_contacts = new Fragment_Contacts();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, fragment_contacts);
         fragmentTransaction.addToBackStack("contacts");
         fragmentTransaction.commit();
     }
-    public void askForContactPermission(){
+
+    public void askForContactPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -324,14 +326,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     // app-defined int constant. The callback method gets the
                     // result of the request.
                 }
-            }else{
+            } else {
                 loadContacts();
             }
-        }
-        else{
+        } else {
             loadContacts();
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -356,8 +358,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             // permissions this app might request
         }
     }
-    private void loadliveUsers()
-    {
+
+    private void loadliveUsers() {
 
 
         Fragment_MainPage fragment = new Fragment_MainPage();
@@ -424,98 +426,93 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     public void onBackPressed() {
 
-            Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof Fragment_MainPage) {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (f instanceof Fragment_MainPage) {
 
-                if (!doubleBackToExitPressedOnce) {
-                    this.doubleBackToExitPressedOnce = true;
-                    Toast.makeText(this,"অ্যাপ বন্ধ করতে আরেকবার ব্যাক চাপুন", Toast.LENGTH_SHORT).show();
-
-                    new Handler().postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            doubleBackToExitPressedOnce = false;
-                        }
-                    }, 2000);
-                } else {
-
-                   finishAffinity();
-                }//the fragment on which you want to handle your back press
-                Log.i("BACK PRESSED", "BACK PRESSED");
+            if (!doubleBackToExitPressedOnce) {
+                this.doubleBackToExitPressedOnce = true;
+                Toast.makeText(this, "অ্যাপ বন্ধ করতে আরেকবার ব্যাক চাপুন", Toast.LENGTH_SHORT).show();
 
 
-            } else if (f instanceof Fragment_UserProfile) {
-                menuMultipleActions.setVisibility(View.VISIBLE);
-                ActionBar ab = getSupportActionBar();
-                toolbar.getRootView().findViewById(R.id.action_bar_title_1).setVisibility(View.GONE);
+                new Handler().postDelayed(new Runnable() {
 
-                ab.setDisplayUseLogoEnabled(true);
-                ab.setDisplayHomeAsUpEnabled(false);
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000);
+            } else {
 
-                super.onBackPressed();//the fragment on which you want to handle your back press
-                Log.i("BACK PRESSED", "BACK PRESSED");
-            }
-       else if (f instanceof Fragment_PrivateChat) {
-
-
-                    menuMultipleActions.setVisibility(View.VISIBLE);
-                    ActionBar ab = getSupportActionBar();
-                    toolbar.getRootView().findViewById(R.id.conversation_contact_photo).setVisibility(View.GONE);
-                toolbar.getRootView().findViewById(R.id.action_bar_title_1).setVisibility(View.GONE);
-                    toolbar.inflateMenu(R.menu.menu_main);
-                    //  toolbar.removeAllViews();
-                    ab.setTitle("");
-                    ab.setDisplayUseLogoEnabled(true);
-                    ab.setLogo(R.drawable.hellologo);
-                    ab.setDisplayHomeAsUpEnabled(false);
-                    super.onBackPressed();
+                finishAffinity();
+            }//the fragment on which you want to handle your back press
+            Log.i("BACK PRESSED", "BACK PRESSED");
 
 
-                //the fragment on which you want to handle your back press
-                Log.i("BACK PRESSED", "BACK PRESSED");
-            } else if (f instanceof Fragment_Live) {
-                mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(me.getUid()).setValue(null);
+        } else if (f instanceof Fragment_UserProfile) {
+            menuMultipleActions.setVisibility(View.VISIBLE);
+            ActionBar ab = getSupportActionBar();
 
-                menuMultipleActions.setVisibility(View.VISIBLE);
-                ActionBar ab = getSupportActionBar();
-                toolbar.getRootView().findViewById(R.id.conversation_contact_photo).setVisibility(View.GONE);
-                toolbar.getRootView().findViewById(R.id.action_bar_title_1).setVisibility(View.GONE);
-                toolbar.getRootView().findViewById(R.id.action_bar_title_2).setVisibility(View.GONE);
-                ab.setTitle("");
-                ab.setDisplayUseLogoEnabled(true);
-                ab.setLogo(R.drawable.hellologo);
-                ab.setDisplayHomeAsUpEnabled(false);
-                ab.setSubtitle("");
+            ab.setTitle("");
+            ab.setDisplayUseLogoEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(false);
 
-                super.onBackPressed();//the fragment on which you want to handle your back press
-                Log.i("BACK PRESSED", "BACK PRESSED");
-            } else if (f instanceof Fragment_UserProfileEdit) {
-                ActionBar ab = getSupportActionBar();
-                TextView textView=(TextView)toolbar.getRootView().findViewById(R.id.action_bar_title_1);
-                textView.setText("ইউজার প্রোফাইল");
-                ab.setDisplayHomeAsUpEnabled(true);
-                super.onBackPressed();//the fragment on which you want to handle your back press
-                Log.i("BACK PRESSED", "BACK PRESSED");
-            }
+            super.onBackPressed();//the fragment on which you want to handle your back press
+            Log.i("BACK PRESSED", "BACK PRESSED");
+        } else if (f instanceof Fragment_Contacts) {
+            menuMultipleActions.setVisibility(View.VISIBLE);
+            ActionBar ab = getSupportActionBar();
 
-            else if (f instanceof Fragment_Contacts) {
+            ab.setTitle("");
+            ab.setDisplayUseLogoEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(false);
 
-                menuMultipleActions.setVisibility(View.VISIBLE);
-                ActionBar ab = getSupportActionBar();
-                toolbar.getRootView().findViewById(R.id.action_bar_title_1).setVisibility(View.GONE);
-                ab.setDisplayHomeAsUpEnabled(false);
-                ab.setDisplayUseLogoEnabled(true);
-                ab.setLogo(R.drawable.hellologo);
-                super.onBackPressed();//the fragment on which you want to handle your back press
-                Log.i("BACK PRESSED", "BACK PRESSED");
-            }
+            super.onBackPressed();//the fragment on which you want to handle your back press
+            Log.i("BACK PRESSED", "BACK PRESSED");
+        } else if (f instanceof Fragment_PrivateChat) {
+            menuMultipleActions.setVisibility(View.VISIBLE);
+            ActionBar ab = getSupportActionBar();
 
-       else {
+            ab.setTitle("");
+            ab.setDisplayUseLogoEnabled(true);
+            ab.setLogo(R.drawable.hellologo);
+            ab.setDisplayHomeAsUpEnabled(false);
+            super.onBackPressed();
+            //the fragment on which you want to handle your back press
+            Log.i("BACK PRESSED", "BACK PRESSED");
+        } else if (f instanceof Fragment_Live) {
+            mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(me.getUid()).setValue(null);
+
+            menuMultipleActions.setVisibility(View.VISIBLE);
+            ActionBar ab = getSupportActionBar();
+
+            ab.setTitle("");
+            ab.setDisplayUseLogoEnabled(true);
+            ab.setLogo(R.drawable.hellologo);
+            ab.setDisplayHomeAsUpEnabled(false);
+            ab.setSubtitle("");
+
+            super.onBackPressed();//the fragment on which you want to handle your back press
+            Log.i("BACK PRESSED", "BACK PRESSED");
+        } else if (f instanceof Fragment_UserProfileEdit) {
+            ActionBar ab = getSupportActionBar();
+            ab.setTitle("ইউজার প্রোফাইল");
+            ab.setDisplayHomeAsUpEnabled(true);
+            super.onBackPressed();//the fragment on which you want to handle your back press
+            Log.i("BACK PRESSED", "BACK PRESSED");
+        } else if (f instanceof Fragment_Contacts) {
+            ActionBar ab = getSupportActionBar();
+            ab.setTitle("");
+            ab.setDisplayHomeAsUpEnabled(false);
+            ab.setDisplayUseLogoEnabled(true);
+            ab.setLogo(R.drawable.hellologo);
+            super.onBackPressed();//the fragment on which you want to handle your back press
+            Log.i("BACK PRESSED", "BACK PRESSED");
+        } else {
             super.onBackPressed();
             return;
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -523,7 +520,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
         item = menu.findItem(R.id.action_settings);
-        Glide.with(this).load(me.getPhotoUrl()).asBitmap().centerCrop().transform(new CropCircleTransformation(MainActivity.this)).into(new SimpleTarget<Bitmap>(50,50) {
+        Glide.with(this).load(me.getPhotoUrl()).asBitmap().centerCrop().transform(new CropCircleTransformation(MainActivity.this)).into(new SimpleTarget<Bitmap>(50, 50) {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                 item.setIcon(new BitmapDrawable(getResources(), resource));
@@ -532,6 +529,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         });
         return true;
     }
+
     public void SignOut() {
         mFirebaseAuth.signOut();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
@@ -568,4 +566,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+
+    public void StartP2p(String roomId, String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString("room_uid", roomId);
+        bundle.putString("room_name", name);
+
+        Fragment_PrivateChat fragmentp = new Fragment_PrivateChat();
+
+        fragmentp.setArguments(bundle);
+
+
+        fragmentManagerP2p = MainActivity.this.getSupportFragmentManager();
+        fragmentTransactionP2p = fragmentManagerP2p.beginTransaction();
+
+        fragmentTransactionP2p.replace(R.id.fragment_container, fragmentp);
+        fragmentTransactionP2p.addToBackStack("p2p");
+        fragmentTransactionP2p.commit();
+
+
+    }
+
+
 }
