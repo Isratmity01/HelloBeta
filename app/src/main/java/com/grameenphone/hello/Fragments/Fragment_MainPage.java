@@ -158,8 +158,8 @@ public class Fragment_MainPage extends Fragment {
         liveusercount = 0;
 
         liveHeader = (TextView) view.findViewById(R.id.liveuserheader);
-        msgreqHeader=(TextView)view.findViewById(R.id.incoming_chat_request_header);
-        msgreqHeader.setVisibility(View.GONE);
+        requestHeader = (TextView) view.findViewById(R.id.incoming_chat_request_header);
+
 
         userrecylcer = (RecyclerView) view.findViewById(R.id.horizontallayoutholder);
         msgrecyler = (RecyclerView) view.findViewById(R.id.friendListRecyclerView);
@@ -205,14 +205,11 @@ public class Fragment_MainPage extends Fragment {
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         float density = getResources().getDisplayMetrics().density;
-        if(density<=1.5)
-        {
+        if (density <= 1.5) {
             params.height = 116;
-        }
-        else  if(density>1.5 && density<2.5){
+        } else if (density > 1.5 && density < 2.5) {
             params.height = 156;
-        }
-        else params.height = 216;
+        } else params.height = 216;
         //this will be changed based on device dpi
 
 
@@ -381,19 +378,18 @@ public class Fragment_MainPage extends Fragment {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-                        if ( chatroom != null ) {
+                        if (chatroom != null) {
 
 
                             databaseHelper.addRoom(chatroom.getRoomId(),
-                                            chatroom.getName(),
-                                            chatroom.getPhotoUrl(),
-                                            chatroom.getRequestStatus());
-                          
-                          if (chatroom.getRequestStatus() == 1) {
+                                    chatroom.getName(),
+                                    chatroom.getPhotoUrl(),
+                                    chatroom.getRequestStatus());
+
+                            if (chatroom.getRequestStatus() == 1) {
                                 userArrayList.add(chatroom);
                             } else if (chatroom.getRequestStatus() == 2) {
                                 chatRequests.add(chatroom);
-                                msgreqHeader.setVisibility(View.VISIBLE);
                             }
 
 
@@ -410,7 +406,7 @@ public class Fragment_MainPage extends Fragment {
                         roomListAdapter.notifyDataSetChanged();
                         chatRequestsAdapter.notifyDataSetChanged();
 
-                        if(chatRequests.size() > 0) {
+                        if (chatRequests.size() > 0) {
                             requestHeader.setVisibility(View.VISIBLE);
                         } else {
                             requestHeader.setVisibility(View.GONE);
@@ -424,14 +420,14 @@ public class Fragment_MainPage extends Fragment {
 
                         ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
 
-                        if (chatroom!=null) {
+                        if (chatroom != null) {
 
                             if (chatroom.getRequestStatus() == 1) {
 
                                 databaseHelper.addRoom(chatroom.getRoomId(),
-                                                chatroom.getName(),
-                                                chatroom.getPhotoUrl(),
-                                                chatroom.getRequestStatus());
+                                        chatroom.getName(),
+                                        chatroom.getPhotoUrl(),
+                                        chatroom.getRequestStatus());
 
                                 userArrayList.clear();
                                 userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
@@ -447,12 +443,11 @@ public class Fragment_MainPage extends Fragment {
                         chatRequestsAdapter.notifyDataSetChanged();
 
 
-                        if(chatRequests.size() > 0) {
+                        if (chatRequests.size() > 0) {
                             requestHeader.setVisibility(View.VISIBLE);
                         } else {
                             requestHeader.setVisibility(View.GONE);
                         }
-
 
 
                     }
@@ -461,7 +456,7 @@ public class Fragment_MainPage extends Fragment {
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
                         ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
 
-                        if( chatroom != null && chatroom.getRoomId() != null ){
+                        if (chatroom != null && chatroom.getRoomId() != null) {
                             databaseHelper.addRoom(chatroom.getRoomId(),
                                     chatroom.getName(),
                                     chatroom.getPhotoUrl(),
@@ -481,7 +476,7 @@ public class Fragment_MainPage extends Fragment {
                         chatRequestsAdapter.notifyDataSetChanged();
 
 
-                        if(chatRequests.size() > 0) {
+                        if (chatRequests.size() > 0) {
                             requestHeader.setVisibility(View.VISIBLE);
                         } else {
                             requestHeader.setVisibility(View.GONE);
@@ -519,7 +514,7 @@ public class Fragment_MainPage extends Fragment {
         chatReqrecyler.setLayoutManager(llm);
         chatReqrecyler.setAdapter(chatRequestsAdapter);
 
-        if(chatRequests.size() > 0) requestHeader.setVisibility(View.VISIBLE);
+        if (chatRequests.size() > 0) requestHeader.setVisibility(View.VISIBLE);
 
 
         LiveChips();
