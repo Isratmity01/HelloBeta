@@ -2,14 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:padding="3dp"
+    android:layout_marginBottom="10dp"
     android:layout_height="wrap_content">
 
 <RelativeLayout
     android:layout_width="wrap_content"
     android:orientation="horizontal"
     android:id="@+id/liveholder"
-
     android:layout_height="wrap_content">
 
 <ImageView
@@ -23,19 +22,30 @@
 
     android:background="@drawable/level_1_badge"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="75dp"
         android:layout_marginLeft="5dp"
+        android:maxLines="2"
         android:id="@+id/liveusername"
         android:layout_toRightOf="@id/badge"
         android:text="abs"
         android:textSize="15sp"
         android:textColor="#26BEFF"
         android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:maxLines="2"
+        android:id="@+id/separator"
+        android:layout_toRightOf="@id/liveusername"
+        android:text=":"
+        android:textSize="15sp"
+        android:textColor="#26BEFF"
+        android:layout_height="wrap_content" />
     <RelativeLayout
         android:layout_width="wrap_content"
         android:id="@+id/liveholderall"
-        android:layout_alignTop="@+id/liveusername"
-        android:layout_toRightOf="@id/liveusername"
+
+        android:layout_toRightOf="@id/separator"
         android:layout_height="wrap_content">
     <github.ankushsachdeva.emojicon.EmojiconTextView
 
@@ -43,12 +53,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoLink="email|web|map|phone"
+
         android:text="string"
         android:layout_marginLeft="5dp"
         android:textColor="@color/text_black"
         android:textIsSelectable="true"
         android:textSize="15sp"
-        app:emojiconSize="10pt" />
+        app:emojiconSize="8pt" />
     <ImageView
         android:layout_width="128dp"
         android:layout_height="128dp"
@@ -88,6 +99,7 @@
 
         android:layout_below="@+id/liveholderall"
 
+        android:layout_marginLeft="5dp"
         android:layout_alignLeft="@id/liveholderall"
         android:layout_alignStart="@id/liveholderall"
 
