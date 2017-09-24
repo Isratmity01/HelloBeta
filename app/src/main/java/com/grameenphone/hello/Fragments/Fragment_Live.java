@@ -608,7 +608,7 @@ public class Fragment_Live extends Fragment {
             final String chatRoomId = Compare.getRoomName(user.getUid(), sender.getUid());
             final ChatRoom chatRoom = dbHelper.getRoom(chatRoomId);
 
-            alertadd.setPositiveButton("ম্যাসেজ পাঠান", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ পাঠান", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     StartP2p(chatRoomId, chatRoom.getName());
@@ -622,7 +622,7 @@ public class Fragment_Live extends Fragment {
             final String chatRoomId = Compare.getRoomName(user.getUid(), sender.getUid());
             final ChatRoom chatRoom = dbHelper.getRoom(chatRoomId);
 
-            alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     chatRoom.setRequestStatus(1);
@@ -654,7 +654,7 @@ public class Fragment_Live extends Fragment {
 
         } else if (reqStatus == 0) {
 
-            alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -664,7 +664,7 @@ public class Fragment_Live extends Fragment {
 
         } else {
 
-            alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 

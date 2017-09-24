@@ -85,7 +85,7 @@
             fab:fab_colorNormal="@color/colorPrimary"
             android:scaleType="centerInside"
             android:padding="@dimen/fab_actions_spacing"
-            fab:fab_title="নতুন ম্যাসেজ"
+            fab:fab_title="নতুন মেসেজ"
             fab:fab_size="mini"
             fab:fab_colorPressed="@color/colorPrimaryDark"/>
 

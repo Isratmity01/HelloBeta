@@ -119,7 +119,7 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
                         .child("requestStatus")
                         .setValue(1);
 
-                Toast.makeText(context,"আপনি ম্যাসেজ রিকুয়েস্ট এক্সেপ্ট করেছেন", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"আপনি মেসেজ রিকুয়েস্ট এক্সেপ্ট করেছেন", Toast.LENGTH_SHORT).show();
                // IncomingChatRequestsAdapter.this.notify();
 
             }
@@ -143,7 +143,7 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
                 dbHelper.addRoom(current.getRoomId(),current.getName(),current.getPhotoUrl(),100);
 
 
-                Toast.makeText(context,"আপনি ম্যাসেজ রিকুয়েস্ট রিজেক্ট করেছেন", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"আপনি মেসেজ রিকুয়েস্ট রিজেক্ট করেছেন", Toast.LENGTH_SHORT).show();
 
             }
         });

@@ -56,14 +56,11 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         final ChatRoomHolder itemHolder = (ChatRoomHolder) holder;
         final ChatRoom current = rooms.get(position);
 
-try{
+
     itemHolder.nameTextView.setText(current.getName());
     String lilname=current.getName().trim().split("\\s+")[0];
     itemHolder.message.setText(lilname+ "-কে হ্যালো বলুন");
-}catch (Exception e)
-{
 
-}
 
        /* Chat lastMessage = current.getLastChat();
 

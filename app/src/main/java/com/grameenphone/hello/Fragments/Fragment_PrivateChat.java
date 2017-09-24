@@ -654,7 +654,7 @@ public class Fragment_PrivateChat extends Fragment {
                                     }
                                     else if(c.getMessageType()=="txt")
                                     {
-                                        sendPushNotificationToReceiver(c.getSender(), "ম্যাসেজ দিয়েছেন",
+                                        sendPushNotificationToReceiver(c.getSender(), "মেসেজ দিয়েছেন",
                                                 c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
                                     }
@@ -831,7 +831,7 @@ public class Fragment_PrivateChat extends Fragment {
                                     }
                                     else if(c.getMessageType()=="txt")
                                     {
-                                        sendPushNotificationToReceiver(c.getSender(), "ম্যাসেজ দিয়েছেন",
+                                        sendPushNotificationToReceiver(c.getSender(), "মেসেজ দিয়েছেন",
                                                 c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
                                     }
