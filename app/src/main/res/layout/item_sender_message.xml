@@ -31,8 +31,8 @@
 
                     android:layout_height="wrap_content"
                     emojicon:emojiconSize="10pt"
-
-                    android:textSize="7pt"
+                    android:textColorLink="@color/colorPrimaryDark"
+                    android:textSize="7.5pt"
                     android:autoLink="email|web|map|phone"
                     android:text="হাই! কি অবস্থা?এই যে চলছে বেশ ভালোই। শোন, আমার টাকা পয়সা বেশী হয়ে গেছে, বুঝলি? চল তোরে ট্রিট দেই! কই খাইতে চাস? "
                     android:textColor="@color/text_white"
