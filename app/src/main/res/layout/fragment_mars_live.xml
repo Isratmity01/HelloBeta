@@ -149,7 +149,7 @@
                         android:layout_toRightOf="@+id/emoticon"
 
 
-                        android:hint="@string/hint_write_message"
+                        android:hint="লাইভ মেসেজ লিখুন"
                         android:maxWidth="210dp"
                         android:textColorHint="#AEC3E3"
                         ads:emojiconSize="28sp" />
