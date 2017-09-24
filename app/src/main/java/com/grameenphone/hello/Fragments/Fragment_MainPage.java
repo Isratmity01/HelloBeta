@@ -75,9 +75,7 @@ public class Fragment_MainPage extends Fragment {
 
     RecyclerView allusers;
     private MenuItem item;
-
-    private TextView liveHeader, requestHeader;
-
+    private TextView liveHeader,msgreqHeader;
     private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
     View fragmentView;
     private DatabaseHelper databaseHelper;
@@ -160,7 +158,6 @@ public class Fragment_MainPage extends Fragment {
         liveHeader = (TextView) view.findViewById(R.id.liveuserheader);
         msgreqHeader=(TextView)view.findViewById(R.id.incoming_chat_request_header);
         msgreqHeader.setVisibility(View.GONE);
-
         userrecylcer = (RecyclerView) view.findViewById(R.id.horizontallayoutholder);
         msgrecyler = (RecyclerView) view.findViewById(R.id.friendListRecyclerView);
         chatReqrecyler = (RecyclerView) view.findViewById(R.id.incoming_chat_request_recyclerView);
@@ -411,9 +408,9 @@ public class Fragment_MainPage extends Fragment {
                         chatRequestsAdapter.notifyDataSetChanged();
 
                         if(chatRequests.size() > 0) {
-                            requestHeader.setVisibility(View.VISIBLE);
+                            msgreqHeader.setVisibility(View.VISIBLE);
                         } else {
-                            requestHeader.setVisibility(View.GONE);
+                            msgreqHeader.setVisibility(View.GONE);
                         }
 
 
@@ -448,9 +445,9 @@ public class Fragment_MainPage extends Fragment {
 
 
                         if(chatRequests.size() > 0) {
-                            requestHeader.setVisibility(View.VISIBLE);
+                            msgreqHeader.setVisibility(View.VISIBLE);
                         } else {
-                            requestHeader.setVisibility(View.GONE);
+                            msgreqHeader.setVisibility(View.GONE);
                         }
 
 
@@ -482,9 +479,9 @@ public class Fragment_MainPage extends Fragment {
 
 
                         if(chatRequests.size() > 0) {
-                            requestHeader.setVisibility(View.VISIBLE);
+                            msgreqHeader.setVisibility(View.VISIBLE);
                         } else {
-                            requestHeader.setVisibility(View.GONE);
+                            msgreqHeader.setVisibility(View.GONE);
                         }
 
 
@@ -519,7 +516,7 @@ public class Fragment_MainPage extends Fragment {
         chatReqrecyler.setLayoutManager(llm);
         chatReqrecyler.setAdapter(chatRequestsAdapter);
 
-        if(chatRequests.size() > 0) requestHeader.setVisibility(View.VISIBLE);
+        if(chatRequests.size() > 0) msgreqHeader.setVisibility(View.VISIBLE);
 
 
         LiveChips();
