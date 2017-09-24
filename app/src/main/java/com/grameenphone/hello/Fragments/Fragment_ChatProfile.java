@@ -159,6 +159,7 @@ public class Fragment_ChatProfile extends Fragment {
     }
     private void bindViews(View view) {
         progressBar=(ProgressBar)view.findViewById(R.id.imageloader);
+        toolbarchat=(Toolbar)getActivity().findViewById(R.id.toolbar);
         ImageCount=(TextView)view.findViewById(R.id.imagecount);
         notificationCardView = (CardView) view.findViewById(R.id.notification_card);
         toolbarchat=(Toolbar)getActivity().findViewById(R.id.toolbar);
@@ -294,8 +295,7 @@ public class Fragment_ChatProfile extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        super.onActivityCreated(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window w = getActivity() .getWindow();
 
 
@@ -319,7 +319,7 @@ public class Fragment_ChatProfile extends Fragment {
 
 
         params.width=ViewGroup.LayoutParams.MATCH_PARENT;;
-        appBarLayout.setLayoutParams(params);
+        appBarLayout.setLayoutParams(params);*/
         init();
     }
     public void init()
