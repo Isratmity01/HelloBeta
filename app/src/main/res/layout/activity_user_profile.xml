@@ -22,7 +22,7 @@
                 android:orientation="horizontal"
 
                 android:id="@+id/toppne"
-                android:layout_marginBottom="65dp"
+
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/profile_picture"
@@ -74,7 +74,16 @@
                         android:textStyle="normal" />
                 </LinearLayout>
             </LinearLayout>
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="65dp"
+                android:id="@+id/topview"
+                android:layout_marginRight="18dp"
+                android:layout_marginEnd="18dp"
+                android:layout_marginTop="30dp"
+                android:layout_below="@id/toppne"
+                android:background="@color/border_color" />
 
 
             <android.support.v7.widget.CardView
@@ -83,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                android:layout_below="@+id/toppne"
+                android:layout_below="@+id/topview"
 
                 app:cardCornerRadius="0dp"
                 app:cardElevation="0dp">
@@ -296,7 +305,7 @@
                         android:drawablePadding="10dp"
                         android:fontFamily="sans-serif"
                         android:text="সাইন আউট"
-                        android:textColor="#8190a7"
+                        android:textColor="#f65314"
                         android:textSize="17sp"
                         android:textStyle="normal" />
 

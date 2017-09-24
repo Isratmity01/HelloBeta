@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/selectableItemBackgroundBorderless"
     android:layout_width="fill_parent"
+
     android:layout_height="?actionBarSize"
     app:popupTheme="@style/AppTheme.PopupOverlay">
     >
@@ -62,7 +63,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textColor="@color/white"
             android:text="shanraisshan"
             />

@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             fab:fab_icon="@drawable/ic_trending_up_white_18dp"
             android:scaleType="centerInside"
-            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_colorNormal="#7BC940"
             android:padding="@dimen/fab_actions_spacing"
             fab:fab_title="লাইভ"
             fab:fab_size="mini"
