@@ -78,10 +78,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
-                            android:paddingBottom="8dp"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:background="@drawable/rounded"
+                            android:layout_marginLeft="10dp"
                             android:paddingLeft="10dp"
-                            android:paddingTop="20dp"
-                            android:text="জয়েন করুন"
+                            android:paddingRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:minHeight="30dp"
+                            android:text="এখনই জয়েন করুন!"
                             android:textColor="#ffffff"
                             android:textSize="14sp" />
 
