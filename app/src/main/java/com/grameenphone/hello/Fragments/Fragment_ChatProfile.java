@@ -88,6 +88,8 @@ public class Fragment_ChatProfile extends Fragment {
     private DatabaseHelper dbHelper;
     private User me;
     private Switch Lanswitch;
+    private TextView titleText;
+    private ImageView receiverPhoto;
     private TextView blockedusername;
     private String mUsername;
     private Toolbar toolbarchat;
@@ -320,6 +322,14 @@ public class Fragment_ChatProfile extends Fragment {
 
         params.width=ViewGroup.LayoutParams.MATCH_PARENT;;
         appBarLayout.setLayoutParams(params);*/
+        LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
+        toolbarchat.addView(mCustomView,0);
+        titleText=(TextView)toolbarchat.findViewById(R.id.action_bar_title_1);
+        receiverPhoto=(ImageView) toolbarchat.findViewById(R.id.conversation_contact_photo);
+        receiverPhoto.setVisibility(View.GONE);
+
+        titleText.setText("চ্যাট সেটিংস");
         init();
     }
     public void init()
