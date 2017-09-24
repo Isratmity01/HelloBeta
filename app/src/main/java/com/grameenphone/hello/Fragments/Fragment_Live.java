@@ -578,8 +578,8 @@ public class Fragment_Live extends Fragment {
         livepeople.setText(EToB(String.valueOf(liveUser.size()))+" জন একটিভ");
         receiverPhoto=(ImageView)toolbarlive.findViewById(R.id.conversation_contact_photo);
         receiverPhoto.setImageResource(R.drawable.ic_trending_up_white_18dp);
-        titleText.setText("লাইভ");
-        toolbarlive.setContentInsetsAbsolute(0, 0);
+        titleText.setText("হ্যালো লাইভ");
+        toolbarlive.setContentInsetsAbsolute(0,0);
         toolbarlive.setContentInsetStartWithNavigation(0);
         toolbarlive.setOverflowIcon(null);
 
