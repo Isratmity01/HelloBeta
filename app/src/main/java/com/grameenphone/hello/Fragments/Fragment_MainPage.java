@@ -64,7 +64,7 @@ public class Fragment_MainPage extends Fragment {
     private RoomListAdapter roomListAdapter;
     private IncomingChatRequestsAdapter chatRequestsAdapter;
 
-
+    private int width=50,height=50;
     private CardView cardView;
     FragmentManager fragmentManager;
     ArrayList<String> liveUser = new ArrayList<String>();
@@ -75,6 +75,7 @@ public class Fragment_MainPage extends Fragment {
 
     RecyclerView allusers;
     private MenuItem item;
+    private float density;
     private TextView liveHeader,msgreqHeader;
     private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
     View fragmentView;
@@ -139,7 +140,7 @@ public class Fragment_MainPage extends Fragment {
         item = menu.findItem(R.id.action_settings);
         Glide.with(this).load(myself.getPhotoUrl()).asBitmap().centerCrop()
                 .transform(new CropCircleTransformation(getActivity()))
-                .into(new SimpleTarget<Bitmap>(50, 50) {
+                .into(new SimpleTarget<Bitmap>(width, height) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         item.setIcon(new BitmapDrawable(getResources(), resource));
@@ -201,7 +202,7 @@ public class Fragment_MainPage extends Fragment {
         AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarmain);
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        float density = getResources().getDisplayMetrics().density;
+        density = getResources().getDisplayMetrics().density;
         if(density<=1.5)
         {
             params.height = 116;
@@ -209,7 +210,11 @@ public class Fragment_MainPage extends Fragment {
         else  if(density>1.5 && density<2.5){
             params.height = 156;
         }
-        else params.height = 216;
+        else {
+            params.height = 216;
+            width=70;
+            height=70;
+        }
         //this will be changed based on device dpi
 
 
