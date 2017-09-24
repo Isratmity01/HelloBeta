@@ -100,7 +100,7 @@ public class Fragment_Contacts extends Fragment {
 
         mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
 
-        setActionBarTitle("নতুন ম্যাসেজ");
+        setActionBarTitle("নতুন মেসেজ");
     }
 
     public void setActionBarTitle(String title) {
@@ -187,12 +187,17 @@ public class Fragment_Contacts extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
+        floatingActionsMenu.setVisibility(View.GONE);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
         View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
         toolbar.addView(mCustomView,0);
         TextView titleText = (TextView) toolbar.findViewById(R.id.action_bar_title_1);
         ImageView receiver = (ImageView) toolbar.findViewById(R.id.conversation_contact_photo);
         receiver.setVisibility(View.GONE);
-        titleText.setText("নতুন ম্যাসেজ");
+        titleText.setText("নতুন মেসেজ");
         init();
     }
 
@@ -218,7 +223,7 @@ public class Fragment_Contacts extends Fragment {
             final String chatRoomId = Compare.getRoomName(user.getUid(), me.getUid());
             final ChatRoom chatRoom = databaseHelper.getRoom(chatRoomId);
 
-            alertadd.setPositiveButton("ম্যাসেজ পাঠান", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ পাঠান", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     StartP2p(chatRoomId, chatRoom.getName());
@@ -232,7 +237,7 @@ public class Fragment_Contacts extends Fragment {
             final String chatRoomId = Compare.getRoomName(user.getUid(), me.getUid());
             final ChatRoom chatRoom = databaseHelper.getRoom(chatRoomId);
 
-            alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     chatRoom.setRequestStatus(1);
@@ -264,7 +269,7 @@ public class Fragment_Contacts extends Fragment {
 
         } else if (reqStatus == 0) {
 
-            alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -274,7 +279,7 @@ public class Fragment_Contacts extends Fragment {
 
         } else {
 
-            alertadd.setPositiveButton("ম্যাসেজ রিকুয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
