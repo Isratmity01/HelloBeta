@@ -448,71 +448,77 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Log.i("BACK PRESSED", "BACK PRESSED");
 
 
-        } else if (f instanceof Fragment_UserProfile) {
-            menuMultipleActions.setVisibility(View.VISIBLE);
-            ActionBar ab = getSupportActionBar();
+            } else if (f instanceof Fragment_UserProfile) {
+                menuMultipleActions.setVisibility(View.VISIBLE);
+                ActionBar ab = getSupportActionBar();
+                toolbar.getRootView().findViewById(R.id.action_bar_title_1).setVisibility(View.GONE);
 
-            ab.setTitle("");
-            ab.setDisplayUseLogoEnabled(true);
-            ab.setDisplayHomeAsUpEnabled(false);
+                ab.setDisplayUseLogoEnabled(true);
+                ab.setDisplayHomeAsUpEnabled(false);
 
-            super.onBackPressed();//the fragment on which you want to handle your back press
-            Log.i("BACK PRESSED", "BACK PRESSED");
-        } else if (f instanceof Fragment_Contacts) {
-            menuMultipleActions.setVisibility(View.VISIBLE);
-            ActionBar ab = getSupportActionBar();
+                super.onBackPressed();//the fragment on which you want to handle your back press
+                Log.i("BACK PRESSED", "BACK PRESSED");
+            }
+       else if (f instanceof Fragment_PrivateChat) {
 
-            ab.setTitle("");
-            ab.setDisplayUseLogoEnabled(true);
-            ab.setDisplayHomeAsUpEnabled(false);
 
-            super.onBackPressed();//the fragment on which you want to handle your back press
-            Log.i("BACK PRESSED", "BACK PRESSED");
-        } else if (f instanceof Fragment_PrivateChat) {
-            menuMultipleActions.setVisibility(View.VISIBLE);
-            ActionBar ab = getSupportActionBar();
+                    menuMultipleActions.setVisibility(View.VISIBLE);
+                    ActionBar ab = getSupportActionBar();
+                    toolbar.getRootView().findViewById(R.id.conversation_contact_photo).setVisibility(View.GONE);
+                toolbar.getRootView().findViewById(R.id.action_bar_title_1).setVisibility(View.GONE);
+                    toolbar.inflateMenu(R.menu.menu_main);
+                    //  toolbar.removeAllViews();
+                    ab.setTitle("");
+                    ab.setDisplayUseLogoEnabled(true);
+                    ab.setLogo(R.drawable.hellologo);
+                    ab.setDisplayHomeAsUpEnabled(false);
+                    super.onBackPressed();
 
-            ab.setTitle("");
-            ab.setDisplayUseLogoEnabled(true);
-            ab.setLogo(R.drawable.hellologo);
-            ab.setDisplayHomeAsUpEnabled(false);
-            super.onBackPressed();
-            //the fragment on which you want to handle your back press
-            Log.i("BACK PRESSED", "BACK PRESSED");
-        } else if (f instanceof Fragment_Live) {
-            mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(me.getUid()).setValue(null);
 
-            menuMultipleActions.setVisibility(View.VISIBLE);
-            ActionBar ab = getSupportActionBar();
+                //the fragment on which you want to handle your back press
+                Log.i("BACK PRESSED", "BACK PRESSED");
+            } else if (f instanceof Fragment_Live) {
+                mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(me.getUid()).setValue(null);
 
-            ab.setTitle("");
-            ab.setDisplayUseLogoEnabled(true);
-            ab.setLogo(R.drawable.hellologo);
-            ab.setDisplayHomeAsUpEnabled(false);
-            ab.setSubtitle("");
+                menuMultipleActions.setVisibility(View.VISIBLE);
+                ActionBar ab = getSupportActionBar();
+                toolbar.getRootView().findViewById(R.id.conversation_contact_photo).setVisibility(View.GONE);
+                toolbar.getRootView().findViewById(R.id.action_bar_title_1).setVisibility(View.GONE);
+                toolbar.getRootView().findViewById(R.id.action_bar_title_2).setVisibility(View.GONE);
+                ab.setTitle("");
+                ab.setDisplayUseLogoEnabled(true);
+                ab.setLogo(R.drawable.hellologo);
+                ab.setDisplayHomeAsUpEnabled(false);
+                ab.setSubtitle("");
 
-            super.onBackPressed();//the fragment on which you want to handle your back press
-            Log.i("BACK PRESSED", "BACK PRESSED");
-        } else if (f instanceof Fragment_UserProfileEdit) {
-            ActionBar ab = getSupportActionBar();
-            ab.setTitle("ইউজার প্রোফাইল");
-            ab.setDisplayHomeAsUpEnabled(true);
-            super.onBackPressed();//the fragment on which you want to handle your back press
-            Log.i("BACK PRESSED", "BACK PRESSED");
-        } else if (f instanceof Fragment_Contacts) {
-            ActionBar ab = getSupportActionBar();
-            ab.setTitle("");
-            ab.setDisplayHomeAsUpEnabled(false);
-            ab.setDisplayUseLogoEnabled(true);
-            ab.setLogo(R.drawable.hellologo);
-            super.onBackPressed();//the fragment on which you want to handle your back press
-            Log.i("BACK PRESSED", "BACK PRESSED");
-        } else {
+                super.onBackPressed();//the fragment on which you want to handle your back press
+                Log.i("BACK PRESSED", "BACK PRESSED");
+            } else if (f instanceof Fragment_UserProfileEdit) {
+                ActionBar ab = getSupportActionBar();
+                TextView textView=(TextView)toolbar.getRootView().findViewById(R.id.action_bar_title_1);
+                textView.setText("ইউজার প্রোফাইল");
+                ab.setDisplayHomeAsUpEnabled(true);
+                super.onBackPressed();//the fragment on which you want to handle your back press
+                Log.i("BACK PRESSED", "BACK PRESSED");
+            }
+
+            else if (f instanceof Fragment_Contacts) {
+
+                menuMultipleActions.setVisibility(View.VISIBLE);
+                ActionBar ab = getSupportActionBar();
+                toolbar.getRootView().findViewById(R.id.action_bar_title_1).setVisibility(View.GONE);
+                ab.setDisplayHomeAsUpEnabled(false);
+                ab.setDisplayUseLogoEnabled(true);
+                ab.setLogo(R.drawable.hellologo);
+                super.onBackPressed();//the fragment on which you want to handle your back press
+                Log.i("BACK PRESSED", "BACK PRESSED");
+            }
+
+       else {
             super.onBackPressed();
             return;
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
