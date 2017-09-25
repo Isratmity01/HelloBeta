@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="বিকাল ৫.১৫"
-                android:textSize="5pt"
+                android:textSize="5.5pt"
                 android:textColor="#b3ffffff"
 
                 android:layout_marginRight="5dp"
