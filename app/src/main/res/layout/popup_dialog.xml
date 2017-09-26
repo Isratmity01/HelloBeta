@@ -3,21 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/image_dialog_root"
     android:layout_width="match_parent"
-    android:layout_margin="20dp"
+
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/splash_screen">
-    <ProgressBar
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/popuploader"
-        android:layout_centerInParent="true"/>
+    android:background="@drawable/background">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/leaderboardRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:requiresFadingEdge="horizontal|vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/closethiss"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/leaderboardRecyclerView"
+        android:textSize="16sp"
+        
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:textColor="#FFFFFF"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_centerInParent="true"
+        android:background="@drawable/profile_button_shape"
+        android:text="বন্ধ করুন"/>
 
 </RelativeLayout>

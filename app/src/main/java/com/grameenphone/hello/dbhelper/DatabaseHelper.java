@@ -1094,7 +1094,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static Comparator<User> compareUserLevel =
             new Comparator<User>() {
-                public int compare(User user1, User other) {
+                public int compare(User other, User user1) {
                     return Long.compare(user1.getUserpoint(),other.getUserpoint());
                 }
             };

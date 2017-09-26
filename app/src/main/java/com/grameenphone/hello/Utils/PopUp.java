@@ -20,6 +20,8 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,8 +36,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.grameenphone.hello.Adapter.LeaderAdapter;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
+import com.grameenphone.hello.model.User;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,6 +57,10 @@ public class PopUp extends AppCompatActivity {
     Bitmap bitmapreceived;
     private ImageView mDialog;
     String  fromwhere;
+    RecyclerView leaders;
+    private LeaderAdapter leaderAdapter;
+    private ArrayList<User>all=new ArrayList<>();
+    private ArrayList<User>topten=new ArrayList<>();
     private ProgressBar progressBar1;
     private Toolbar toolbar;
     String root_sd = Environment.getExternalStorageDirectory().toString();
@@ -61,7 +69,7 @@ public class PopUp extends AppCompatActivity {
    private Bitmap bitmap;
     private Context mcontext;
     private String yesOrNo;
-    private Button close;
+    private Button close,close2;
     private DatabaseHelper databaseHelper;
     File wallpaperDirectory;
     ArrayList<String> toBeScanned = new ArrayList<String>();
@@ -86,7 +94,7 @@ public PopUp()
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-
+        databaseHelper=new DatabaseHelper(PopUp.this);
         fromwhere = intent.getStringExtra("From");
         if(fromwhere.equals("point"))
         {
@@ -103,11 +111,27 @@ public PopUp()
         }
         else {
             setContentView(R.layout.popup_dialog);
+            leaders=(RecyclerView)findViewById(R.id.leaderboardRecyclerView);
 
-            progressBar1 = (ProgressBar) findViewById(R.id.popuploader);
-            progressBar1.setVisibility(View.GONE);
-            databaseHelper=new DatabaseHelper(PopUp.this);
 
+            all=databaseHelper.getTopten();
+            for(int i=0;i<10;i++)
+            {
+                topten.add(i,all.get(i));
+            }
+            leaderAdapter = new LeaderAdapter(this, topten,databaseHelper);
+            leaders.setNestedScrollingEnabled(false);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            layoutManager.setAutoMeasureEnabled(true);
+            leaders.setLayoutManager(layoutManager);
+            leaders.setAdapter(leaderAdapter);
+            close2=(Button)findViewById(R.id.closethiss);
+            close2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
             // Glide.with(this).load(photoUrl).into(mDialog);
 
             //finish the activity (dismiss the image dialog) if the user clicks

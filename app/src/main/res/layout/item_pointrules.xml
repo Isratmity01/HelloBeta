@@ -7,13 +7,15 @@
     android:layout_marginLeft="5dp"
 
     android:layout_marginStart="5dp"
-    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+
+
     android:background="@drawable/background"
     xmlns:emojicon="http://schemas.android.com/tools"
 
     android:orientation="vertical">
     <TextView
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_height="wrap_content"
         android:textSize="24sp"
         android:id="@+id/toptextpoint"
@@ -216,6 +218,8 @@
             android:id="@+id/closethis"
             android:layout_marginTop="10dp"
             android:textSize="16sp"
+
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:textColor="#FFFFFF"
             android:foreground="?attr/selectableItemBackground"
             android:background="@drawable/profile_button_shape"
