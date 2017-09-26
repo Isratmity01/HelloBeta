@@ -21,6 +21,7 @@ public class Constant {
             public static final String PHOTO_URL = "photoUrl";
             public static final String IS_ME = "isMe";
             public static final String FIREBASE_TOKEN = "firebaseToken";
+            public static final String USER_POINT = "userPoint";
         }
         public static class RoomLogCount {
             public static final String ROOM_ID = "roomId";

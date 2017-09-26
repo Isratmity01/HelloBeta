@@ -111,7 +111,6 @@ public class Fragment_PrivateChat extends Fragment {
     int timefirst, timesecond;
     private RelativeLayout sendbackground;
     int monthfirst, monthsecond;
-    JSONObject chatobject = new JSONObject();
     public int getMonthfirst() {
         return monthfirst;
     }
@@ -152,6 +151,7 @@ public class Fragment_PrivateChat extends Fragment {
     EmojiconEditText emojiconEditText;
     private ImageView mAddMessageImageView;
 
+    JSONObject chatobject = new JSONObject();
 
     private User sender;
     private User receiver;
@@ -646,24 +646,17 @@ public class Fragment_PrivateChat extends Fragment {
                                     c.setReadStatus(0);
 
 
-                                    if(c.getMessageType()=="stk")
-                                    {
-                                        sendPushNotificationToReceiver(c.getSender(), "স্টিকার পাঠিয়েছেন",
-                                                c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
+                                    try {
+                                        chatobject=populateJsonChat(chatobject);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                    else if(c.getMessageType()=="txt")
-                                    {
-                                        sendPushNotificationToReceiver(c.getSender(), "মেসেজ দিয়েছেন",
-                                                c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
-                                    }
-                                    else if (c.getMessageType()=="img")
-                                    {
-                                        sendPushNotificationToReceiver(c.getSender(), "ছবি পাঠিয়েছেন",
-                                                c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
+                                    sendPushNotificationToReceiver( chatobject, me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
-                                    }
+
+
 
                                 }
 
@@ -743,6 +736,8 @@ public class Fragment_PrivateChat extends Fragment {
                     }
                 });
     }
+
+
     public void loadinitial()
     {
         mFirebaseDatabaseReference.child("chat_rooms").child(MESSAGES_CHILD)
@@ -758,6 +753,9 @@ public class Fragment_PrivateChat extends Fragment {
                             c= dataSnapshot.getValue(Chat.class);
                             if (c != null) {
                                 c.setChatId(dataSnapshot.getKey());
+
+                                dbHelper.addMessage( MESSAGES_CHILD, c, c.getChatId(), c.getReadStatus() );
+
                                 boolean addFlag = true;
                                 for (Chat data : chats) {
                                     if (data.getChatId().equals(c.getChatId())) {
@@ -822,25 +820,15 @@ public class Fragment_PrivateChat extends Fragment {
                                     //dbHelper.addMessage(c,c.getChatId());
                                     c.setReadStatus(0);
 
-
-                                    if(c.getMessageType()=="stk")
-                                    {
-                                        sendPushNotificationToReceiver(c.getSender(), "স্টিকার পাঠিয়েছেন",
-                                                c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
-
+                                    try {
+                                        chatobject=populateJsonChat(chatobject);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                    else if(c.getMessageType()=="txt")
-                                    {
-                                        sendPushNotificationToReceiver(c.getSender(), "মেসেজ দিয়েছেন",
-                                                c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
-                                    }
-                                    else if (c.getMessageType()=="img")
-                                    {
-                                        sendPushNotificationToReceiver(c.getSender(), "ছবি পাঠিয়েছেন",
-                                                c.getSender(), me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
+                                    sendPushNotificationToReceiver( chatobject, me.getFirebaseToken(), receiverFirebaseToken, MESSAGES_CHILD);
 
-                                    }
+
 
                                 }
 
@@ -1113,20 +1101,47 @@ public class Fragment_PrivateChat extends Fragment {
     }
 
 
-    private void sendPushNotificationToReceiver(String roomTitle,
-                                                String message,
-                                                String sender,
+
+
+    private JSONObject populateJsonChat (JSONObject chat) throws JSONException {
+        chat.put("chatId", c.getChatId());
+        chat.put("receiver", c.getReceiver());
+        chat.put("receiverUid",c.getReceiverUid());
+        chat.put("sender", c.getSender());
+        chat.put("messageType", c.getMessageType());
+        chat.put("senderUid",c.getSenderUid());
+        chat.put("timestamp", c.getTimestamp());
+        chat.put("photoUrl", c.getPhotoUrl());
+        chat.put("message",c.getMessage());
+        chat.put("readStatus",c.getReadStatus());
+
+        if(c.getFile()!=null)
+
+        {
+            chat.put("type",c.getFile().getType());
+            chat.put("url_file", c.getFile().getUrl_file());
+            chat.put("name_file",c.getFile().getName_file());
+            chat.put("size_file",c.getFile().getSize_file());
+        }
+
+        return chat;
+    }
+
+
+
+
+
+    private void sendPushNotificationToReceiver(JSONObject chat,
                                                 String firebaseToken,
                                                 String receiverFirebaseToken,
                                                 String roomId) {
      //   EventBus.getDefault().post(new ChatSent("yes"));
         FcmNotificationBuilder.initialize()
-                .title(roomTitle)
-                .message(message)
-                .sender(sender)
+                .notificationType("p2p")
+                .setReceived(chat)
+                .roomUid(roomId)
                 .firebaseToken(firebaseToken)
                 .receiverFirebaseToken(receiverFirebaseToken)
-                .roomUid(roomId)
                 .send();
     }
 

@@ -86,6 +86,12 @@ public class SplashScreenActivity extends Activity
 
 
 
+
+
+
+
+
+
                     mFirebaseDatabaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -96,6 +102,7 @@ public class SplashScreenActivity extends Activity
 
 
                                 if (user != null && user.getUid().equals(mFirebaseUser.getUid())) {
+
                                     dbHelper.addMe(user);
                                 } else {
                                     dbHelper.addUser(user);
@@ -110,6 +117,13 @@ public class SplashScreenActivity extends Activity
 
                         }
                     });
+
+
+
+
+
+
+
 
 
 

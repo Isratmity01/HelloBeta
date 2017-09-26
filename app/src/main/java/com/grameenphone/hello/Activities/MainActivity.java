@@ -57,6 +57,7 @@ import com.grameenphone.hello.Fragments.Fragment_PrivateChat;
 import com.grameenphone.hello.Fragments.Fragment_UserProfile;
 import com.grameenphone.hello.Fragments.Fragment_UserProfileEdit;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.Userlevels;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.EventReceived;
 import com.grameenphone.hello.model.EventReceived2;
@@ -147,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_new_message));
 
         me = databaseHelper.getMe();
+
+
         frameLayout = (FrameLayout) findViewById(R.id.totalview);
         frameLayout.getBackground().setAlpha(0);
 
@@ -216,12 +219,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         Intent intent = getIntent();
 
-        String roomId = intent.getStringExtra("room_uid");
-        String roomName = intent.getStringExtra("room_name");
+        String type = intent.getStringExtra("type");
+        if( type != null && type.equals("p2p") ) {
+            String roomId = intent.getStringExtra("room_uid");
+            String roomName = intent.getStringExtra("room_name");
 
-        if (roomId != null && roomName != null) {
-            StartP2p(roomId, roomName);
+            if (roomId != null && roomName != null) {
+                StartP2p(roomId, roomName);
+            }
+        } else {
+
+
         }
+
 
 
     }
@@ -613,6 +623,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
     }
+
+
+    public void StartLive() {
+
+        Fragment_Live fragmentp = new Fragment_Live();
+
+
+
+        fragmentManagerP2p = MainActivity.this.getSupportFragmentManager();
+        fragmentTransactionP2p = fragmentManagerP2p.beginTransaction();
+
+        fragmentTransactionP2p.replace(R.id.fragment_container, fragmentp);
+        fragmentTransactionP2p.addToBackStack("p2p");
+        fragmentTransactionP2p.commit();
+
+
+    }
+
 
 
 }

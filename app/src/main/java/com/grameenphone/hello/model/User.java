@@ -7,6 +7,8 @@ public class User {
     public String name;
     public String photoUrl;
 
+    public int userpoint;
+
 
     public String firebaseToken;
 
@@ -74,4 +76,14 @@ public class User {
     public void setFirebaseToken(String firebaseToken) {
         this.firebaseToken = firebaseToken;
     }
+
+
+    public int getUserpoint() {
+        return userpoint;
+    }
+
+    public void setUserpoint(int userpoint) {
+        this.userpoint = userpoint;
+    }
+
 }
