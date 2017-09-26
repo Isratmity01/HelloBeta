@@ -263,6 +263,7 @@ public class Fragment_Live extends Fragment {
         LoadMsg.setVisibility(View.GONE);
 
         attach = (ImageButton) view.findViewById(R.id.attachment);
+        attach.setBackgroundResource(R.drawable.ic_attach);
         attach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
