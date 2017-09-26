@@ -33,7 +33,10 @@ public class FcmNotificationBuilder {
     private static final String KEY_DATA = "data";
     private static final String KEY_FCM_TOKEN = "fcm_token";
     private static final String KEY_ROOM = "room_uid";
-    private static final String KEY_SENDER = "sender";
+    private static final String KEY_NOTIFICATION_TYPE = "type";
+
+    private static final String KEY_CHATS ="whatposted";
+
     private String mTitle;
     private JSONObject received;
     private String mMessage;
@@ -41,6 +44,8 @@ public class FcmNotificationBuilder {
     private String mReceiverFirebaseToken;
     private String Sender;
     private String roomUid;
+
+    private String notificationtype;
 
     private FcmNotificationBuilder() {
 
@@ -87,6 +92,12 @@ public class FcmNotificationBuilder {
         return this;
     }
 
+    public FcmNotificationBuilder notificationType(String type){
+        notificationtype = type;
+        return this;
+    }
+
+
     public void send() {
         RequestBody requestBody = null;
         try {
@@ -122,12 +133,12 @@ public class FcmNotificationBuilder {
         jsonObjectBody.put(KEY_TO, mReceiverFirebaseToken);
 
         JSONObject jsonObjectData = new JSONObject();
-        jsonObjectData.put(KEY_TITLE, mTitle);
-        jsonObjectData.put(KEY_TEXT, mMessage);
-        jsonObjectData.put(KEY_SENDER, Sender);
         jsonObjectData.put(KEY_FCM_TOKEN, mFirebaseToken);
+        jsonObjectData.put(KEY_NOTIFICATION_TYPE, notificationtype);
         jsonObjectData.put(KEY_ROOM, roomUid);
 
+
+        jsonObjectData.put(KEY_CHATS, received);
         jsonObjectBody.put(KEY_DATA, jsonObjectData);
         return jsonObjectBody;
     }

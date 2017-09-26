@@ -12,11 +12,14 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Constant;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.events.PushNotificationEvent;
+import com.grameenphone.hello.model.Chat;
+import com.grameenphone.hello.model.FileModel;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -48,18 +51,84 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
 
-            String title = remoteMessage.getData().get("title");
-            String message = remoteMessage.getData().get("text");
-            String sender = remoteMessage.getData().get("sender");
+            String type = remoteMessage.getData().get("type");
             String fcmToken = remoteMessage.getData().get("fcm_token");
+
             String roomid = remoteMessage.getData().get("room_uid");
+            String chats = remoteMessage.getData().get("whatposted");
 
 
-            sendNotification(title,
-                    message,
-                    sender,
-                    fcmToken,
-                    roomid);
+            if(type.contains("p2p")){
+
+                if(chats != null) {
+
+                    Gson gson = new Gson();
+                    Chat staff = gson.fromJson(chats, Chat.class);
+
+
+                    if (staff.getType() == null) {
+
+                        Chat receivedchat = new Chat(staff.getSender(), staff.getReceiver(),
+                                staff.getSenderUid(), staff.getReceiverUid(),
+                                staff.getMessage(),
+                                staff.getTimestamp(), staff.getMessageType());
+
+                        databaseHelper.addMessage(roomid ,receivedchat, receivedchat.getChatId(), receivedchat.getReadStatus());
+
+
+                    } else {
+                        FileModel fileModel = new FileModel(staff.getType(), staff.getUrl_file(), staff.getName_file(), staff.getSize_file());
+                        Chat receivedchat2 = new Chat(staff.getSender(), staff.getReceiver(),
+                                staff.getSenderUid(), staff.getReceiverUid(), staff.getPhotoUrl(), "Image", staff.getTimestamp()
+                                , fileModel, staff.getType());
+                        databaseHelper.addMessage(roomid ,receivedchat2, receivedchat2.getChatId(), receivedchat2.getReadStatus());
+
+
+                    }
+
+                    String message = "";
+                    String title = staff.getSender();
+                    if(staff.getMessageType().contains("txt")) {
+                        message = staff.getSender() + " ম্যাসেজ দিয়েছেন";
+                    } else if( staff.getMessageType().contains("stk") ){
+                        message = staff.getSender() + " স্টিকার পাঠিয়েছেন";
+                    } else {
+                        message = staff.getSender() + " ছবি পাঠিয়েছেন";
+                    }
+
+                    sendNotification(
+                            "p2p",
+                            title,
+                            message,
+                            staff.getSender(),
+                            fcmToken,
+                            roomid);
+
+
+                }
+            }
+
+            if(type.contains("bot")){
+
+                String sender = remoteMessage.getData().get("sender");
+                String title = remoteMessage.getData().get("title");
+                String text = remoteMessage.getData().get("text");
+
+
+                sendNotification("bot",
+                        title,
+                        text,
+                        sender,
+                        fcmToken,
+                        roomid);
+
+
+            }
+
+
+
+
+
 
 
         }
@@ -69,7 +138,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     /**
      * Create and show a simple notification containing the received FCM message.
      */
-    private void sendNotification(String title,
+    private void sendNotification(String type,
+                                  String title,
                                   String message,
                                   String sender,
                                   String firebaseToken,
@@ -85,7 +155,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Intent intent;
         intent = new Intent(this, MainActivity.class);
-        intent.putExtra("room_type", "p2p");
+        intent.putExtra("type", type);
 
         intent.putExtra(Constant.Notification.ARG_FIREBASE_TOKEN, firebaseToken);
 

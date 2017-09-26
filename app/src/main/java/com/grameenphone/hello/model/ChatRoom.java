@@ -9,8 +9,8 @@ public class ChatRoom {
     private String photoUrl;
     private int requestStatus;
 
-    private Chat lastChat;
-    private String unreadMessageCount;
+    private String lastChat;
+    private long timestamp;
 
 
 
@@ -52,20 +52,12 @@ public class ChatRoom {
     }
 
 
-    public Chat getLastChat() {
+    public String getLastChat() {
         return lastChat;
     }
 
-    public void setLastChat(Chat lastChat) {
+    public void setLastChat(String lastChat) {
         this.lastChat = lastChat;
-    }
-
-    public String getUnreadMessageCount() {
-        return unreadMessageCount;
-    }
-
-    public void setUnreadMessageCount(String unreadMessageCount) {
-        this.unreadMessageCount = unreadMessageCount;
     }
 
     public int getRequestStatus() {
@@ -74,5 +66,13 @@ public class ChatRoom {
 
     public void setRequestStatus(int requestStatus) {
         this.requestStatus = requestStatus;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

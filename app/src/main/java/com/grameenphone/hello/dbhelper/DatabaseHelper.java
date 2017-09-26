@@ -16,6 +16,8 @@ import com.grameenphone.hello.model.User;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +111,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Constant.Database.User.PHONENUMBER + " TEXT,"
                 + Constant.Database.User.PHOTO_URL + " TEXT,"
                 + Constant.Database.User.IS_ME + " INTEGER DEFAULT 0,"
-                + Constant.Database.User.FIREBASE_TOKEN + " TEXT"
+                + Constant.Database.User.FIREBASE_TOKEN + " TEXT,"
+                + Constant.Database.User.USER_POINT + " INTEGER DEFAULT 0"
                 + ")";
 
 
@@ -153,6 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Constant.Database.User.IS_ME, 0);
         values.put(Constant.Database.User.FIREBASE_TOKEN, user.getFirebaseToken());
 
+        values.put(Constant.Database.User.USER_POINT, user.getUserpoint());
 
         db.insertWithOnConflict(Constant.Database.TABLE_USER, Constant.Database.User.UID , values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
@@ -168,9 +172,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Constant.Database.User.IS_ME, 1);
         values.put(Constant.Database.User.FIREBASE_TOKEN, user.getFirebaseToken());
 
+        values.put(Constant.Database.User.USER_POINT, user.getUserpoint());
+
+
+
         db.insertWithOnConflict(Constant.Database.TABLE_USER, Constant.Database.User.UID , values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
+
+
+
+
+
+
 
 
 
@@ -256,6 +270,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     user.setPhone(cursor.getString(2));
                     user.setPhotoUrl(cursor.getString(3));
                     user.setFirebaseToken(cursor.getString(5));
+                    user.setUserpoint(cursor.getInt(6));
+
 
                 } while (cursor.moveToNext());
             }
@@ -338,6 +354,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     user.setPhone(cursor.getString(2));
                     user.setPhotoUrl(cursor.getString(3));
                     user.setFirebaseToken(cursor.getString(5));
+
+                    user.setUserpoint(cursor.getInt(6));
 
                 } while (cursor.moveToNext());
             }
@@ -429,6 +447,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     user.setPhone(cursor.getString(2));
                     user.setPhotoUrl(cursor.getString(3));
                     user.setFirebaseToken(cursor.getString(5));
+                    user.setUserpoint(cursor.getInt(6));
 
                     alluser.add(user);
 
@@ -447,6 +466,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return alluser;
 
     }
+
+
+    public ArrayList<User> getTopten(){
+
+        ArrayList<User> alluser = new ArrayList<>();
+
+
+
+        String selectAll = "SELECT * FROM "+ Constant.Database.TABLE_USER;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectAll, null);
+
+
+
+
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    User user = new User();
+                    user.setUid(cursor.getString(0));
+                    user.setName(cursor.getString(1));
+                    user.setPhone(cursor.getString(2));
+                    user.setPhotoUrl(cursor.getString(3));
+                    user.setFirebaseToken(cursor.getString(5));
+                    user.setUserpoint(cursor.getInt(6));
+
+                    alluser.add(user);
+
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e){
+            Log.d(TAG, "nullpointer exception");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+
+        Collections.sort(alluser,compareUserLevel);
+
+
+
+
+        return alluser;
+
+    }
+
+
+
+
     public List<String> getAllnumber(){
 
         ArrayList<User> alluser = new ArrayList<>();
@@ -1022,6 +1091,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS "+Constant.Database.TABLE_CHAT_ROOMS);
         onCreate(db);
     }
+
+    public static Comparator<User> compareUserLevel =
+            new Comparator<User>() {
+                public int compare(User user1, User other) {
+                    return Long.compare(user1.getUserpoint(),other.getUserpoint());
+                }
+            };
+
 
 
 }
