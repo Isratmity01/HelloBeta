@@ -48,6 +48,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.grameenphone.hello.Fragments.Fragment_Contacts;
 import com.grameenphone.hello.Fragments.Fragment_Live;
@@ -58,6 +59,7 @@ import com.grameenphone.hello.Fragments.Fragment_UserProfileEdit;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.EventReceived;
+import com.grameenphone.hello.model.EventReceived2;
 import com.grameenphone.hello.model.User;
 
 import org.greenrobot.eventbus.EventBus;
@@ -242,13 +244,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
                     liveusercount++;
                     if (Fragment_Live.isActive) {
-                        EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
+                        EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
                     } else {
                         EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
                     }
 
                 }
+                User userexist=     databaseHelper.getUser(dataSnapshot.getKey());
+                if(userexist==null||userexist.getUid()==null){
+                    mFirebaseDatabaseReference.child("users").child(dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
+
+                            databaseHelper.addUser( dataSnapshot.getValue(User.class));
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
 
             }
 
@@ -262,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 finalliveusers.remove(dataSnapshot.getKey());
                 liveusercount--;
                 if (Fragment_Live.isActive) {
-                    EventBus.getDefault().post(new EventReceived(false, dataSnapshot.getKey()));
+                    EventBus.getDefault().post(new EventReceived2(false, dataSnapshot.getKey()));
                 } else
                     EventBus.getDefault().post(new EventReceived(false, dataSnapshot.getKey()));
                 //  EventBus.getDefault().postSticky(new EventReceived(false, liveUser));

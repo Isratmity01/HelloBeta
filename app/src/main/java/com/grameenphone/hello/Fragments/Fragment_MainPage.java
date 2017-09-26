@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -82,7 +83,7 @@ public class Fragment_MainPage extends Fragment {
     private DatabaseHelper databaseHelper;
     private User myself;
     private TextView onlineUserCount;
-
+    private Toolbar toolbar;
     public Fragment_MainPage() {
         // Required empty public constructor
     }
@@ -98,7 +99,7 @@ public class Fragment_MainPage extends Fragment {
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.hellologo);
+       // ((AppCompatActivity) getActivity()).getSupportActionBar().
 
         // ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -155,7 +156,8 @@ public class Fragment_MainPage extends Fragment {
 
         onlineUserCount = (TextView) view.findViewById(R.id.onlineusers);
         liveusercount = 0;
-
+        toolbar=(Toolbar)getActivity().findViewById(R.id.toolbar);
+        toolbar.setLogo(R.drawable.hellologo);
         liveHeader = (TextView) view.findViewById(R.id.liveuserheader);
 
         msgreqHeader = (TextView) view.findViewById(R.id.incoming_chat_request_header);

@@ -76,6 +76,7 @@ import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.EventReceived;
+import com.grameenphone.hello.model.EventReceived2;
 import com.grameenphone.hello.model.FileModel;
 import com.grameenphone.hello.model.User;
 
@@ -134,7 +135,7 @@ public class Fragment_Live extends Fragment {
     private ImageButton Back;
     private int loadCalled = 0;
 
-    ArrayList<String> liveUser = new ArrayList<String>();
+    ArrayList<String> liveUserinside = new ArrayList<String>();
     private static final String TAG = Fragment_Live.class.getSimpleName();
     private ProgressDialog progressDialog;
 
@@ -152,8 +153,8 @@ public class Fragment_Live extends Fragment {
     private ProgressBar LivePrg;
     private ImageButton attach;
 
-    private RecyclerView userrecylcer;
-    private LiveUserListAdapterInside liveUserListAdapter;
+    private RecyclerView userrecylcerinside;
+    private LiveUserListAdapterInside liveUserListAdapterInside;
     private View fragmentView;
     private Button LoadMsg;
     ShapeFlyer mShapeFlyer;
@@ -256,7 +257,7 @@ public class Fragment_Live extends Fragment {
     private void bindViews(View view) {
 
         LivePrg = (ProgressBar) view.findViewById(R.id.liveprogress);
-        userrecylcer = (RecyclerView) view.findViewById(R.id.horizontallayoutholder);
+        userrecylcerinside = (RecyclerView) view.findViewById(R.id.horizontallayoutholder2);
         toolbarlive = (Toolbar) getActivity().findViewById(R.id.toolbar);
         LoadMsg = (Button) view.findViewById(R.id.jump_totop);
         LoadMsg.setVisibility(View.GONE);
@@ -526,27 +527,27 @@ public class Fragment_Live extends Fragment {
     }
 
     @Subscribe
-    public void onEvent(EventReceived event) {
+    public void onEvent(EventReceived2 event) {
 
         if (event.isLoginSuccessful()) {
-            if (liveUser.contains(event.getResponseMessage())) {
-                liveUser.remove(event.getResponseMessage());
+            if (liveUserinside.contains(event.getResponseMessage())) {
+                liveUserinside.remove(event.getResponseMessage());
             }
-            liveUser.add(event.getResponseMessage());
+            liveUserinside.add(event.getResponseMessage());
             //setLiveusercount(liveusercount=liveUser.size());
             liveusercount++;
-            livepeople.setText(EToB(String.valueOf(liveUser.size()))+" জন একটিভ");
-            userrecylcer.smoothScrollToPosition(liveUser.size() - 1);
-            liveUserListAdapter.notifyDataSetChanged();
+            livepeople.setText(EToB(String.valueOf(liveUserinside.size()))+" জন একটিভ");
+            userrecylcerinside.smoothScrollToPosition(liveUserinside.size() - 1);
+            liveUserListAdapterInside.notifyDataSetChanged();
 
         } else {
-            liveUser.remove(event.getResponseMessage());
+            liveUserinside.remove(event.getResponseMessage());
             liveusercount--;
-            livepeople.setText(EToB(String.valueOf(liveUser.size()))+" জন একটিভ");
+            livepeople.setText(EToB(String.valueOf(liveUserinside.size()))+" জন একটিভ");
             //  setLiveusercount(liveusercount=liveUser.size());
             // liveUser.remove(event.getResponseMessage());
-            userrecylcer.smoothScrollToPosition(liveUser.size() - 1);
-            liveUserListAdapter.notifyDataSetChanged();
+            userrecylcerinside.smoothScrollToPosition(liveUserinside.size() - 1);
+            liveUserListAdapterInside.notifyDataSetChanged();
 
         }
 
@@ -575,7 +576,6 @@ public class Fragment_Live extends Fragment {
         titleText=(TextView)toolbarlive.findViewById(R.id.action_bar_title_1);
         livepeople=(TextView)toolbarlive.findViewById(R.id.action_bar_title_2);
         livepeople.setVisibility(View.VISIBLE);
-        livepeople.setText(EToB(String.valueOf(liveUser.size()))+" জন একটিভ");
         receiverPhoto=(ImageView)toolbarlive.findViewById(R.id.conversation_contact_photo);
         receiverPhoto.setImageResource(R.drawable.ic_trending_up_white_18dp);
         titleText.setText("হ্যালো লাইভ");
@@ -733,11 +733,12 @@ public class Fragment_Live extends Fragment {
     public void init() {
 
 
-        liveUser = ((MainActivity) getActivity()).getFinalliveusers();
-        setActionBarSubTitle(EToB(String.valueOf(liveUser.size())));
-        liveUserListAdapter = new LiveUserListAdapterInside(getActivity(), liveUser, ((MainActivity) getActivity()).databaseHelper, Fragment_Live.this);
-        userrecylcer.smoothScrollToPosition(0);
-        userrecylcer.setAdapter(liveUserListAdapter);
+        liveUserinside = ((MainActivity) getActivity()).getFinalliveusers();
+
+        livepeople.setText(EToB(String.valueOf(liveUserinside.size()))+" জন একটিভ");
+        liveUserListAdapterInside = new LiveUserListAdapterInside(getActivity(), liveUserinside, ((MainActivity) getActivity()).databaseHelper, Fragment_Live.this);
+        userrecylcerinside.smoothScrollToPosition(0);
+        userrecylcerinside.setAdapter(liveUserListAdapterInside);
 
 /*
       mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
