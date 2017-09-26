@@ -3,6 +3,7 @@ package com.grameenphone.hello.Utils;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -32,6 +35,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.dbhelper.DatabaseHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,7 +52,7 @@ public class PopUp extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_STORAGE = 1034;
     Bitmap bitmapreceived;
     private ImageView mDialog;
-    String  photoUrl;
+    String  fromwhere;
     private ProgressBar progressBar1;
     private Toolbar toolbar;
     String root_sd = Environment.getExternalStorageDirectory().toString();
@@ -57,11 +61,13 @@ public class PopUp extends AppCompatActivity {
    private Bitmap bitmap;
     private Context mcontext;
     private String yesOrNo;
+    private Button close;
+    private DatabaseHelper databaseHelper;
     File wallpaperDirectory;
     ArrayList<String> toBeScanned = new ArrayList<String>();
-    public static void start(Context context) {
+    public static void start(Context context,String fromwhere) {
         Intent intent = new Intent(context, PopUp.class);
-
+        intent.putExtra("From", fromwhere);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         context.startActivity(intent);
@@ -79,22 +85,35 @@ public PopUp()
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.popup_dialog);
-
-        progressBar1=(ProgressBar)findViewById(R.id.popuploader);
-
-
         Intent intent = getIntent();
-mcontext=PopUp.this;
 
+        fromwhere = intent.getStringExtra("From");
+        if(fromwhere.equals("point"))
+        {
+            Dialog dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.item_pointrules);
+            close=(Button)findViewById(R.id.closethis);
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
+        else {
+            setContentView(R.layout.popup_dialog);
 
+            progressBar1 = (ProgressBar) findViewById(R.id.popuploader);
+            progressBar1.setVisibility(View.GONE);
+            databaseHelper=new DatabaseHelper(PopUp.this);
 
-    // Glide.with(this).load(photoUrl).into(mDialog);
+            // Glide.with(this).load(photoUrl).into(mDialog);
 
-        //finish the activity (dismiss the image dialog) if the user clicks
-        //anywhere on the image
+            //finish the activity (dismiss the image dialog) if the user clicks
+            //anywhere on the image
 
-
+        }
     }
 
 
