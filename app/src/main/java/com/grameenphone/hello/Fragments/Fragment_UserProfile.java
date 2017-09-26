@@ -36,6 +36,7 @@ import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.LiveUserListAdapter;
 import com.grameenphone.hello.Adapter.RoomListAdapter;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.PopUp;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.User;
 
@@ -73,7 +74,8 @@ public class Fragment_UserProfile extends Fragment {
     private Switch Lanswitch;
     private String mUsername;
     private Toolbar toolbar;
-    ImageButton ProfileEdit;
+    private CardView leaderBoard;
+
 
     View fragmentView;
 
@@ -131,6 +133,7 @@ public class Fragment_UserProfile extends Fragment {
     private void bindViews(View view) {
         notificationCardView = (CardView) view.findViewById(R.id.notification_card);
         toolbar=(Toolbar) getActivity().findViewById(R.id.toolbar);
+        leaderBoard=(CardView)view.findViewById(R.id.leaderboard);
         privacyCardView = (CardView) view.findViewById(R.id.privacy_card);
         helpAboutCardView = (CardView) view.findViewById(R.id.help_about_card);
         signoutCard = (CardView) view.findViewById(R.id.signout_card);
@@ -153,6 +156,14 @@ public class Fragment_UserProfile extends Fragment {
             @Override
             public void onClick(View v) {
                 ((MainActivity)getActivity()).SignOut();
+            }
+        });
+        leaderBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopUp popUp=new PopUp(getActivity());
+                // imageDialog.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                popUp.start(getActivity());
             }
         });
 

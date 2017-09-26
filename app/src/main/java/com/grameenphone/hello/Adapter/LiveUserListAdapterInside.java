@@ -20,6 +20,7 @@ import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.User;
+import com.squareup.picasso.Picasso;
 
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class LiveUserListAdapterInside extends RecyclerView.Adapter<RecyclerView
     private Fragment_Live fragment_live;
     private DatabaseHelper dbhelper;
     private User me;
+    private  FriendViewHolder2 itemHolder;
     private final static int FADE_DURATION = 1000 ;// in milliseconds
     public LiveUserListAdapterInside(Context context, ArrayList<String> users, DatabaseHelper databaseHelper,Fragment_Live fragmentLive){
         this.context = context;
@@ -51,30 +53,30 @@ public class LiveUserListAdapterInside extends RecyclerView.Adapter<RecyclerView
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.from(context).inflate(R.layout.item_friend_for_live_screen, parent, false);
-        final FriendViewHolder holder = new FriendViewHolder(view);
+        final FriendViewHolder2 holder = new FriendViewHolder2(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
-        final FriendViewHolder itemHolder = (FriendViewHolder) holder;
+        itemHolder = (FriendViewHolder2) holder;
+
         final User current = dbhelper.getUser( users.get(position) );
        // final ChatRoom gainedChatroom=dbhelper.getRoombyName(current.getName());
         if(current != null) {
-            if(current.getPhotoUrl() != null)
+            if(current.getPhotoUrl() != null && itemHolder.friendImageView2!=null)
             {
 
-                Glide.with(itemHolder.friendImageView.getContext()).load( current.getPhotoUrl() ).bitmapTransform(new CropCircleTransformation(context))
-                        .placeholder(R.drawable.hello1)
-                        .into(itemHolder.friendImageView);
+                Picasso.with((itemHolder.friendImageView2.getContext())).load( current.getPhotoUrl() ).transform(new jp.wasabeef.picasso.transformations.CropCircleTransformation())
+                       .placeholder(R.drawable.hello1) .into(itemHolder.friendImageView2);
             }
             String lilname=current.getName().trim().split("\\s+")[0];
             itemHolder.text.setText(lilname);
 
         }
 
-        setFadeAnimation(itemHolder.friendImageView);
+        setFadeAnimation(itemHolder.friendImageView2);
         itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,14 +105,14 @@ public class LiveUserListAdapterInside extends RecyclerView.Adapter<RecyclerView
 
 
 
-    private class FriendViewHolder extends RecyclerView.ViewHolder {
+    private class FriendViewHolder2 extends RecyclerView.ViewHolder {
 
-    private ImageView friendImageView;
+    private ImageView friendImageView2;
         private TextView text;
-        private FriendViewHolder(View v) {
+        private FriendViewHolder2(View v) {
             super(v);
 
-            friendImageView = (ImageView) itemView.findViewById(R.id.iconlivee);
+            friendImageView2 = (ImageView) itemView.findViewById(R.id.iconlivee);
             text=(TextView)itemView.findViewById(R.id.texttextname);
 
         }
