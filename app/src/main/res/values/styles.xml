@@ -21,7 +21,6 @@
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">#546E7A</item>
         <item name="android:textColorPrimary">#37474F</item>
-        <item name="android:background">#B0BEC5</item>
     </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
