@@ -89,7 +89,7 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 String message = chat.getMessage();
                 viewHolder.liveuser.setVisibility(View.VISIBLE);
 
-                String name = lilname + ":";
+                String name = lilname ;
                 viewHolder.liveuser.setText(  name );
 
 
@@ -113,7 +113,7 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.imagedownload.setVisibility(View.GONE);
                 viewHolder.image.setVisibility(View.GONE);
                 viewHolder.liveuser.setVisibility(View.VISIBLE);
-                String name =   lilname+" :";
+                String name =   lilname;
                 String message = chat.getMessage();
 
                 viewHolder.liveuser.setText(name);
@@ -139,7 +139,7 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder.image.setVisibility(View.VISIBLE);
 
                 viewHolder.liveuser.setVisibility(View.VISIBLE);
-                String name =   lilname+" :";
+                String name =   lilname;
                 viewHolder.liveuser.setText(name);
                 viewHolder.liveMessage.setVisibility(View.GONE);
             wallpaperDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString() + "/Camera/Hello/HelloImages");
