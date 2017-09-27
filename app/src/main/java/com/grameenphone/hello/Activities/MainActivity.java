@@ -53,6 +53,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.grameenphone.hello.Fragments.Fragment_ChatProfile;
 import com.grameenphone.hello.Fragments.Fragment_Contacts;
 import com.grameenphone.hello.Fragments.Fragment_Live;
 import com.grameenphone.hello.Fragments.Fragment_MainPage;
@@ -196,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             public void onClick(View view) {
                 frameLayout.getBackground().setAlpha(0);
                 menuMultipleActions.collapse();
+                String mid =me.getUid();
+                mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(mid).setValue("true");
                 Fragment_Live fragment22 = new Fragment_Live();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.add(R.id.fragment_container, fragment22);
@@ -488,6 +491,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 toolbar.getRootView().findViewById(R.id.action_bar_title_1).setVisibility(View.GONE);
 
                 ab.setDisplayUseLogoEnabled(true);
+            ab.setLogo(R.drawable.hellologo);
                 ab.setDisplayHomeAsUpEnabled(false);
 
                 super.onBackPressed();//the fragment on which you want to handle your back press
