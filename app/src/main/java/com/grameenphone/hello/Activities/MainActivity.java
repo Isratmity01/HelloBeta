@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         setContentView(R.layout.activity_main);
 
         FirebaseMessaging.getInstance().subscribeToTopic("weather");
-        coordinatorLayout=(CoordinatorLayout)findViewById(R.id.activityroot);
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReference= FirebaseDatabase.getInstance().getReference();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
