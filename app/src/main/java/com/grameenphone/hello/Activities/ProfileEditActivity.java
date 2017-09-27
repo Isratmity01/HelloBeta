@@ -70,14 +70,14 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     public static final String STORAGE_URL = "gs://mars-e7047.appspot.com";
     public static final String ATTACHMENT = "attachments";
-    public Integer [] avatars = {R.drawable.avatar_airplane,
-            R.drawable.avatar_balloon,
-            R.drawable.avatar_cycle, R.drawable.avatar_forest,
-            R.drawable.avatar_fountain,
-            R.drawable.avatar_house,
-            R.drawable.avatar_mountains,
-            R.drawable.avatar_river,
-            R.drawable.avatar_suitecase,R.drawable.avatar_windmill};
+    public Integer [] avatars = {R.drawable.asian_girl,
+            R.drawable.batman,
+            R.drawable.baymax, R.drawable.chicken,
+            R.drawable.girl_in_glasses,
+            R.drawable.minion,
+            R.drawable.pringles,
+            R.drawable.robocop,
+            R.drawable.supergirl,R.drawable.superman,R.drawable.wolverine,R.drawable.wonderwoman};
     AvatarAdapter avatarAdapter;
 
     private FirebaseAuth mAuth;
@@ -96,11 +96,7 @@ public class ProfileEditActivity extends AppCompatActivity {
     private Boolean gridClicked=false;
 
     StorageReference storageRef;
-    private final int[] avater = { R.drawable.avatar_airplane, R.drawable.avatar_balloon,
-            R.drawable.avatar_cycle, R.drawable.avatar_forest,
-            R.drawable.avatar_fountain, R.drawable.avatar_house,
-            R.drawable.avatar_mountains, R.drawable.avatar_river,
-            R.drawable.avatar_suitecase, R.drawable.avatar_windmill };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
