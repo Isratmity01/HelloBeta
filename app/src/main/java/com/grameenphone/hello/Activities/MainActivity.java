@@ -7,12 +7,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -57,6 +60,7 @@ import com.grameenphone.hello.Fragments.Fragment_PrivateChat;
 import com.grameenphone.hello.Fragments.Fragment_UserProfile;
 import com.grameenphone.hello.Fragments.Fragment_UserProfileEdit;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.Utils.Userlevels;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.EventReceived;
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public static FirebaseUser mFirebaseUser;
     public static int liveusercount;
     public User me;
+    private CoordinatorLayout coordinatorLayout;
     public DatabaseHelper databaseHelper;
     public ArrayList<String> finalliveusers = new ArrayList<>();
     Drawable drawable;
@@ -123,9 +128,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         setContentView(R.layout.activity_main);
 
         FirebaseMessaging.getInstance().subscribeToTopic("weather");
-
+        coordinatorLayout=(CoordinatorLayout)findViewById(R.id.activityroot);
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
-
+        mFirebaseDatabaseReference= FirebaseDatabase.getInstance().getReference();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -455,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     @Override
     public void onBackPressed() {
-
+        EngBng.hideSoftKeyboard(MainActivity.this);
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (f instanceof Fragment_MainPage) {
 
