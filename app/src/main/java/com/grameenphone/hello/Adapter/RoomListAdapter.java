@@ -88,12 +88,12 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (receiver.getPhotoUrl() != null) {
 
             Glide.with(itemHolder.roomImage.getContext()).load(receiver.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(context))
-                    .placeholder(R.drawable.hello1)
+                    .placeholder(R.drawable.hellosmall)
                     .into(itemHolder.roomImage);
 
         } else {
             itemHolder.roomImage.setImageDrawable(ContextCompat.getDrawable(context,
-                    R.drawable.hello1));
+                    R.drawable.hellosmall));
         }
 
 

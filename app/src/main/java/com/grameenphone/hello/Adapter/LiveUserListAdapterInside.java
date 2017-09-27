@@ -68,8 +68,8 @@ public class LiveUserListAdapterInside extends RecyclerView.Adapter<RecyclerView
             if(current.getPhotoUrl() != null && itemHolder.friendImageView2!=null)
             {
 
-                Picasso.with((itemHolder.friendImageView2.getContext())).load( current.getPhotoUrl() ).transform(new jp.wasabeef.picasso.transformations.CropCircleTransformation())
-                       .placeholder(R.drawable.hello1) .into(itemHolder.friendImageView2);
+                Picasso.with((itemHolder.friendImageView2.getContext())).load( current.getPhotoUrl() ).resize(80,80).centerInside().transform(new jp.wasabeef.picasso.transformations.CropCircleTransformation())
+                       .placeholder(R.drawable.hellosmall) .into(itemHolder.friendImageView2);
             }
             String lilname=current.getName().trim().split("\\s+")[0];
             itemHolder.text.setText(lilname);

@@ -66,7 +66,7 @@ public class LiveUserListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
        // final ChatRoom gainedChatroom=dbHelper.getRoombyName(current.getName());
         if(current != null && current.getPhotoUrl() != null) {
             Glide.with(itemHolder.friendImageView.getContext()).load( current.getPhotoUrl() ).bitmapTransform(new CropCircleTransformation(context))
-                    .placeholder(R.drawable.hello1)
+                    .placeholder(R.drawable.hellosmall)
                     .into(itemHolder.friendImageView);
         }
 

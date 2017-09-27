@@ -87,14 +87,14 @@ public class ContactListRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
                         .into(itemHolder.imageView);
             } else {
                 itemHolder.imageView.setImageResource(
-                        R.drawable.hello1);
+                        R.drawable.hellosmall);
             }
             // Seting round image
 
 
         } catch (OutOfMemoryError e) {
             // Add default picture
-            itemHolder.imageView.setImageResource(R.drawable.hello1);
+            itemHolder.imageView.setImageResource(R.drawable.hellosmall);
             e.printStackTrace();
         }
 

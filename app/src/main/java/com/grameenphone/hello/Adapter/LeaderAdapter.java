@@ -76,7 +76,7 @@ public class LeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         final MessageViewHolder viewHolder = (MessageViewHolder) holder;
         final User user = chatArrayList.get(position);
-        se=position++;
+        se=position+1;
         viewHolder.title.setText(user.getName());
         viewHolder.serials.setText(EToB(String.valueOf(se)));
         String level=getLevelName(user.getUserpoint());
@@ -97,7 +97,7 @@ public class LeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
         Glide.with(  viewHolder.userimage.getContext()).load( user.getPhotoUrl() ).bitmapTransform(new CropCircleTransformation(context))
-                .placeholder(R.drawable.hello1)
+                .placeholder(R.drawable.hellosmall)
                 .into(  viewHolder.userimage);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             //Start new list activity

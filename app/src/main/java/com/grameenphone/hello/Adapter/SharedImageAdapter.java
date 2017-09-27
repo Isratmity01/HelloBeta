@@ -64,7 +64,7 @@ public class SharedImageAdapter extends BaseAdapter {
          view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_image_item, null);
         final ImageView imageView = (ImageView) view.findViewById(R.id.sharedimage);
         String path=images.get(position);
-            Glide.with(mContext).load(path).placeholder(R.drawable.ic_user_pic_02).into(imageView);;
+            Glide.with(mContext).load(path).placeholder(R.drawable.hellosmall).into(imageView);;
     imageView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
