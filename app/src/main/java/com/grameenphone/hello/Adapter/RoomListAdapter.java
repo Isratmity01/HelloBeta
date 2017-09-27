@@ -12,8 +12,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.grameenphone.hello.Fragments.Fragment_MainPage;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.Constant;
 import com.grameenphone.hello.Utils.DateTimeUtility;
+import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.ChatRoom;
+import com.grameenphone.hello.model.User;
 
 import java.util.ArrayList;
 
@@ -28,11 +31,15 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private LayoutInflater inflater;
     private Fragment_MainPage fragment_mainPage;
-
-    public RoomListAdapter(Context context, ArrayList<ChatRoom> rooms, Fragment_MainPage fragment_mainPage) {
+    private DatabaseHelper databaseHelper1;
+    private User self,receiver;
+    private String receiver_uid;
+    public RoomListAdapter(Context context, ArrayList<ChatRoom> rooms, Fragment_MainPage fragment_mainPage, DatabaseHelper databaseHelper,User me) {
         this.context = context;
         this.rooms = rooms;
         this.fragment_mainPage = fragment_mainPage;
+        this.databaseHelper1=databaseHelper;
+        this.self=me;
 
     }
 
@@ -54,10 +61,12 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         final ChatRoomHolder itemHolder = (ChatRoomHolder) holder;
         final ChatRoom current = rooms.get(position);
+        String rooom=current.getRoomId();
+        receiver_uid =rooom.replace(self.getUid(), "").replace("_", "");
+        receiver=databaseHelper1.getUser(receiver_uid);
 
-
-        itemHolder.nameTextView.setText(current.getName());
-        String lilname = current.getName().trim().split("\\s+")[0];
+        itemHolder.nameTextView.setText(receiver.getName());
+        String lilname = receiver.getName().trim().split("\\s+")[0];
 
 
 
@@ -76,9 +85,9 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
 
-        if (current.getPhotoUrl() != null) {
+        if (receiver.getPhotoUrl() != null) {
 
-            Glide.with(itemHolder.roomImage.getContext()).load(current.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(context))
+            Glide.with(itemHolder.roomImage.getContext()).load(receiver.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(context))
                     .placeholder(R.drawable.hello1)
                     .into(itemHolder.roomImage);
 
