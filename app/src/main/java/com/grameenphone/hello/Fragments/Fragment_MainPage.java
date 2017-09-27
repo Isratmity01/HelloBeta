@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -45,6 +46,7 @@ import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
+import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.EventReceived;
 import com.grameenphone.hello.model.User;
@@ -53,6 +55,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
@@ -67,7 +71,7 @@ public class Fragment_MainPage extends Fragment {
 
     private RoomListAdapter roomListAdapter;
     private IncomingChatRequestsAdapter chatRequestsAdapter;
-
+    private Handler handler;
     private int width=50,height=50;
     private CardView cardView;
     FragmentManager fragmentManager;
@@ -538,9 +542,58 @@ public class Fragment_MainPage extends Fragment {
 
 
         LiveChips();
+        handler = new Handler();
+
+
+
+        handler.post(runnableCode);
 
     }
+    private Runnable runnableCode = new Runnable() {
 
+        @Override
+
+        public void run() {
+
+
+
+            for(ChatRoom chatRoom : userArrayList){
+
+                if(chatRoom.getRoomId() != null) {
+
+                    Chat chat = databaseHelper.getLastMsg(chatRoom.getRoomId());
+
+                    if(chat != null && chat.getMessage() !=null && chat.getTimestamp() != 0){
+
+                        chatRoom.setLastChat(chat.getMessage());
+
+                        chatRoom.setTimestamp(chat.getTimestamp());
+
+                    }
+
+
+
+                }
+
+            }
+
+
+
+
+
+            Collections.sort( userArrayList, compareChatroom );
+
+            roomListAdapter.notifyDataSetChanged();
+
+
+
+
+
+            handler.postDelayed(this, 2000);
+
+        }
+
+    };
     private void LiveChips() {
 
         // liveUser=((MainActivity)getActivity()).finalliveusers;
@@ -637,5 +690,15 @@ public class Fragment_MainPage extends Fragment {
         return concatResult;
     }
 
+    public static Comparator<ChatRoom> compareChatroom =
 
+            new Comparator<ChatRoom>() {
+
+                public int compare(ChatRoom chat1, ChatRoom other) {
+
+                    return Long.compare(other.getTimestamp(),chat1.getTimestamp());
+
+                }
+
+            };
 }
