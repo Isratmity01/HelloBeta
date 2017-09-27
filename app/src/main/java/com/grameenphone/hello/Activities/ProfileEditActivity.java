@@ -112,8 +112,9 @@ public class ProfileEditActivity extends AppCompatActivity {
 
         storageRef = storage.getReferenceFromUrl(STORAGE_URL).child(ATTACHMENT);
         profilePic = (CircleImageView) findViewById(R.id.user_pic);
+        profilePic.setBackgroundResource(R.drawable.ic_user_pic_02);
         gallery=(ImageView)findViewById(R.id.gallary_upload);
-
+        gallery.setBackgroundResource(R.drawable.ic_upload_icon_01);
         gridView=(GridView)findViewById(R.id.gridView);
 
         name = (EditText) findViewById(R.id.name_field);

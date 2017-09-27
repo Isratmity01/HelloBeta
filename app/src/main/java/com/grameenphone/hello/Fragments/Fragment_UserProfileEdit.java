@@ -127,8 +127,6 @@ public class Fragment_UserProfileEdit extends Fragment  {
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Bundle bundle = this.getArguments();
         username = bundle.getString("name");
         photourl = bundle.getString("photoUrl");
@@ -170,6 +168,7 @@ public class Fragment_UserProfileEdit extends Fragment  {
         textView.setText("প্রোফাইল এডিট করুন");
         gridView=(GridView)view.findViewById(R.id.gridView);
         userPic=(CircleImageView) view.findViewById(R.id.user_pic);
+        userPic.setBackgroundResource(R.drawable.ic_user_pic_02);
         name = (EditText) view.findViewById(R.id.name_field);
         progressDialog=new ProgressDialog(getActivity());
         name.setText(username);
@@ -178,6 +177,7 @@ public class Fragment_UserProfileEdit extends Fragment  {
             mFirebaseUser = mAuth.getCurrentUser();
         }
         gallery=(ImageView)view.findViewById(R.id.gallary_upload);
+        gallery.setBackgroundResource(R.drawable.ic_upload_icon_01);
         Glide.with(getActivity()).load(photourl)
                 .into(userPic);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
