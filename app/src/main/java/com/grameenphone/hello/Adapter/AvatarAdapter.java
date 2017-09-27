@@ -64,7 +64,7 @@ public class AvatarAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
     public View getView(int position, View convertView, ViewGroup parent) {
-         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.avatar_item, null);
+         view = LayoutInflater.from(mContext).inflate(R.layout.avatar_item, null);
          imageView = (ImageView) view.findViewById(R.id.avatar);
 
         if(position==selected_position && flag_selected)
@@ -74,9 +74,9 @@ public class AvatarAdapter extends BaseAdapter {
 
         }
 else {
-            Glide.with(mContext).load(mThumbIds[position]).bitmapTransform(new CircularTransform(mContext)).placeholder(R.drawable.ic_user_pic_02).into(imageView);
+            Glide.with(mContext).load(mThumbIds[position]).bitmapTransform(new CircularTransform(mContext)).placeholder(R.drawable.hellosmall).into(imageView);
         }
-        return imageView;
+        return view;
     }
 }
 
