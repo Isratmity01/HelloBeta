@@ -72,6 +72,7 @@ import com.grameenphone.hello.Adapter.LiveUserListAdapterInside;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.Utils.Constant;
+import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
@@ -97,6 +98,7 @@ import github.ankushsachdeva.emojicon.emoji.Emojicon;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static android.app.Activity.RESULT_OK;
+import static com.grameenphone.hello.Utils.Userlevels.getLevelName;
 
 
 /**
@@ -596,6 +598,12 @@ public class Fragment_Live extends Fragment {
         LayoutInflater factory = LayoutInflater.from(getActivity());
         final View view = factory.inflate(R.layout.req_layout, null);
         TextView name = (TextView) view.findViewById(R.id.profile_name);
+        TextView level = (TextView) view.findViewById(R.id.level);
+        TextView point = (TextView) view.findViewById(R.id.point);
+        int points=user.getUserpoint();
+        name.setText(user.getName());
+        level.setText(getLevelName(points));
+        point.setText("পয়েন্ট : "+ EngBng.EngBng(String.valueOf(points)));
         name.setText(user.getName());
         ImageView profile = (ImageView) view.findViewById(R.id.profile_picture);
         Glide.with(getActivity()).load(user.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity()))

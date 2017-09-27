@@ -36,6 +36,8 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
+import static com.grameenphone.hello.Utils.Userlevels.getLevelName;
+
 
 public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     String path;
@@ -79,6 +81,24 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if(chat.getSender().contains("bot"))viewHolder.badge.setVisibility(View.GONE);
         else viewHolder.badge.setVisibility(View.VISIBLE);
+       User user= databaseHelper.getUser(chat.getSenderUid());
+
+        String level=getLevelName(user.getUserpoint());
+
+        if(level.equals("লেভেল ১")){
+            viewHolder.badge.setBackgroundResource(R.drawable.level_1);
+        }
+        if(level.equals("লেভেল ২")){
+            viewHolder.badge.setBackgroundResource(R.drawable.level_2);
+        }
+        if(level.equals("লেভেল ৩")){
+            viewHolder.badge.setBackgroundResource(R.drawable.level_3);
+        }
+        if(level.equals("লেভেল ৪")){
+            viewHolder.badge.setBackgroundResource(R.drawable.level_4);
+        }  if(level.equals("লেভেল ৫")){
+            viewHolder.badge.setBackgroundResource(R.drawable.level_5);
+        }
         String lilname=chat.getSender().trim().split("\\s+")[0];
         if ( chat.getMessageType().equals("txt")) {
 
