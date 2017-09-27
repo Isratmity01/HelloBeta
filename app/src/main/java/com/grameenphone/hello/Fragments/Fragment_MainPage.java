@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -79,6 +80,7 @@ public class Fragment_MainPage extends Fragment {
     RecyclerView allusers;
     private MenuItem item;
     private float density;
+    private Toolbar toolbar;
     private TextView liveHeader,msgreqHeader;
     private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
     View fragmentView;
@@ -101,12 +103,12 @@ public class Fragment_MainPage extends Fragment {
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.hellologo);
+       // ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.hellologo);
 
         // ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         EventBus.getDefault().register(this);
-        setActionBarTitle("");
+    //    setActionBarTitle("");
 
 
     }
@@ -155,7 +157,7 @@ public class Fragment_MainPage extends Fragment {
 
     private void bindViews(View view) {
 
-
+            toolbar=(Toolbar)getActivity().findViewById(R.id.toolbar);
         onlineUserCount = (TextView) view.findViewById(R.id.onlineusers);
         liveusercount = 0;
 
@@ -222,7 +224,7 @@ public class Fragment_MainPage extends Fragment {
 
 
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        ;
+        toolbar.setLogo(R.drawable.hellologo);
         appBarLayout.setLayoutParams(params);
         databaseHelper = new DatabaseHelper(getActivity());
         myself = databaseHelper.getMe();
@@ -245,7 +247,7 @@ public class Fragment_MainPage extends Fragment {
         name.setText(user.getName());
         ImageView profile = (ImageView) view.findViewById(R.id.profile_picture);
         Glide.with(getActivity()).load(user.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity()))
-                .placeholder(R.drawable.hello1)
+                .placeholder(R.drawable.hellosmall)
                 .into(profile);
         alertadd.setView(view);
 
@@ -311,7 +313,7 @@ public class Fragment_MainPage extends Fragment {
 
         } else {
 
-            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকোয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
@@ -393,27 +395,27 @@ public class Fragment_MainPage extends Fragment {
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
                         if (chatroom != null) {
+                            if(chatroom.getRoomId()!=null) {
+
+                                databaseHelper.addRoom(chatroom.getRoomId(),
+                                        chatroom.getName(),
+                                        chatroom.getPhotoUrl(),
+                                        chatroom.getRequestStatus());
+
+                                if (chatroom.getRequestStatus() == 1) {
+                                    userArrayList.add(chatroom);
+                                } else if (chatroom.getRequestStatus() == 2) {
+                                    chatRequests.add(chatroom);
+                                }
 
 
-                            databaseHelper.addRoom(chatroom.getRoomId(),
-                                    chatroom.getName(),
-                                    chatroom.getPhotoUrl(),
-                                    chatroom.getRequestStatus());
+                                userArrayList.clear();
+                                userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
 
-                            if (chatroom.getRequestStatus() == 1) {
-                                userArrayList.add(chatroom);
-                            } else if (chatroom.getRequestStatus() == 2) {
-                                chatRequests.add(chatroom);
+
+                                chatRequests.clear();
+                                chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
                             }
-
-
-                            userArrayList.clear();
-                            userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
-
-
-                            chatRequests.clear();
-                            chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
-
 
                         }
 

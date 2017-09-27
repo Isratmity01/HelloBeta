@@ -92,10 +92,6 @@ public class Fragment_Contacts extends Fragment {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
-
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         databaseHelper = new DatabaseHelper( getActivity().getApplicationContext() );
         me = databaseHelper.getMe();
 
@@ -199,6 +195,14 @@ public class Fragment_Contacts extends Fragment {
         ImageView receiver = (ImageView) toolbar.findViewById(R.id.conversation_contact_photo);
         receiver.setVisibility(View.GONE);
         titleText.setText("নতুন মেসেজ");
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        try {
+
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }catch (Exception e)
+        {
+            Toast.makeText(getActivity(),"Sorry!",Toast.LENGTH_SHORT).show();
+        }
         init();
     }
 
@@ -214,7 +218,7 @@ public class Fragment_Contacts extends Fragment {
         name.setText(user.getName());
         ImageView profile = (ImageView) view.findViewById(R.id.profile_picture);
         Glide.with(getActivity()).load(user.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity()))
-                .placeholder(R.drawable.hello1)
+                .placeholder(R.drawable.hellosmall)
                 .into(profile);
         alertadd.setView(view);
 
@@ -238,7 +242,7 @@ public class Fragment_Contacts extends Fragment {
             final String chatRoomId = Compare.getRoomName(user.getUid(), me.getUid());
             final ChatRoom chatRoom = databaseHelper.getRoom(chatRoomId);
 
-            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকোয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     chatRoom.setRequestStatus(1);
@@ -270,7 +274,7 @@ public class Fragment_Contacts extends Fragment {
 
         } else if (reqStatus == 0) {
 
-            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকোয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -280,7 +284,7 @@ public class Fragment_Contacts extends Fragment {
 
         } else {
 
-            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকোয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 

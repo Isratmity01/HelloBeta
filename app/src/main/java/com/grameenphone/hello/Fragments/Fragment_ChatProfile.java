@@ -48,6 +48,7 @@ import com.grameenphone.hello.Adapter.LiveUserListAdapter;
 import com.grameenphone.hello.Adapter.RoomListAdapter;
 import com.grameenphone.hello.Adapter.SharedImageAdapter;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
@@ -59,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
+import static com.grameenphone.hello.Utils.Userlevels.getLevelName;
 
 
 /**
@@ -88,7 +91,7 @@ public class Fragment_ChatProfile extends Fragment {
     private DatabaseHelper dbHelper;
     private User me;
     private Switch Lanswitch;
-    private TextView titleText;
+    private TextView titleText,level,point;
     private ImageView receiverPhoto;
     private TextView blockedusername;
     private String mUsername;
@@ -161,7 +164,6 @@ public class Fragment_ChatProfile extends Fragment {
     }
     private void bindViews(View view) {
         progressBar=(ProgressBar)view.findViewById(R.id.imageloader);
-        toolbarchat=(Toolbar)getActivity().findViewById(R.id.toolbar);
         ImageCount=(TextView)view.findViewById(R.id.imagecount);
         notificationCardView = (CardView) view.findViewById(R.id.notification_card);
         toolbarchat=(Toolbar)getActivity().findViewById(R.id.toolbar);
@@ -171,13 +173,15 @@ public class Fragment_ChatProfile extends Fragment {
         blockCard = (CardView) view.findViewById(R.id.block_card);
         deleteCard = (CardView) view.findViewById(R.id.delete_card);
         usersPhoto = (ImageView) view.findViewById(R.id.profile_picture);
+        level = (TextView) view.findViewById(R.id.level);
+        point = (TextView) view.findViewById(R.id.point);
         blockedusername=(TextView)view.findViewById(R.id.lable_block_about);
         blockedusername.setText("ব্লক - "+receiver.getName());
 
         userName = (TextView) view.findViewById(R.id.profile_name);
         userName.setText(receiver.getName());
         Glide.with(this).load( receiver.getPhotoUrl() ).bitmapTransform(new CropCircleTransformation(getActivity()))
-                .placeholder(R.drawable.hello1)
+                .placeholder(R.drawable.hellosmall)
                 .into(usersPhoto);
 
         FloatingActionsMenu floatingActionsMenu=  (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
@@ -328,8 +332,21 @@ public class Fragment_ChatProfile extends Fragment {
         titleText=(TextView)toolbarchat.findViewById(R.id.action_bar_title_1);
         receiverPhoto=(ImageView) toolbarchat.findViewById(R.id.conversation_contact_photo);
         receiverPhoto.setVisibility(View.GONE);
+        int points=receiver.getUserpoint();
+
+        level.setText(getLevelName(points));
+        point.setText("পয়েন্ট : "+ EngBng.EngBng(String.valueOf(points)));
 
         titleText.setText("চ্যাট সেটিংস");
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbarchat);
+        try {
+
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }catch (Exception e)
+        {
+            Toast.makeText(getActivity(),"Sorry!",Toast.LENGTH_SHORT).show();
+        }
+
         init();
     }
     public void init()

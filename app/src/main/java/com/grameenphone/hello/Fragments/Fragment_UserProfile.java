@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cipherthinkers.shapeflyer.ShapeFlyer;
@@ -94,10 +95,7 @@ public class Fragment_UserProfile extends Fragment {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-       ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
 
 
     }
@@ -190,13 +188,13 @@ public class Fragment_UserProfile extends Fragment {
         me=dbHelper.getMe();
 
         userName.setText(me.getName());
-        int points=me.getUserpoint();
+        int points = me.getUserpoint();
 
         level.setText(getLevelName(points));
         point.setText("পয়েন্ট : "+ EngBng.EngBng(String.valueOf(points)));
 
         Glide.with(getActivity()).load( me.getPhotoUrl() ).bitmapTransform(new CropCircleTransformation(getActivity()))
-                .placeholder(R.drawable.hello1)
+                .placeholder(R.drawable.hellosmall)
                 .into(usersPhoto);
         LayoutInflater mInflater = LayoutInflater.from(getActivity());
         View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
@@ -206,6 +204,15 @@ public class Fragment_UserProfile extends Fragment {
         receiver.setVisibility(View.GONE);
 
         titleText.setText("ইউজার প্রোফাইল");
+
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }catch (Exception e)
+        {
+            Toast.makeText(getActivity(),"Sorry!",Toast.LENGTH_SHORT).show();
+        }
     }
     public void init()
     {

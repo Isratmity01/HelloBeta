@@ -48,6 +48,7 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cipherthinkers.shapeflyer.ShapeFlyer;
@@ -211,11 +212,10 @@ public class Fragment_Live extends Fragment {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+       // ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
      //   ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_backiconsmall);
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         setActionBarTitle("লাইভ");
     }
@@ -261,6 +261,8 @@ public class Fragment_Live extends Fragment {
         LivePrg = (ProgressBar) view.findViewById(R.id.liveprogress);
         userrecylcerinside = (RecyclerView) view.findViewById(R.id.horizontallayoutholder2);
         toolbarlive = (Toolbar) getActivity().findViewById(R.id.toolbar);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         LoadMsg = (Button) view.findViewById(R.id.jump_totop);
         LoadMsg.setVisibility(View.GONE);
 
@@ -571,7 +573,7 @@ public class Fragment_Live extends Fragment {
         FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
         floatingActionsMenu.setVisibility(View.GONE);
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         LayoutInflater mInflater = LayoutInflater.from(getActivity());
         View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
@@ -587,7 +589,13 @@ public class Fragment_Live extends Fragment {
         toolbarlive.setOverflowIcon(null);
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbarlive);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }catch (Exception e)
+        {
+            Toast.makeText(getActivity(),"Sorry!",Toast.LENGTH_SHORT).show();
+        }
 
         init();
     }
@@ -607,7 +615,7 @@ public class Fragment_Live extends Fragment {
         name.setText(user.getName());
         ImageView profile = (ImageView) view.findViewById(R.id.profile_picture);
         Glide.with(getActivity()).load(user.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity()))
-                .placeholder(R.drawable.hello1)
+                .placeholder(R.drawable.hellosmall)
                 .into(profile);
         alertadd.setView(view);
 
@@ -631,7 +639,7 @@ public class Fragment_Live extends Fragment {
             final String chatRoomId = Compare.getRoomName(user.getUid(), sender.getUid());
             final ChatRoom chatRoom = dbHelper.getRoom(chatRoomId);
 
-            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকোয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     chatRoom.setRequestStatus(1);
@@ -663,7 +671,7 @@ public class Fragment_Live extends Fragment {
 
         } else if (reqStatus == 0) {
 
-            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকোয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -673,7 +681,7 @@ public class Fragment_Live extends Fragment {
 
         } else {
 
-            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ রিকোয়েস্ট পাঠান", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 

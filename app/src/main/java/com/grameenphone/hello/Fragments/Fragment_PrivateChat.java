@@ -187,7 +187,7 @@ public class Fragment_PrivateChat extends Fragment {
     SharedPreferences.Editor editor;
     public ChatRoomAdapter chatRoomAdapter;
     public ArrayList<Chat> chats = new ArrayList<Chat>();
-    private TextView titletext;
+    private static TextView titletext;
     private ImageView receiverPhoto;
     private int width,height;
     private BroadcastReceiver statusReceiver;
@@ -215,12 +215,7 @@ public class Fragment_PrivateChat extends Fragment {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setHasOptionsMenu(true);
 
-        Bundle bundle = this.getArguments();
-        room_id =  bundle.getString("room_uid");
-        roomName = bundle.getString("room_name");
-        dbHelper = new DatabaseHelper(getActivity());
-        MESSAGES_CHILD = room_id;
-        me = dbHelper.getMe();
+
          density = getResources().getDisplayMetrics().density;
         if(density<=1.5)
         {
@@ -238,16 +233,11 @@ public class Fragment_PrivateChat extends Fragment {
             height=60;
         }
 
-        dbHelper.updateNotificationStateOfRoom(MESSAGES_CHILD, 0);
-        sender = dbHelper.getMe();
-        receiver_uid = (MESSAGES_CHILD.replace(sender.getUid(), "")).replace("_", "");
-        receiver = dbHelper.getUser(receiver_uid);
 
 
       //  ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator ( R.drawable.ic_backiconsmall );
         //  ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.bell);
-      ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
 
@@ -290,21 +280,12 @@ public class Fragment_PrivateChat extends Fragment {
 
         emojiconEditText = (EmojiconEditText) view.findViewById(R.id.messageEditText);
         toolbarp2p=(Toolbar)getActivity().findViewById(R.id.toolbar);
-        LayoutInflater mInflater = LayoutInflater.from(getActivity());
-        View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
 
-        android.support.v7.app.ActionBar ab =  ((AppCompatActivity)getActivity()).getSupportActionBar();
+
         //toolbarp2p.removeAllViews();
         //toolbarp2p.addView(mCustomView);
-        toolbarp2p.addView(mCustomView,0);
-        titletext=(TextView)toolbarp2p.findViewById(R.id.action_bar_title_1);
 
-        receiverPhoto=(ImageView)toolbarp2p.findViewById(R.id.conversation_contact_photo);
-        toolbarp2p.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        titletext.setText(roomName) ;
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbarp2p);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         jumpToBottom = (Button) view.findViewById(R.id.jump_bottom);
         LoadMore=(Button)view.findViewById(R.id.jump_totop) ;
@@ -525,13 +506,22 @@ public class Fragment_PrivateChat extends Fragment {
         mLinearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         mLinearLayoutManager.setStackFromEnd(true);
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-        Glide.with(getActivity()).load(receiver.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity())).into(receiverPhoto);
 
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Bundle bundle = this.getArguments();
+        room_id =  bundle.getString("room_uid");
+        roomName = bundle.getString("room_name");
+        dbHelper = new DatabaseHelper(getActivity());
+        MESSAGES_CHILD = room_id;
+        me = dbHelper.getMe();
+        dbHelper.updateNotificationStateOfRoom(MESSAGES_CHILD, 0);
+        sender = dbHelper.getMe();
+        receiver_uid = (MESSAGES_CHILD.replace(sender.getUid(), "")).replace("_", "");
+        receiver = dbHelper.getUser(receiver_uid);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window =getActivity().getWindow();
             Drawable background = getResources().getDrawable(R.drawable.gradient);
@@ -562,6 +552,24 @@ public class Fragment_PrivateChat extends Fragment {
         params.width=ViewGroup.LayoutParams.MATCH_PARENT;;
         appBarLayout.setLayoutParams(params);
         //setActionBarTitle(roomName);
+        LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
+        toolbarp2p.addView(mCustomView,0);
+        titletext=(TextView)toolbarp2p.findViewById(R.id.action_bar_title_1);
+        receiverPhoto=(ImageView) toolbarp2p.findViewById(R.id.conversation_contact_photo);
+        receiverPhoto.setVisibility(View.VISIBLE);
+        toolbarp2p.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        titletext.setText(roomName) ;
+
+        Glide.with(getActivity()).load(receiver.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity())).into(receiverPhoto);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbarp2p);
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }catch (Exception e)
+        {
+            Toast.makeText(getActivity(),"Sorry!",Toast.LENGTH_SHORT).show();
+        }
 
         init();
     }
