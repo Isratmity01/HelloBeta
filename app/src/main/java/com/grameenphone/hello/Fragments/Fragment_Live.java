@@ -503,6 +503,7 @@ public class Fragment_Live extends Fragment {
 
 
         mSendButton = (ImageView) view.findViewById(R.id.send_button);
+        mSendButton.setBackgroundResource(R.drawable.ic_send);
         mSendButton.setEnabled(false);
         //mSendButton.setColorFilter(  ContextCompat.getColor(getActivity().getApplicationContext(),R.color.white)  );
 
