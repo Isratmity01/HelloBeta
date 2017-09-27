@@ -42,6 +42,7 @@ import com.grameenphone.hello.Adapter.LiveUserListAdapter;
 import com.grameenphone.hello.Adapter.RoomListAdapter;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Compare;
+import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.EventReceived;
@@ -53,6 +54,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
+import static com.grameenphone.hello.Utils.Userlevels.getLevelName;
 
 
 public class Fragment_MainPage extends Fragment {
@@ -233,6 +236,12 @@ public class Fragment_MainPage extends Fragment {
         LayoutInflater factory = LayoutInflater.from(getActivity());
         final View view = factory.inflate(R.layout.req_layout, null);
         TextView name = (TextView) view.findViewById(R.id.profile_name);
+        TextView level = (TextView) view.findViewById(R.id.level);
+        TextView point = (TextView) view.findViewById(R.id.point);
+        int points=user.getUserpoint();
+        name.setText(user.getName());
+        level.setText(getLevelName(points));
+        point.setText("পয়েন্ট : "+ EngBng.EngBng(String.valueOf(points)));
         name.setText(user.getName());
         ImageView profile = (ImageView) view.findViewById(R.id.profile_picture);
         Glide.with(getActivity()).load(user.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity()))
@@ -260,7 +269,7 @@ public class Fragment_MainPage extends Fragment {
             final String chatRoomId = Compare.getRoomName(user.getUid(), myself.getUid());
             final ChatRoom chatRoom = databaseHelper.getRoom(chatRoomId);
 
-            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ ⁠⁠⁠রিকোয়েস্ট এক্সেপ্ট করুন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     chatRoom.setRequestStatus(1);
@@ -292,7 +301,7 @@ public class Fragment_MainPage extends Fragment {
 
         } else if (reqStatus == 0) {
 
-            alertadd.setPositiveButton("মেসেজ রিকুয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton("মেসেজ ⁠⁠⁠রিকোয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -504,7 +513,7 @@ public class Fragment_MainPage extends Fragment {
                 });
 
 
-        roomListAdapter = new RoomListAdapter(getActivity(), userArrayList, Fragment_MainPage.this);
+        roomListAdapter = new RoomListAdapter(getActivity(), userArrayList, Fragment_MainPage.this,databaseHelper,myself);
         msgrecyler.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setAutoMeasureEnabled(true);

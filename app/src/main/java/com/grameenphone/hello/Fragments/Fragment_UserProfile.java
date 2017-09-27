@@ -36,6 +36,7 @@ import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.LiveUserListAdapter;
 import com.grameenphone.hello.Adapter.RoomListAdapter;
 import com.grameenphone.hello.R;
+import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.Utils.PopUp;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.User;
@@ -43,6 +44,8 @@ import com.grameenphone.hello.model.User;
 import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
+import static com.grameenphone.hello.Utils.Userlevels.getLevelName;
 
 
 /**
@@ -66,7 +69,7 @@ public class Fragment_UserProfile extends Fragment {
     private FirebaseAuth mFirebaseAuth;
     public static FirebaseUser mFirebaseUser;
     private ImageView usersPhoto;
-    private TextView userName;
+    private TextView userName,point,level;
     private TextView versionCode;
     private GoogleApiClient mGoogleApiClient;
     private DatabaseHelper dbHelper;
@@ -140,6 +143,8 @@ public class Fragment_UserProfile extends Fragment {
         signoutCard = (CardView) view.findViewById(R.id.signout_card);
         usersPhoto = (ImageView) view.findViewById(R.id.profile_picture);
         versionCode=(TextView)   view.findViewById(R.id.version);
+         level = (TextView) view.findViewById(R.id.level);
+         point = (TextView) view.findViewById(R.id.point);
 
         try {
             PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
@@ -185,6 +190,11 @@ public class Fragment_UserProfile extends Fragment {
         me=dbHelper.getMe();
 
         userName.setText(me.getName());
+        int points=me.getUserpoint();
+
+        level.setText(getLevelName(points));
+        point.setText("পয়েন্ট : "+ EngBng.EngBng(String.valueOf(points)));
+
         Glide.with(getActivity()).load( me.getPhotoUrl() ).bitmapTransform(new CropCircleTransformation(getActivity()))
                 .placeholder(R.drawable.hello1)
                 .into(usersPhoto);
