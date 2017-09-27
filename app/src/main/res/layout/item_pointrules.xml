@@ -20,7 +20,7 @@
         android:textSize="24sp"
         android:id="@+id/toptextpoint"
         android:gravity="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/text_black"
         android:text="পয়েন্ট রুলস"/>
 <ScrollView
     android:layout_width="match_parent"
@@ -51,14 +51,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="দুধ-ভাত"
+            android:text="লেভেল ১"
 
             android:layout_gravity="center"
             android:textSize="20sp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="০-৪৯"
+            android:text="০-৪৯ পয়েন্ট"
 
             android:layout_gravity="center"
             android:textSize="20sp"/>
@@ -90,13 +90,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="পাকনা"
+                android:text="লেভেল ২"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="৫০-১১৯"
+                android:text="৫০-১১৯ পয়েন্ট"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
         </LinearLayout>
@@ -127,13 +127,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="মাস্টর"
+                android:text="লেভেল ৩"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="১২০-৩৯৯"
+                android:text="১২০-৩৯৯ পয়েন্ট"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
         </LinearLayout>
@@ -164,13 +164,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="পণ্ডিত"
+                android:text="লেভেল ৪"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="৪০০-১৪৯৯"
+                android:text="৪০০-১৪৯৯ পয়েন্ট"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
         </LinearLayout>
@@ -201,13 +201,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="গুরু"
+                android:text="লেভেল ৫"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="১৫০০-"
+                android:text="১৫০০ পয়েন্ট এর বেশি "
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
         </LinearLayout>
@@ -216,7 +216,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/closethis"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="50dp"
             android:textSize="16sp"
 
             android:layout_marginBottom="@dimen/activity_horizontal_margin"

@@ -120,9 +120,10 @@ public PopUp()
                 topten.add(i,all.get(i));
             }
             leaderAdapter = new LeaderAdapter(this, topten,databaseHelper);
-            leaders.setNestedScrollingEnabled(false);
+
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setAutoMeasureEnabled(true);
+            leaders.setNestedScrollingEnabled(false);
             leaders.setLayoutManager(layoutManager);
             leaders.setAdapter(leaderAdapter);
             close2=(Button)findViewById(R.id.closethiss);
