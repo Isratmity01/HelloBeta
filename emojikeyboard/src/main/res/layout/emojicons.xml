@@ -195,7 +195,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:src="@drawable/hello1" />
+                    android:src="@drawable/bhutoheader" />
 
                 <ImageButton
                     android:id="@+id/stickers_tab_1"
@@ -216,10 +216,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:visibility="gone"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:src="@drawable/lombu1" />
+                    android:src="@drawable/jhontu" />
 
 
             </LinearLayout>

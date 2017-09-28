@@ -251,7 +251,8 @@ public class EmojiconsPopup extends PopupWindow implements ViewPager.OnPageChang
 				Arrays.asList(
 
 						new StickerGridView(mContext, AppConstants.VHUTO, recentstickers, this),
-						new StickerGridView(mContext, AppConstants.Golu, recentstickers, this)
+						new StickerGridView(mContext, AppConstants.Golu, recentstickers, this),
+						new StickerGridView(mContext,AppConstants.Jhontu,recentstickers,this)
 
 				)
 		);

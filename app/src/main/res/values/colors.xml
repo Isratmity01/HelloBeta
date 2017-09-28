@@ -8,6 +8,11 @@
     <color name="black_semi_transparent">#B2000000</color>
     <color name="background">#e5e5e5</color>
     <color name="half_black">#000000</color>
+    <color name="weatherbotcolor">#50E3C2</color>
+    <color name="hellobotcolor">#FF4949</color>
+    <color name="dealbotcolor">#8F7A67</color>
+    <color name="quizbotcolor">#BF54C9</color>
+    <color name="cricbotcolor">#7BC940</color>
     <color name="white">#fafafa</color>
     <color name="white_pressed">#f1f1f1</color>
     <color name="pink">#e91e63</color>
@@ -17,7 +22,7 @@
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
 
     <color name="semitransparent">#2e000000</color>
-    <color name="disabled">#c88190a7</color>
+    <color name="disabled">#8190a7</color>
     <color name="pressed">#515C85</color>
     <color name="colorPrimaryRipple">#423F51B5</color>
     <color name="sender_chat_bubble">#26BEFF</color>
