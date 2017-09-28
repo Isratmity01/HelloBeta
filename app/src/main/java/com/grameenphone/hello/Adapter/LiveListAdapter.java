@@ -45,6 +45,7 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Uri imageUri;
     private String filename;
     private  File finalfile;
+    private String message;
     private String FilePath="https://firebasestorage.googleapis.com/v0/b/mars-e7047.appspot.com/o/";
     private Context context;
     private ArrayList<Chat> chatArrayList = new ArrayList<Chat>();
@@ -78,29 +79,34 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         final MessageViewHolder viewHolder = (MessageViewHolder) holder;
         final Chat chat = chatArrayList.get(position);
+        String lilname = chat.getSender().trim().split("\\s+")[0];
+         viewHolder.badge.setVisibility(View.VISIBLE);
 
-        if(chat.getSender().contains("bot"))viewHolder.badge.setVisibility(View.GONE);
-        else viewHolder.badge.setVisibility(View.VISIBLE);
-       User user= databaseHelper.getUser(chat.getSenderUid());
+        if(chat.getSenderUid().equals("system_bot"))
+        {
+            viewHolder.badge.setBackgroundResource(R.drawable.bot);
+        }
+       else {
+            User user= databaseHelper.getUser(chat.getSenderUid());
 
-        String level=getLevelName(user.getUserpoint());
+            String level=getLevelName(user.getUserpoint());
+         if (level.equals("লেভেল ১")) {
+                viewHolder.badge.setBackgroundResource(R.drawable.level_1);
+            } else if (level.equals("লেভেল ২")) {
+                viewHolder.badge.setBackgroundResource(R.drawable.level_2);
+            } else if (level.equals("লেভেল ৩")) {
+                viewHolder.badge.setBackgroundResource(R.drawable.level_3);
+            } else if (level.equals("লেভেল ৪")) {
+                viewHolder.badge.setBackgroundResource(R.drawable.level_4);
+            } else if (level.equals("লেভেল ৫")) {
+                viewHolder.badge.setBackgroundResource(R.drawable.level_5);
+            }
+            else viewHolder.badge.setBackgroundResource(R.drawable.moderator);
+        }
 
-        if(level.equals("লেভেল ১")){
-            viewHolder.badge.setBackgroundResource(R.drawable.level_1);
-        }
-        if(level.equals("লেভেল ২")){
-            viewHolder.badge.setBackgroundResource(R.drawable.level_2);
-        }
-        if(level.equals("লেভেল ৩")){
-            viewHolder.badge.setBackgroundResource(R.drawable.level_3);
-        }
-        if(level.equals("লেভেল ৪")){
-            viewHolder.badge.setBackgroundResource(R.drawable.level_4);
-        }  if(level.equals("লেভেল ৫")){
-            viewHolder.badge.setBackgroundResource(R.drawable.level_5);
-        }
-        String lilname=chat.getSender().trim().split("\\s+")[0];
-        if ( chat.getMessageType().equals("txt")) {
+
+
+        if ( chat.getMessageType().equals("txt")&&!chat.getSenderUid().equals("system_bot")) {
 
             if ( chat.getMessage() != null ) {
                 viewHolder.sticker.setVisibility(View.GONE);
@@ -126,7 +132,7 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
         }
-         if ( chat.getMessageType().equals("stk")) {
+         if ( chat.getMessageType().equals("stk")&&!chat.getSenderUid().equals("system_bot")) {
 
             if ( chat.getMessage() != null ) {
                 viewHolder.sticker.setVisibility(View.VISIBLE);
@@ -142,6 +148,55 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 path=path.substring(path.lastIndexOf(".") + 1);
                 Glide.with(context).load(getImage(path)).into(viewHolder.sticker);
 
+                viewHolder.liveTime.setText(DateTimeUtility.getFormattedTimeFromTimestamp(chat.getTimestamp()));
+
+
+
+            }
+
+
+
+        }
+        if ( chat.getSender().contains("_bot")&&chat.getSenderUid().equals("system_bot")) {
+
+            if ( chat.getMessage() != null ) {
+                viewHolder.sticker.setVisibility(View.GONE);
+                viewHolder.imagedownload.setVisibility(View.GONE);
+                viewHolder.image.setVisibility(View.GONE);
+                String name =   lilname;
+                if(name.equals("weather_bot"))
+                {
+                  message=  "<font color='#50E3C2'>"+ chat.getMessage() +" </font>";
+                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.weatherbotcolor));
+                }
+                else if(name.equals("quiz_bot"))
+                {
+                    message=  "<font color='#BF54C9'>"+ chat.getMessage() +" </font>";
+                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.quizbotcolor));
+                }
+                else if(name.equals("cric_bot"))
+                {
+                    message=  "<font color='#7BC940'>"+ chat.getMessage() +" </font>";
+                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.cricbotcolor));
+                }
+                else if(name.equals("deal_bot"))
+                {
+                    message=  "<font color='#8F7A67'>"+ chat.getMessage() +" </font>";
+                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.dealbotcolor));
+                }
+                else if(name.equals("hello_bot"))
+                {
+                    message=  "<font color='#FF4949'>"+ chat.getMessage() +" </font>";
+                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.hellobotcolor));
+                }
+                else message=chat.getMessage();
+
+                viewHolder.liveuser.setText(name);
+
+
+                viewHolder.liveMessage.setText( Html.fromHtml( message) );
+
+                viewHolder.liveMessage.setVisibility(View.VISIBLE);
                 viewHolder.liveTime.setText(DateTimeUtility.getFormattedTimeFromTimestamp(chat.getTimestamp()));
 
 

@@ -22,7 +22,7 @@
 
     android:background="@drawable/star"/>
     <TextView
-        android:layout_width="75dp"
+        android:layout_width="83dp"
         android:layout_marginLeft="5dp"
         android:maxLines="2"
         android:id="@+id/liveusername"
