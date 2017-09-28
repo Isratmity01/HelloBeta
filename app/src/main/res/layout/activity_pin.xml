@@ -1,0 +1,113 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:background="@drawable/onboardingbg"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    style="@style/AppTheme.NoActionBar">
+
+
+    <RelativeLayout
+        android:id="@+id/phone_auth_fields"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/mars_logo"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            app:srcCompat="@drawable/logo_hello" />
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mars_logo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
+            android:text="আপনার হ্যালো বেটা সিক্রেট পিনটি এখানে লিখুন"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="signed out"
+            android:visibility="gone" />
+
+
+        <com.alimuzaffar.lib.pin.PinEntryEditText
+            android:id="@+id/txt_pin_entry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:cursorVisible="false"
+        android:digits="1234567890"
+        android:inputType="number"
+            android:layout_margin="40dp"
+            android:layout_below="@id/title_text"
+        android:maxLength="5"
+        android:textIsSelectable="false"
+        android:textSize="20sp"
+        app:pinAnimationType="popIn"
+
+        app:pinTextBottomPadding="5dp"
+            android:textColor="@color/white"
+        app:pinLineStroke="1dp"
+        app:pinLineStrokeSelected="1dp"
+        app:pinBackgroundIsSquare="false"
+        app:pinLineColors="@color/colorPrimary" />
+
+
+
+
+
+
+
+
+        <Button
+            android:id="@+id/submit_pinButton"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_pin_entry"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:background="@drawable/phone_submit_button_shape"
+            android:paddingEnd="60dp"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:paddingStart="60dp"
+            android:text="পরবর্তী স্টেপ"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/helloweb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/submit_pinButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="22dp"
+            android:textAlignment="center"
+            android:textColorLink="#fee900"
+            android:textColor="#fee900"
+            android:textSize="16sp" />
+
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

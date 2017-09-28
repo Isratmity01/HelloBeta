@@ -62,6 +62,9 @@
         <activity android:name="com.grameenphone.hello.Activities.ProfileEditActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.grameenphone.hello.Activities.PinActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <!-- Register Receiver in Manifest-->
 
     </application>
