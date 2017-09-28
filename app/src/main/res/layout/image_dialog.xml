@@ -29,14 +29,6 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
 
-        <ImageButton
-            android:layout_width="19dp"
-            android:layout_gravity="right"
-            android:id="@+id/editprofile"
-            android:layout_marginEnd="22dp"
-            android:visibility="gone"
-            android:layout_marginRight="22dp"
-            android:background="@drawable/ic_edit"
-            android:layout_height="19dp" />
+
     </android.support.v7.widget.Toolbar>
 </RelativeLayout>
