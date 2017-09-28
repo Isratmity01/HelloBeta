@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private FrameLayout frameLayout;
     private DatabaseReference mFirebaseDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
-
+    private  Window w ;
     public ArrayList<String> getFinalliveusers() {
         return finalliveusers;
     }
@@ -111,11 +111,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window w = getWindow();
+             w = getWindow();
 
 
             w.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+        }else {
 
         }
      /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -260,11 +262,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     }
 
                     liveusercount++;
-                    if (Fragment_Live.isActive) {
-                        EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
-                    } else {
-                        EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
-                    }
+
 
                 }
                 User userexist=     databaseHelper.getUser(dataSnapshot.getKey());
@@ -275,7 +273,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
                             databaseHelper.addUser( dataSnapshot.getValue(User.class));
-
+                            if (Fragment_Live.isActive) {
+                                EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
+                            } else {
+                                EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
+                            }
 
                         }
 
@@ -286,6 +288,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     });
 
                 }
+                else {
+                    if (Fragment_Live.isActive) {
+                        EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
+                    } else {
+                        EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
+                    }
+                }
+
 
             }
 

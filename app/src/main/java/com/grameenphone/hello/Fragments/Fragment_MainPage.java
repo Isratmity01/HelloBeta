@@ -19,6 +19,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -307,7 +308,7 @@ public class Fragment_MainPage extends Fragment {
 
         } else if (reqStatus == 0) {
 
-            alertadd.setPositiveButton("মেসেজ ⁠⁠⁠রিকোয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton(Html.fromHtml("<font color='#8190a7'>মেসেজ ⁠⁠⁠রিকোয়েস্ট পাঠিয়েছেন</font>"), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -570,6 +571,7 @@ public class Fragment_MainPage extends Fragment {
                         chatRoom.setTimestamp(chat.getTimestamp());
 
                     }
+
 
 
 
