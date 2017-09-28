@@ -70,12 +70,20 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
 
-        if(current.getLastChat() != null){
-            itemHolder.message.setText(current.getLastChat());
-        } else {
-            itemHolder.message.setText(lilname + "-কে হ্যালো বলুন");
-        }
+        if(current.getLastChat() != null) {
+            String Message = current.getLastChat();
+            if (Message.contains("drawable") && Message.length() > 5) {
+                itemHolder.message.setText("স্টিকার পাঠানো হয়েছে");
+            } else if (Message.equals("Image")) {
+                itemHolder.message.setText("ছবি পাঠানো হয়েছে");
+            } else if (Message.length() > 0 && !Message.contains("drawable")) {
 
+                itemHolder.message.setText(current.getLastChat());
+            } else {
+                itemHolder.message.setText(lilname + "-কে হ্যালো বলুন");
+            }
+        }
+        else itemHolder.message.setText(lilname + "-কে হ্যালো বলুন");
         if(current.getTimestamp() != 0){
             itemHolder.timeStamp.setText( DateTimeUtility.getFormattedTimeFromTimestamp( current.getTimestamp() ) );
         }

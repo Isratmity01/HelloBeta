@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -166,6 +167,7 @@ public class Fragment_Contacts extends Fragment {
                 loadContact.execute();
             } else
                 Toast.makeText(getActivity().getApplicationContext(), "আপনার মোবাইলে কোন কন্টাক্ট সেভ করা নেই", Toast.LENGTH_SHORT).show();
+                contactsLoader.setVisibility(View.GONE);
         } catch (Exception e) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{e.toString()}, 0);
         }
@@ -274,7 +276,7 @@ public class Fragment_Contacts extends Fragment {
 
         } else if (reqStatus == 0) {
 
-            alertadd.setPositiveButton("মেসেজ রিকোয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton(Html.fromHtml("<font color='#8190a7'>মেসেজ ⁠⁠⁠রিকোয়েস্ট পাঠিয়েছেন</font>"), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -384,6 +386,7 @@ public class Fragment_Contacts extends Fragment {
                 Log.e("count", "" + phones.getCount());
                 if (phones.getCount() == 0) {
                     Toast.makeText(getActivity().getApplicationContext(), "No contacts in your contact list.", Toast.LENGTH_LONG).show();
+
                     return null;
                 }
 

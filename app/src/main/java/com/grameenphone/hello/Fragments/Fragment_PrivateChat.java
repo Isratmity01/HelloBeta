@@ -187,7 +187,7 @@ public class Fragment_PrivateChat extends Fragment {
     SharedPreferences.Editor editor;
     public ChatRoomAdapter chatRoomAdapter;
     public ArrayList<Chat> chats = new ArrayList<Chat>();
-    private static TextView titletext;
+    private TextView titletext;
     private ImageView receiverPhoto;
     private int width,height;
     private BroadcastReceiver statusReceiver;
@@ -216,10 +216,10 @@ public class Fragment_PrivateChat extends Fragment {
         setHasOptionsMenu(true);
 
 
-         density = getResources().getDisplayMetrics().density;
+        density = getResources().getDisplayMetrics().density;
         if(density<=1.5)
         {
-           width=35;
+            width=35;
             height=35;
         }
         else  if(density>1.5 && density<2.5)
@@ -235,15 +235,15 @@ public class Fragment_PrivateChat extends Fragment {
 
 
 
-      //  ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator ( R.drawable.ic_backiconsmall );
+        //  ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator ( R.drawable.ic_backiconsmall );
         //  ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.bell);
 
 
 
 
-       //
+        //
 
-      //  setActionBarTitle("নোটিফিকেশন সেটিংস");
+        //  setActionBarTitle("নোটিফিকেশন সেটিংস");
 
     }
     @Override
@@ -280,16 +280,26 @@ public class Fragment_PrivateChat extends Fragment {
 
         emojiconEditText = (EmojiconEditText) view.findViewById(R.id.messageEditText);
         toolbarp2p=(Toolbar)getActivity().findViewById(R.id.toolbar);
+        LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        View mCustomView = mInflater.inflate(R.layout.p2pactionbar, null);
 
-
+        android.support.v7.app.ActionBar ab =  ((AppCompatActivity)getActivity()).getSupportActionBar();
         //toolbarp2p.removeAllViews();
         //toolbarp2p.addView(mCustomView);
+       // toolbarp2p.addView(mCustomView,0);
+        //titletext=(TextView)toolbarp2p.findViewById(R.id.action_bar_title_1);
 
+        //receiverPhoto=(ImageView)toolbarp2p.findViewById(R.id.conversation_contact_photo);
+       // toolbarp2p.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+       // titletext.setText(roomName) ;
+        //((AppCompatActivity)getActivity()).setSupportActionBar(toolbarp2p);
 
+       // ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         jumpToBottom = (Button) view.findViewById(R.id.jump_bottom);
         LoadMore=(Button)view.findViewById(R.id.jump_totop) ;
         mSendButton = (ImageView) view.findViewById(R.id.send_button);
+        mSendButton.setBackgroundResource(R.drawable.ic_send);
         sendbackground=(RelativeLayout)view.findViewById(R.id.sendbackground);
         sendbackground.setBackgroundResource(R.drawable.circular_shape);
         sendbackground.setEnabled(false);
@@ -357,7 +367,7 @@ public class Fragment_PrivateChat extends Fragment {
 
             @Override
             public void onEmojiconClicked(Emojicon emojicon) {
-                if (emojiconEditText == null || emojicon.getEmoji().contains("golu")||emojicon.getEmoji().contains("sticker")) {
+                if (emojiconEditText == null || emojicon.getEmoji().contains("golu")||emojicon.getEmoji().contains("sticker")||emojicon.getEmoji().contains("jhontu")) {
                     if (emojicon.getEmojiId() == 0) {
                         long time = System.currentTimeMillis();
                         final Chat chat = new Chat(sender.getName(), receiver.getName(),
@@ -378,7 +388,7 @@ public class Fragment_PrivateChat extends Fragment {
 
                 int start = emojiconEditText.getSelectionStart();
                 int end = emojiconEditText.getSelectionEnd();
-                if(emojicon.getEmoji().contains("golu")||emojicon.getEmoji().contains("sticker"))
+                if(emojicon.getEmoji().contains("golu")||emojicon.getEmoji().contains("sticker")||emojicon.getEmoji().contains("jhontu"))
                 {
 
                 }
@@ -472,10 +482,8 @@ public class Fragment_PrivateChat extends Fragment {
                         popup.showAtBottom();
                         changeEmojiKeyboardIcon(emojiButton, R.drawable.ic_keyboard);
                     }
-
                     //else, open the text keyboard first and immediately after that show the emoji popup
                     else {
-
                     }*/
                 }
 
@@ -522,6 +530,7 @@ public class Fragment_PrivateChat extends Fragment {
         sender = dbHelper.getMe();
         receiver_uid = (MESSAGES_CHILD.replace(sender.getUid(), "")).replace("_", "");
         receiver = dbHelper.getUser(receiver_uid);
+        roomName=receiver.getName();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window =getActivity().getWindow();
             Drawable background = getResources().getDrawable(R.drawable.gradient);
@@ -956,7 +965,7 @@ public class Fragment_PrivateChat extends Fragment {
         mMessageRecyclerView.setAdapter(chatRoomAdapter);
 
         loadinitial();
-      //  Toast.makeText(getActivity(),"asd " +chats.size(),Toast.LENGTH_SHORT).show();
+        //  Toast.makeText(getActivity(),"asd " +chats.size(),Toast.LENGTH_SHORT).show();
 
         mMessageRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -1143,7 +1152,7 @@ public class Fragment_PrivateChat extends Fragment {
                                                 String firebaseToken,
                                                 String receiverFirebaseToken,
                                                 String roomId) {
-     //   EventBus.getDefault().post(new ChatSent("yes"));
+        //   EventBus.getDefault().post(new ChatSent("yes"));
         FcmNotificationBuilder.initialize()
                 .notificationType("p2p")
                 .setReceived(chat)
@@ -1178,7 +1187,7 @@ public class Fragment_PrivateChat extends Fragment {
                     //FIX ME
                 }
             }
-       }
+        }
     }
 
 
@@ -1217,14 +1226,14 @@ public class Fragment_PrivateChat extends Fragment {
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                      //  Log.e(TAG, "onFailure sendPhotoFirebase " + e.getMessage());
+                        //  Log.e(TAG, "onFailure sendPhotoFirebase " + e.getMessage());
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressDialog.dismiss();
-                      //  Log.i(TAG, "onSuccess sendPhotoFirebase");
+                        //  Log.i(TAG, "onSuccess sendPhotoFirebase");
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         FileModel file = new FileModel("img", downloadUrl.toString(), name, "");
                         Chat chat = new Chat(sender.getName(), receiver.getName(),

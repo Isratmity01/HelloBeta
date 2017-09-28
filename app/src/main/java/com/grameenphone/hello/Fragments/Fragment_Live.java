@@ -29,6 +29,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.KeyEvent;
@@ -349,7 +350,7 @@ public class Fragment_Live extends Fragment {
 
             @Override
             public void onEmojiconClicked(Emojicon emojicon) {
-                if (emojiconEditText == null || emojicon.getEmoji().contains("golu") || emojicon.getEmoji().contains("sticker")) {
+                if (emojiconEditText == null || emojicon.getEmoji().contains("golu") || emojicon.getEmoji().contains("sticker")|| emojicon.getEmoji().contains("jhontu")) {
                     if (emojicon.getEmojiId() == 0) {
                         long time = System.currentTimeMillis();
                         final Chat chat = new Chat(sender.getName(), sender.getUid(),
@@ -362,7 +363,7 @@ public class Fragment_Live extends Fragment {
                     } else
                         return;
                 }
-                if (emojicon.getEmoji().contains("golu") || emojicon.getEmoji().contains("sticker")) {
+                if (emojicon.getEmoji().contains("golu") || emojicon.getEmoji().contains("sticker")|| emojicon.getEmoji().contains("jhontu")) {
 
                 } else {
                     int start = emojiconEditText.getSelectionStart();
@@ -672,7 +673,7 @@ public class Fragment_Live extends Fragment {
 
         } else if (reqStatus == 0) {
 
-            alertadd.setPositiveButton("মেসেজ রিকোয়েস্ট পাঠিয়েছেন", new DialogInterface.OnClickListener() {
+            alertadd.setPositiveButton(Html.fromHtml("<font color='#8190a7'>মেসেজ ⁠⁠⁠রিকোয়েস্ট পাঠিয়েছেন</font>"), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();

@@ -2,8 +2,10 @@ package com.grameenphone.hello.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -36,14 +38,14 @@ public class SplashScreenActivity extends Activity
 
     private static User me;
     private DatabaseHelper dbHelper;
-
+    private SharedPreferences prefs;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+         prefs = PreferenceManager.getDefaultSharedPreferences(SplashScreenActivity.this);
 
         LayoutInflater inflater = LayoutInflater.from(this);
         RelativeLayout layout = (RelativeLayout) inflater.inflate(
@@ -78,7 +80,17 @@ public class SplashScreenActivity extends Activity
 
                 if (mFirebaseUser == null) {
                     // Not signed in, launch the Sign In activity
-                    startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
+
+                    Boolean yourLocked = prefs.getBoolean("locked", false);
+                    if(yourLocked)
+                    {
+
+                        startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
+                    }
+                    else {
+
+                        startActivity(new Intent(SplashScreenActivity.this, PinActivity.class));
+                    }
                     finish();
                     return;
                 } else {
@@ -134,6 +146,7 @@ public class SplashScreenActivity extends Activity
                     if(me.getName() != null ) {
                         startMainActivity();
                     } else {
+
                         startActivity(new Intent(SplashScreenActivity.this, ProfileEditActivity.class));
                         finish();
                         return;
