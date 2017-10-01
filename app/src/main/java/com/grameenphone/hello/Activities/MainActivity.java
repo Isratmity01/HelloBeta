@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     boolean doubleBackToExitPressedOnce = false;
     android.support.v4.app.FragmentManager fragmentManager;
     android.support.v4.app.FragmentTransaction fragmentTransaction;
-    android.support.v4.app.FragmentManager fragmentManagerP2p;
+    android.support.v4.app.FragmentManager fragmentManagerP2p, fragmentManagerLive;
     android.support.v4.app.FragmentTransaction fragmentTransactionP2p;
     private Toolbar toolbar;
     private GoogleApiClient mGoogleApiClient;
@@ -236,8 +237,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             if (roomId != null && roomName != null) {
                 StartP2p(roomId, roomName);
             }
-        } else {
+        } else if ( type != null && type.equals("bot") ){
 
+            StartLive();
 
         }
 
@@ -643,18 +645,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
 
+
+
+
+
     public void StartLive() {
+
+        String mid =me.getUid();
+        mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(mid).setValue("true");
 
         Fragment_Live fragmentp = new Fragment_Live();
 
-
-
-        fragmentManagerP2p = MainActivity.this.getSupportFragmentManager();
-        fragmentTransactionP2p = fragmentManagerP2p.beginTransaction();
-
-        fragmentTransactionP2p.replace(R.id.fragment_container, fragmentp);
-        fragmentTransactionP2p.addToBackStack("p2p");
-        fragmentTransactionP2p.commit();
+        fragmentManagerLive = MainActivity.this.getSupportFragmentManager();
+        FragmentTransaction fragmentTransactionLive = fragmentManagerLive.beginTransaction();
+        fragmentTransactionLive.replace(R.id.fragment_container, fragmentp);
+        fragmentTransactionLive.addToBackStack("live");
+        fragmentTransactionLive.commit();
 
 
     }
