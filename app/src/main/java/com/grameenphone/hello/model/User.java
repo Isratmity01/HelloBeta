@@ -2,19 +2,19 @@ package com.grameenphone.hello.model;
 
 
 public class User {
-    public String uid;
+    private String uid;
     public String phone;
     public String name;
     public String photoUrl;
 
-    public int userpoint;
+    private int userpoint;
 
 
     public String firebaseToken;
 
 
 
-    public boolean isAdmin;
+    private int isMod;
 
     public User() {}
 
@@ -59,15 +59,13 @@ public class User {
         this.phone = phone;
     }
 
-
-    public boolean isAdmin() {
-        return isAdmin;
+    public int isMod() {
+        return isMod;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setMod(int mod) {
+        isMod = mod;
     }
-
 
     public String getFirebaseToken() {
         return firebaseToken;

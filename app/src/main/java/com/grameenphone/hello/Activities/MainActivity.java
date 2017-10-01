@@ -273,8 +273,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
+                            User user = dataSnapshot.getValue(User.class);
 
-                            databaseHelper.addUser( dataSnapshot.getValue(User.class));
+                            if (user != null &&
+                                    user.getUid() != null &&
+                                    user.getName() != null &&
+                                    user.getUid().equals( mFirebaseUser.getUid() )) {
+
+                                databaseHelper.addMe(user);
+                            } else {
+                                if(user != null && user.getUid() != null && user.getName() != null ) {
+                                    databaseHelper.addUser(user);
+                                }
+                            }
+
                             if (Fragment_Live.isActive) {
                                 EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
                             } else {

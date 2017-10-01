@@ -20,6 +20,7 @@ import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.events.PushNotificationEvent;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.FileModel;
+import com.grameenphone.hello.model.NotificationModel;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -56,6 +57,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             String roomid = remoteMessage.getData().get("room_uid");
             String chats = remoteMessage.getData().get("whatposted");
+
+            if(type == null ) type = "undefined";
 
 
             if(type.contains("p2p")){
@@ -125,6 +128,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             }
 
+
+
+            if(type.contains("request")){
+
+                String data = remoteMessage.getData().get("whatposted");
+                Gson gsons = new Gson();
+                NotificationModel notiData = gsons.fromJson(data,NotificationModel.class);
+
+                String sender = notiData.getSender();
+                String title = notiData.getTitle();
+                String text = notiData.getText();
+
+
+                sendNotification("request",
+                        title,
+                        text,
+                        sender,
+                        fcmToken,
+                        roomid);
+
+
+            }
 
 
 

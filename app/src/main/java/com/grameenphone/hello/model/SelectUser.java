@@ -15,6 +15,8 @@ public class SelectUser implements Comparable<SelectUser>{
     String uid;
     Boolean checkedBox = false;
     String email;
+    private String firebaseToken;
+
     private Boolean isHelloUser=false;
 
     public Boolean getHelloUser() {
@@ -80,6 +82,17 @@ public class SelectUser implements Comparable<SelectUser>{
     public void setEmail(String email) {
         this.email = email;
     }
+
+
+
+    public String getFirebaseToken() {
+        return firebaseToken;
+    }
+
+    public void setFirebaseToken(String firebaseToken) {
+        this.firebaseToken = firebaseToken;
+    }
+
 
     public static Comparator<SelectUser> NameComparator = new Comparator<SelectUser>() {
 

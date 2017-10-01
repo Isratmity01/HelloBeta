@@ -43,4 +43,13 @@
         <item name="android:paddingRight">0dip</item>
     </style>
 
+    <style name="AppCompatAlertDialogStyleforImage" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">#000000</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:textColorPrimary">#37474F</item>
+    </style>
+
 </resources>

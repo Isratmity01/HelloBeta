@@ -40,9 +40,13 @@ import com.grameenphone.hello.Adapter.ContactListRecyclerAdapter;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
+import com.grameenphone.hello.fcm.FcmNotificationBuilder;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.SelectUser;
 import com.grameenphone.hello.model.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +76,9 @@ public class Fragment_Contacts extends Fragment {
     ContentResolver resolver;
 
     private User me;
+
+    private JSONObject chatrequestobject = new JSONObject();
+
     FragmentManager fragmentManager;
 
     private ContactListRecyclerAdapter contactListRecyclerAdapter;
@@ -269,6 +276,15 @@ public class Fragment_Contacts extends Fragment {
                             .setValue(chatRoomForSender);
 
 
+                    try {
+                        String message = "মেসেজ ⁠⁠⁠রিকোয়েস্ট এক্সেপ্ট করেছেন";
+                        chatrequestobject = populateJsonChat(chatrequestobject, me.getName(), message, me.getName());
+                        sendPushNotificationToRequestReceiver(chatrequestobject, me.getFirebaseToken(), user.getFirebaseToken());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
                     StartP2p(chatRoomId, chatRoom.getName());
                     dialog.dismiss();
                 }
@@ -319,6 +335,15 @@ public class Fragment_Contacts extends Fragment {
                             .child(me.getUid())
                             .child(chatRoomId)
                             .setValue(chatRoomForMe);
+
+
+                    try {
+                        String message = "মেসেজ ⁠⁠⁠রিকোয়েস্ট পাঠিয়েছেন";
+                        chatrequestobject = populateJsonChat(chatrequestobject, me.getName(), message, me.getName());
+                        sendPushNotificationToRequestReceiver(chatrequestobject, me.getFirebaseToken(), user.getFirebaseToken());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
 
                     dialog.dismiss();
@@ -413,6 +438,7 @@ public class Fragment_Contacts extends Fragment {
                                 selectUser.setUid(user.getUid());
                                 selectUser.setHelloUser(true);
                                 selectUser.setEmail(id);
+                                selectUser.setFirebaseToken(user.getFirebaseToken());
                                 selectUsers.add(selectUser);
                             }
                         }
@@ -469,5 +495,33 @@ public class Fragment_Contacts extends Fragment {
 
         }
     }
+
+
+
+
+    private JSONObject populateJsonChat (JSONObject chatrequest, String sender, String message, String title) throws JSONException {
+        chatrequest.put("sender", sender);
+        chatrequest.put("text", message);
+        chatrequest.put("title", title);
+
+        return chatrequest;
+    }
+
+
+
+
+    private void sendPushNotificationToRequestReceiver(JSONObject chatRequest,
+                                                       String firebaseToken,
+                                                       String receiverFirebaseToken) {
+        //   EventBus.getDefault().post(new ChatSent("yes"));
+        FcmNotificationBuilder.initialize()
+                .notificationType("request")
+                .setReceived(chatRequest)
+                .firebaseToken(firebaseToken)
+                .receiverFirebaseToken(receiverFirebaseToken)
+                .send();
+    }
+
+
 
 }

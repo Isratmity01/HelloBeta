@@ -76,6 +76,7 @@ import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.Utils.Constant;
 import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
+import com.grameenphone.hello.fcm.FcmNotificationBuilder;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.EventReceived;
@@ -85,12 +86,15 @@ import com.grameenphone.hello.model.User;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import github.ankushsachdeva.emojicon.EmojiconEditText;
 import github.ankushsachdeva.emojicon.EmojiconGridView;
@@ -118,7 +122,7 @@ public class Fragment_Live extends Fragment {
 
     FragmentManager fragmentManager;
 
-    private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
+    private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForMod;
 
     private ImageView mSendButton;
     private RelativeLayout msendback;
@@ -167,6 +171,9 @@ public class Fragment_Live extends Fragment {
     private FlyBluePrint linearBluePrint;
     private static int liveusercount;
 
+    private JSONObject chatrequestobject = new JSONObject();
+
+
     public static int getLiveusercount() {
         return liveusercount;
     }
@@ -206,15 +213,16 @@ public class Fragment_Live extends Fragment {
             //window.setBackgroundDrawable(background);
         }
         EventBus.getDefault().register(this);
-        mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReferenceForMod = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
 
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-       // ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-     //   ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_backiconsmall);
+
+        // ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        //((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_backiconsmall);
 
 
 
@@ -603,6 +611,58 @@ public class Fragment_Live extends Fragment {
     }
 
 
+
+    public void openModDialogue(final User user, final Chat chat) {
+
+        AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
+        LayoutInflater factory = LayoutInflater.from(getActivity());
+        final View view = factory.inflate(R.layout.req_layout, null);
+        TextView name = (TextView) view.findViewById(R.id.profile_name);
+        TextView level = (TextView) view.findViewById(R.id.level);
+        TextView point = (TextView) view.findViewById(R.id.point);
+        int points=user.getUserpoint();
+        name.setText(user.getName());
+        level.setText(getLevelName(points));
+        point.setText( "মেসেজ : " + chat.getMessage() );
+        name.setText(user.getName());
+        ImageView profile = (ImageView) view.findViewById(R.id.profile_picture);
+        Glide.with(getActivity()).load(user.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity()))
+                .placeholder(R.drawable.hellosmall)
+                .into(profile);
+        alertadd.setView(view);
+
+
+        alertadd.setNegativeButton("মেসেজ ডিলিট করুন", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                mFirebaseDatabaseReferenceForMod
+                        .child(CHAT_ROOMS_CHILD)
+                        .child(MESSAGES_CHILD)
+                        .child(chat.getChatId())
+                        .child("message")
+                        .setValue("মডারেটর মেসেজটি ডিলিট করেছেন");
+
+            }
+        });
+
+
+
+
+
+
+        alertadd.show();
+
+    }
+
+
+
+
+
+
+
+
+
     public void openDialogue(final User user, int reqStatus) {
         AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
         LayoutInflater factory = LayoutInflater.from(getActivity());
@@ -666,6 +726,16 @@ public class Fragment_Live extends Fragment {
                             .setValue(chatRoomForSender);
 
 
+                    try {
+                        String message = "মেসেজ ⁠⁠⁠রিকোয়েস্ট এক্সেপ্ট করেছেন";
+                        chatrequestobject = populateJsonChat(chatrequestobject, sender.getName(), message, sender.getName());
+                        sendPushNotificationToRequestReceiver(chatrequestobject, sender.getFirebaseToken(), user.getFirebaseToken());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
                     StartP2p(chatRoomId, chatRoom.getName());
                     dialog.dismiss();
                 }
@@ -716,6 +786,17 @@ public class Fragment_Live extends Fragment {
                             .child(sender.getUid())
                             .child(chatRoomId)
                             .setValue(chatRoomForMe);
+
+
+
+                    try {
+                        String message = "মেসেজ ⁠⁠⁠রিকোয়েস্ট পাঠিয়েছেন";
+                        chatrequestobject = populateJsonChat(chatrequestobject, sender.getName(), message, sender.getName());
+                        sendPushNotificationToRequestReceiver(chatrequestobject, sender.getFirebaseToken(), user.getFirebaseToken());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
 
 
                     dialog.dismiss();
@@ -895,6 +976,7 @@ public class Fragment_Live extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Chat chat = dataSnapshot.getValue(Chat.class);
+                chat.setChatId(dataSnapshot.getKey());
 
                 if (userArrayLiveList.size() == 0) {
                     receivedKey = dataSnapshot.getKey();
@@ -911,10 +993,37 @@ public class Fragment_Live extends Fragment {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
+                Chat newchat = dataSnapshot.getValue(Chat.class);
+
+                String chatid = dataSnapshot.getKey();
+
+                Iterator<Chat> it = userArrayLiveList.iterator();
+                while (it.hasNext()) {
+                    Chat chat = it.next();
+                    if (chat.getChatId().equals(chatid)) {
+                        chat.setMessage(newchat.getMessage());
+                    }
+                }
+                chatLiveAdapter.notifyDataSetChanged();
+
+
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                String chatid = dataSnapshot.getKey();
+
+                Iterator<Chat> it = userArrayLiveList.iterator();
+                while (it.hasNext()) {
+                    Chat chat = it.next();
+                    if (chat.getChatId().equals(chatid)) {
+                        it.remove();
+                    }
+                }
+                chatLiveAdapter.notifyDataSetChanged();
+
+
 
             }
 
@@ -940,6 +1049,7 @@ public class Fragment_Live extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Chat chat = dataSnapshot.getValue(Chat.class);
+                chat.setChatId(dataSnapshot.getKey());
                 if (userArrayLiveList.size() == initial) {
                     receivedKey = dataSnapshot.getKey();
                 }
@@ -965,6 +1075,20 @@ public class Fragment_Live extends Fragment {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
 
+
+                String chatid = dataSnapshot.getKey();
+
+                Iterator<Chat> it = userArrayLiveList.iterator();
+                while (it.hasNext()) {
+                    Chat chat = it.next();
+                    if (chat.getChatId().equals(chatid)) {
+                        it.remove();
+                    }
+                }
+                chatLiveAdapter.notifyDataSetChanged();
+
+
+
             }
 
             @Override
@@ -985,7 +1109,7 @@ public class Fragment_Live extends Fragment {
             case android.R.id.home:
                 // Do something here. This is the event fired when up button is pressed.
 
-                // mFirebaseDatabaseReferenceForLiveCount.child("live_user").child(((MainActivity) getActivity()).me.getUid()).setValue(null);
+                // mFirebaseDatabaseReferenceForMod.child("live_user").child(((MainActivity) getActivity()).me.getUid()).setValue(null);
                 // Toast.makeText(getActivity(),"left",Toast.LENGTH_SHORT).show();
                 getActivity().onBackPressed();
                 onStop();
@@ -1126,4 +1250,35 @@ public class Fragment_Live extends Fragment {
         }
 
     }
+
+
+
+
+    private JSONObject populateJsonChat (JSONObject chatrequest, String sender, String message, String title) throws JSONException {
+        chatrequest.put("sender", sender);
+        chatrequest.put("text", message);
+        chatrequest.put("title", title);
+
+        return chatrequest;
+    }
+
+
+
+
+    private void sendPushNotificationToRequestReceiver(JSONObject chatRequest,
+                                                       String firebaseToken,
+                                                       String receiverFirebaseToken) {
+        //   EventBus.getDefault().post(new ChatSent("yes"));
+        FcmNotificationBuilder.initialize()
+                .notificationType("request")
+                .setReceived(chatRequest)
+                .firebaseToken(firebaseToken)
+                .receiverFirebaseToken(receiverFirebaseToken)
+                .send();
+    }
+
+
+
+
+
 }

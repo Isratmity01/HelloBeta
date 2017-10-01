@@ -112,7 +112,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Constant.Database.User.PHOTO_URL + " TEXT,"
                 + Constant.Database.User.IS_ME + " INTEGER DEFAULT 0,"
                 + Constant.Database.User.FIREBASE_TOKEN + " TEXT,"
-                + Constant.Database.User.USER_POINT + " INTEGER DEFAULT 0"
+                + Constant.Database.User.USER_POINT + " INTEGER DEFAULT 0,"
+                + Constant.Database.User.IS_MOD + " INTEGER DEFAULT 0"
                 + ")";
 
 
@@ -155,7 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Constant.Database.User.PHOTO_URL, user.getPhotoUrl());
         values.put(Constant.Database.User.IS_ME, 0);
         values.put(Constant.Database.User.FIREBASE_TOKEN, user.getFirebaseToken());
-
+        values.put(Constant.Database.User.IS_MOD, user.isMod());
         values.put(Constant.Database.User.USER_POINT, user.getUserpoint());
 
         db.insertWithOnConflict(Constant.Database.TABLE_USER, Constant.Database.User.UID , values, SQLiteDatabase.CONFLICT_REPLACE);
@@ -170,6 +171,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Constant.Database.User.PHONENUMBER, user.getPhone());
         values.put(Constant.Database.User.PHOTO_URL, user.getPhotoUrl());
         values.put(Constant.Database.User.IS_ME, 1);
+        values.put(Constant.Database.User.IS_MOD, user.isMod());
         values.put(Constant.Database.User.FIREBASE_TOKEN, user.getFirebaseToken());
 
         values.put(Constant.Database.User.USER_POINT, user.getUserpoint());
@@ -271,6 +273,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     user.setPhotoUrl(cursor.getString(3));
                     user.setFirebaseToken(cursor.getString(5));
                     user.setUserpoint(cursor.getInt(6));
+                    user.setMod(cursor.getInt(7));
 
 
                 } while (cursor.moveToNext());
@@ -356,6 +359,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     user.setFirebaseToken(cursor.getString(5));
 
                     user.setUserpoint(cursor.getInt(6));
+                    user.setMod(cursor.getInt(7));
 
                 } while (cursor.moveToNext());
             }
@@ -449,6 +453,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     user.setFirebaseToken(cursor.getString(5));
                     user.setUserpoint(cursor.getInt(6));
 
+                    user.setMod(cursor.getInt(7));
+
                     alluser.add(user);
 
                 } while (cursor.moveToNext());
@@ -491,6 +497,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     user.setPhotoUrl(cursor.getString(3));
                     user.setFirebaseToken(cursor.getString(5));
                     user.setUserpoint(cursor.getInt(6));
+
+                    user.setMod(cursor.getInt(7));
 
                     alluser.add(user);
 

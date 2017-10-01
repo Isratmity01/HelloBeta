@@ -113,11 +113,17 @@ public class SplashScreenActivity extends Activity
                                 User user = child.getValue(User.class);
 
 
-                                if (user != null && user.getUid().equals(mFirebaseUser.getUid())) {
+
+                                if (user != null &&
+                                        user.getUid() != null &&
+                                        user.getName() != null &&
+                                        user.getUid().equals( mFirebaseUser.getUid() )) {
 
                                     dbHelper.addMe(user);
                                 } else {
-                                    dbHelper.addUser(user);
+                                    if(user != null && user.getUid() != null && user.getName() != null ) {
+                                        dbHelper.addUser(user);
+                                    }
                                 }
 
                             }

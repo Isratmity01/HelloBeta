@@ -17,8 +17,12 @@ import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Fragments.Fragment_MainPage;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
+import com.grameenphone.hello.fcm.FcmNotificationBuilder;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -37,8 +41,11 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private DatabaseHelper dbHelper;
 
-    private User me;
+    private JSONObject chatrequestobject = new JSONObject();
+
+    private User me, user;
     private String userid = "";
+
 
     public IncomingChatRequestsAdapter(Context context, ArrayList<ChatRoom> rooms, Fragment_MainPage fragment_mainPage, User me) {
         this.context = context;
@@ -97,6 +104,7 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
             for (String id : current.getRoomId().split("_")) {
                 if (!id.equals(me.getUid())) {
                     userid = id;
+                    user = dbHelper.getUser(userid);
                 }
             }
         }
@@ -118,6 +126,16 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
                         .child(current.getRoomId())
                         .child("requestStatus")
                         .setValue(1);
+
+
+                try {
+                    String message = "মেসেজ ⁠⁠⁠রিকোয়েস্ট এক্সেপ্ট করেছেন";
+                    chatrequestobject = populateJsonChat(chatrequestobject, me.getName(), message, me.getName());
+                    sendPushNotificationToRequestReceiver(chatrequestobject, me.getFirebaseToken(), user.getFirebaseToken());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
 
                 Toast.makeText(context,"আপনি মেসেজ রিকোয়েস্ট এক্সেপ্ট করেছেন", Toast.LENGTH_SHORT).show();
                // IncomingChatRequestsAdapter.this.notify();
@@ -191,5 +209,34 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
         notifyDataSetChanged();
         return 1;
     }
+
+
+
+
+    private JSONObject populateJsonChat (JSONObject chatrequest, String sender, String message, String title) throws JSONException {
+        chatrequest.put("sender", sender);
+        chatrequest.put("text", message);
+        chatrequest.put("title", title);
+
+        return chatrequest;
+    }
+
+
+
+
+    private void sendPushNotificationToRequestReceiver(JSONObject chatRequest,
+                                                       String firebaseToken,
+                                                       String receiverFirebaseToken) {
+        //   EventBus.getDefault().post(new ChatSent("yes"));
+        FcmNotificationBuilder.initialize()
+                .notificationType("request")
+                .setReceived(chatRequest)
+                .firebaseToken(firebaseToken)
+                .receiverFirebaseToken(receiverFirebaseToken)
+                .send();
+    }
+
+
+
 
 }

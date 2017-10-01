@@ -34,6 +34,8 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private DatabaseHelper databaseHelper1;
     private User self,receiver;
     private String receiver_uid;
+    private String lilname = "";
+
     public RoomListAdapter(Context context, ArrayList<ChatRoom> rooms, Fragment_MainPage fragment_mainPage, DatabaseHelper databaseHelper,User me) {
         this.context = context;
         this.rooms = rooms;
@@ -66,7 +68,9 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         receiver=databaseHelper1.getUser(receiver_uid);
 
         itemHolder.nameTextView.setText(receiver.getName());
-        String lilname = receiver.getName().trim().split("\\s+")[0];
+        if(receiver.getName() != null) {
+            lilname = receiver.getName().trim().split("\\s+")[0];
+        }
 
 
 

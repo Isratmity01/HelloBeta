@@ -47,6 +47,7 @@ import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
+import com.grameenphone.hello.fcm.FcmNotificationBuilder;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.EventReceived;
@@ -54,6 +55,8 @@ import com.grameenphone.hello.model.User;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,6 +95,8 @@ public class Fragment_MainPage extends Fragment {
     private DatabaseHelper databaseHelper;
     private User myself;
     private TextView onlineUserCount;
+
+    private JSONObject chatrequestobject = new JSONObject();
 
     public Fragment_MainPage() {
         // Required empty public constructor
@@ -301,6 +306,16 @@ public class Fragment_MainPage extends Fragment {
                             .setValue(chatRoomForSender);
 
 
+
+                    try {
+                        String message = "মেসেজ ⁠⁠⁠রিকোয়েস্ট এক্সেপ্ট করেছেন";
+                        chatrequestobject = populateJsonChat(chatrequestobject, myself.getName(), message, myself.getName());
+                        sendPushNotificationToRequestReceiver(chatrequestobject, myself.getFirebaseToken(), user.getFirebaseToken());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
                     StartP2p(chatRoomId, chatRoom.getName());
                     dialog.dismiss();
                 }
@@ -351,6 +366,15 @@ public class Fragment_MainPage extends Fragment {
                             .child(myself.getUid())
                             .child(chatRoomId)
                             .setValue(chatRoomForMe);
+
+
+                    try {
+                        String message = "মেসেজ ⁠⁠⁠রিকোয়েস্ট পাঠিয়েছেন";
+                        chatrequestobject = populateJsonChat(chatrequestobject, myself.getName(), message, myself.getName());
+                        sendPushNotificationToRequestReceiver(chatrequestobject, myself.getFirebaseToken(), user.getFirebaseToken());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
 
                     dialog.dismiss();
@@ -703,4 +727,34 @@ public class Fragment_MainPage extends Fragment {
                 }
 
             };
+
+
+
+    private JSONObject populateJsonChat (JSONObject chatrequest, String sender, String message, String title) throws JSONException {
+        chatrequest.put("sender", sender);
+        chatrequest.put("text", message);
+        chatrequest.put("title", title);
+
+        return chatrequest;
+    }
+
+
+
+
+    private void sendPushNotificationToRequestReceiver(JSONObject chatRequest,
+                                                String firebaseToken,
+                                                String receiverFirebaseToken) {
+        //   EventBus.getDefault().post(new ChatSent("yes"));
+        FcmNotificationBuilder.initialize()
+                .notificationType("request")
+                .setReceived(chatRequest)
+                .firebaseToken(firebaseToken)
+                .receiverFirebaseToken(receiverFirebaseToken)
+                .send();
+    }
+
+
+
+
+
 }

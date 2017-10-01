@@ -2,9 +2,9 @@ package com.grameenphone.hello.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -17,8 +17,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Fragments.Fragment_Live;
-import com.grameenphone.hello.Fragments.Fragment_MainPage;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.Utils.DateTimeUtility;
@@ -26,14 +26,12 @@ import com.grameenphone.hello.Utils.ImageDialog;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
-import com.grameenphone.hello.model.SelectUser;
 import com.grameenphone.hello.model.User;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.grameenphone.hello.Utils.Userlevels.getLevelName;
@@ -41,23 +39,29 @@ import static com.grameenphone.hello.Utils.Userlevels.getLevelName;
 
 public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     String path;
-    File  wallpaperDirectory;
+    File wallpaperDirectory;
     private Uri imageUri;
     private String filename;
-    private  File finalfile;
+    private File finalfile;
     private String message;
-    private String FilePath="https://firebasestorage.googleapis.com/v0/b/mars-e7047.appspot.com/o/";
+    private String FilePath = "https://firebasestorage.googleapis.com/v0/b/mars-e7047.appspot.com/o/";
     private Context context;
     private ArrayList<Chat> chatArrayList = new ArrayList<Chat>();
     private Bitmap bitmapfinal;
     private LayoutInflater inflater;
     private Fragment_Live fragment_live;
     private DatabaseHelper databaseHelper;
-    public LiveListAdapter(Context context, ArrayList<Chat> rooms, Fragment_Live fragmentLive,DatabaseHelper databaseHelper1) {
+
+    private User meuser;
+
+
+    public LiveListAdapter(Context context, ArrayList<Chat> rooms, Fragment_Live fragmentLive, DatabaseHelper databaseHelper) {
         this.context = context;
         this.chatArrayList = rooms;
-        this.fragment_live=fragmentLive;
-        this.databaseHelper=databaseHelper1;
+        this.fragment_live = fragmentLive;
+        this.databaseHelper = databaseHelper;
+
+        meuser = databaseHelper.getMe();
 
     }
 
@@ -80,17 +84,19 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         final MessageViewHolder viewHolder = (MessageViewHolder) holder;
         final Chat chat = chatArrayList.get(position);
         String lilname = chat.getSender().trim().split("\\s+")[0];
-         viewHolder.badge.setVisibility(View.VISIBLE);
+        viewHolder.badge.setVisibility(View.VISIBLE);
 
-        if(chat.getSenderUid().equals("system_bot"))
-        {
-            viewHolder.badge.setBackgroundResource(R.drawable.bot);
+        if(meuser.isMod() == 1) {
+            viewHolder.badge.setBackgroundResource(R.drawable.moderator);
         }
-       else {
-            User user= databaseHelper.getUser(chat.getSenderUid());
 
-            String level=getLevelName(user.getUserpoint());
-         if (level.equals("লেভেল ১")) {
+        if (chat.getSenderUid().equals("system_bot")) {
+            viewHolder.badge.setBackgroundResource(R.drawable.bot);
+        } else {
+            User user = databaseHelper.getUser(chat.getSenderUid());
+
+            String level = getLevelName(user.getUserpoint());
+            if (level.equals("লেভেল ১")) {
                 viewHolder.badge.setBackgroundResource(R.drawable.level_1);
             } else if (level.equals("লেভেল ২")) {
                 viewHolder.badge.setBackgroundResource(R.drawable.level_2);
@@ -100,144 +106,141 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.badge.setBackgroundResource(R.drawable.level_4);
             } else if (level.equals("লেভেল ৫")) {
                 viewHolder.badge.setBackgroundResource(R.drawable.level_5);
+            } else {
+                viewHolder.badge.setBackgroundResource(R.drawable.level_1);
             }
-            else viewHolder.badge.setBackgroundResource(R.drawable.moderator);
         }
 
 
 
-        if ( chat.getMessageType().equals("txt")&&!chat.getSenderUid().equals("system_bot")) {
 
-            if ( chat.getMessage() != null ) {
+
+
+        if (chat.getMessageType().equals("txt") && !chat.getSenderUid().equals("system_bot")) {
+
+            viewHolder.liveMessage.setTextColor(context.getResources().getColor(R.color.text_black));
+
+            if (chat.getMessage() != null) {
                 viewHolder.sticker.setVisibility(View.GONE);
                 viewHolder.imagedownload.setVisibility(View.GONE);
                 viewHolder.image.setVisibility(View.GONE);
                 String message = chat.getMessage();
                 viewHolder.liveuser.setVisibility(View.VISIBLE);
 
-                String name = lilname ;
-                viewHolder.liveuser.setText(  name );
+                String name = lilname;
+                viewHolder.liveuser.setText(name);
+
+                if(message.equals("মডারেটর মেসেজটি ডিলিট করেছেন")){
+                    viewHolder.liveMessage.setTextColor(context.getResources().getColor(R.color.text_gray));
+                    viewHolder.liveMessage.setTypeface(viewHolder.liveMessage.getTypeface(), Typeface.ITALIC);
+                }
 
 
-
-                viewHolder.liveMessage.setText( Html.fromHtml( message) );
+                viewHolder.liveMessage.setText(message);
                 viewHolder.liveMessage.setVisibility(View.VISIBLE);
 
                 viewHolder.liveTime.setText(DateTimeUtility.getFormattedTimeFromTimestamp(chat.getTimestamp()));
 
 
-
             }
 
 
-
         }
-         if ( chat.getMessageType().equals("stk")&&!chat.getSenderUid().equals("system_bot")) {
+        if (chat.getMessageType().equals("stk") && !chat.getSenderUid().equals("system_bot")) {
 
-            if ( chat.getMessage() != null ) {
+            if (chat.getMessage() != null) {
                 viewHolder.sticker.setVisibility(View.VISIBLE);
                 viewHolder.imagedownload.setVisibility(View.GONE);
                 viewHolder.image.setVisibility(View.GONE);
                 viewHolder.liveuser.setVisibility(View.VISIBLE);
-                String name =   lilname;
+                String name = lilname;
                 String message = chat.getMessage();
 
                 viewHolder.liveuser.setText(name);
                 viewHolder.liveMessage.setVisibility(View.GONE);
                 String path = chat.getMessage();
-                path=path.substring(path.lastIndexOf(".") + 1);
+                path = path.substring(path.lastIndexOf(".") + 1);
                 Glide.with(context).load(getImage(path)).into(viewHolder.sticker);
 
                 viewHolder.liveTime.setText(DateTimeUtility.getFormattedTimeFromTimestamp(chat.getTimestamp()));
 
 
-
             }
 
 
-
         }
-        if ( chat.getSender().contains("_bot")&&chat.getSenderUid().equals("system_bot")) {
+        if (chat.getSender().contains("_bot") && chat.getSenderUid().equals("system_bot")) {
 
-            if ( chat.getMessage() != null ) {
+            if (chat.getMessage() != null) {
                 viewHolder.sticker.setVisibility(View.GONE);
                 viewHolder.imagedownload.setVisibility(View.GONE);
                 viewHolder.image.setVisibility(View.GONE);
-                String name =   lilname;
-                if(name.equals("weather_bot"))
-                {
-                  message=  "<font color='#50E3C2'>"+ chat.getMessage() +" </font>";
-                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.weatherbotcolor));
+                String name = chat.getSender();
+
+                message =  chat.getMessage() ;
+
+                if (name.equals("weather_bot")) {
+                    viewHolder.liveMessage.setTextColor(context.getResources().getColor(R.color.weatherbotcolor));
+                } else if (name.equals("quiz_bot")) {
+                    viewHolder.liveMessage.setTextColor(context.getResources().getColor(R.color.quizbotcolor));
+                } else if (name.equals("cric_bot")) {
+                    viewHolder.liveMessage.setTextColor(context.getResources().getColor(R.color.cricbotcolor));
+                } else if (name.equals("deal_bot")) {
+                    viewHolder.liveMessage.setTextColor(context.getResources().getColor(R.color.dealbotcolor));
+                } else if (name.equals("hello_bot")) {
+                    viewHolder.liveMessage.setTextColor(context.getResources().getColor(R.color.hellobotcolor));
                 }
-                else if(name.equals("quiz_bot"))
-                {
-                    message=  "<font color='#BF54C9'>"+ chat.getMessage() +" </font>";
-                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.quizbotcolor));
+
+                if(message.equals("মডারেটর মেসেজটি ডিলিট করেছেন")){
+                    viewHolder.liveMessage.setTextColor(context.getResources().getColor(R.color.text_gray));
+                    viewHolder.liveMessage.setTypeface(viewHolder.liveMessage.getTypeface(), Typeface.ITALIC);
                 }
-                else if(name.equals("cric_bot"))
-                {
-                    message=  "<font color='#7BC940'>"+ chat.getMessage() +" </font>";
-                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.cricbotcolor));
-                }
-                else if(name.equals("deal_bot"))
-                {
-                    message=  "<font color='#8F7A67'>"+ chat.getMessage() +" </font>";
-                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.dealbotcolor));
-                }
-                else if(name.equals("hello_bot"))
-                {
-                    message=  "<font color='#FF4949'>"+ chat.getMessage() +" </font>";
-                    viewHolder.liveMessage.setLinkTextColor(context.getResources().getColor( R.color.hellobotcolor));
-                }
-                else message=chat.getMessage();
+
 
                 viewHolder.liveuser.setText(name);
 
 
-                viewHolder.liveMessage.setText( Html.fromHtml( message) );
+                viewHolder.liveMessage.setText(message);
 
                 viewHolder.liveMessage.setVisibility(View.VISIBLE);
                 viewHolder.liveTime.setText(DateTimeUtility.getFormattedTimeFromTimestamp(chat.getTimestamp()));
 
 
-
             }
-
 
 
         }
-        if ( chat.getMessageType().equals("Image")) {
+        if (chat.getMessageType().equals("Image")) {
 
 
-                viewHolder.sticker.setVisibility(View.GONE);
+            viewHolder.sticker.setVisibility(View.GONE);
             viewHolder.imagedownload.setVisibility(View.VISIBLE);
             viewHolder.image.setVisibility(View.VISIBLE);
 
-                viewHolder.liveuser.setVisibility(View.VISIBLE);
-                String name =   lilname;
-                viewHolder.liveuser.setText(name);
-                viewHolder.liveMessage.setVisibility(View.GONE);
+            viewHolder.liveuser.setVisibility(View.VISIBLE);
+            String name = lilname;
+            viewHolder.liveuser.setText(name);
+            viewHolder.liveMessage.setVisibility(View.GONE);
             wallpaperDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString() + "/Camera/Hello/HelloImages");
-            filename=chat.getUrl_file();
-            String  photoUrl=filename.substring(filename.lastIndexOf("/") + 1);
+            filename = chat.getUrl_file();
+            String photoUrl = filename.substring(filename.lastIndexOf("/") + 1);
 
-            finalfile = new File(wallpaperDirectory.getAbsolutePath() + "/"+photoUrl+".png");
+            finalfile = new File(wallpaperDirectory.getAbsolutePath() + "/" + photoUrl + ".png");
             imageUri = Uri.fromFile(finalfile);
-            if(finalfile.exists()){
+            if (finalfile.exists()) {
 
                 Glide.with(context).load(imageUri).placeholder(R.drawable.pictures).bitmapTransform(new CenterCrop(context), new RoundedCornersTransformation(context, 45, 0)).into(viewHolder.image);
                 viewHolder.imagedownload.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 viewHolder.imagedownload.setVisibility(View.VISIBLE);
                 Glide.with(context).load(R.drawable.pictures).bitmapTransform(new BlurTransformation(context), new RoundedCornersTransformation(context, 45, 0)).into(viewHolder.image);
 
             }
-                 path = chat.getUrl_file();
+            path = chat.getUrl_file();
 
-                Glide.with(context).load(path).into(viewHolder.sticker);
+            Glide.with(context).load(path).into(viewHolder.sticker);
 
-                viewHolder.liveTime.setText(DateTimeUtility.getFormattedTimeFromTimestamp(chat.getTimestamp()));
+            viewHolder.liveTime.setText(DateTimeUtility.getFormattedTimeFromTimestamp(chat.getTimestamp()));
 
         }
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
@@ -250,20 +253,20 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .load(path)
                         .asBitmap()
                         .transform(new CenterCrop(context), new RoundedCornersTransformation(context, 45, 0))
-                        .into(new SimpleTarget<Bitmap>(300,300) {
+                        .into(new SimpleTarget<Bitmap>(300, 300) {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
 
-                                bitmapfinal=resource;
+                                bitmapfinal = resource;
 
                                 viewHolder.image.setImageBitmap(resource);
                                 viewHolder.imagedownload.setVisibility(View.GONE);
                             }
                         });
 
-                ImageDialog imageDialog=new ImageDialog(context);
+                ImageDialog imageDialog = new ImageDialog(context);
                 // imageDialog.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                imageDialog.start(context, path,"no");
+                imageDialog.start(context, path, "no");
             }
         });
 
@@ -272,14 +275,14 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             public void onClick(View view) {
                 User user = databaseHelper.getUser(chat.getSenderUid());
                 User meuser = databaseHelper.getMe();
-                if(!meuser.getUid().equals(user.getUid())) {
+                if (!meuser.getUid().equals(user.getUid())) {
 
-                    if(user.getUid()!=null) {
+                    if (user.getUid() != null) {
                         final String chatRoomId = Compare.getRoomName(user.getUid(), meuser.getUid());
 
                         final ChatRoom chatRoom = databaseHelper.getRoom(chatRoomId);
 
-                        if ( chatRoom != null && chatRoom.getName() !=null ){
+                        if (chatRoom != null && chatRoom.getName() != null) {
                             (fragment_live).openDialogue(user, chatRoom.getRequestStatus());
                         } else {
                             (fragment_live).openDialogue(user, 100);
@@ -289,9 +292,42 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
 
 
-
             }
         });
+
+
+
+
+        viewHolder.liveMessage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                User user = databaseHelper.getUser(chat.getSenderUid());
+
+
+
+                if(meuser.isMod() == 1) {
+
+                    if (!meuser.getUid().equals(user.getUid())) {
+
+                        (fragment_live).openModDialogue(user, chat);
+
+                    } else {
+
+                        (fragment_live).openModDialogue(meuser, chat);
+
+                    }
+                }
+
+
+
+                return false;
+            }
+        });
+
+
+
+
 
     }
 
@@ -310,28 +346,6 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         return drawableResourceId;
     }
-    private class MessageViewHolder extends RecyclerView.ViewHolder {
-        public TextView liveMessage;
-        public TextView liveTime;
-        public TextView liveuser;
-        public ImageView sticker;
-        public ImageView image;
-        public ImageView imagedownload;
-
-
-        public ImageView badge;
-        public MessageViewHolder(View v) {
-            super(v);
-            badge=(ImageView)itemView.findViewById(R.id.badge);
-            liveMessage = (TextView) itemView.findViewById(R.id.live_message);
-            liveTime = (TextView) itemView.findViewById(R.id.time_stamp_live);
-            liveuser = (TextView) itemView.findViewById(R.id.liveusername);
-            sticker = (ImageView) itemView.findViewById(R.id.livesticker);
-            image = (ImageView) itemView.findViewById(R.id.liveimage);
-            imagedownload = (ImageView) itemView.findViewById(R.id.livedownloader);
-        }
-    }
-
 
     public void refresh() {
         //manipulate list
@@ -343,6 +357,29 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         //manipulate list
         notifyDataSetChanged();
         return 1;
+    }
+
+    private class MessageViewHolder extends RecyclerView.ViewHolder {
+        public TextView liveMessage;
+        public TextView liveTime;
+        public TextView liveuser;
+        public ImageView sticker;
+        public ImageView image;
+        public ImageView imagedownload;
+
+
+        public ImageView badge;
+
+        public MessageViewHolder(View v) {
+            super(v);
+            badge = (ImageView) itemView.findViewById(R.id.badge);
+            liveMessage = (TextView) itemView.findViewById(R.id.live_message);
+            liveTime = (TextView) itemView.findViewById(R.id.time_stamp_live);
+            liveuser = (TextView) itemView.findViewById(R.id.liveusername);
+            sticker = (ImageView) itemView.findViewById(R.id.livesticker);
+            image = (ImageView) itemView.findViewById(R.id.liveimage);
+            imagedownload = (ImageView) itemView.findViewById(R.id.livedownloader);
+        }
     }
 
 }
