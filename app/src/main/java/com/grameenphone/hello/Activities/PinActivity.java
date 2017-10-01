@@ -56,7 +56,7 @@ public class PinActivity extends AppCompatActivity {
                 {
                     saveInfo(code);
                 }
-               else Toast.makeText(PinActivity.this,"Please enter hello pin",Toast.LENGTH_SHORT).show();
+               else Toast.makeText(PinActivity.this,"আপনার সঠিক হ্যালো পিন কোডটি দিন",Toast.LENGTH_SHORT).show();
             }
         });
 

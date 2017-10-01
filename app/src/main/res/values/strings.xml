@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HelloBeta</string>
+    <string name="app_name">Hello</string>
     <string name="save_image">ছবি সেভ করুন</string>
     <string name="group_info_bn">চ্যাট ইনফো</string>
     <string name="jump_to_latest"> নিচে যান </string>
