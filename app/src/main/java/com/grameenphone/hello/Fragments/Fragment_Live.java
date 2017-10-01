@@ -218,7 +218,7 @@ public class Fragment_Live extends Fragment {
 
 
 
-        setActionBarTitle("লাইভ");
+        //setActionBarTitle("লাইভ");
     }
 
 
