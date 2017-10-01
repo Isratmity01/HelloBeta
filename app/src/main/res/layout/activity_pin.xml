@@ -1,12 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
+    style="@style/AppTheme.NoActionBar"
     android:layout_width="match_parent"
-    android:background="@drawable/onboardingbg"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    style="@style/AppTheme.NoActionBar">
+    android:background="@drawable/onboardingbg"
+    android:orientation="vertical">
 
 
     <RelativeLayout
@@ -49,29 +48,24 @@
             android:id="@+id/txt_pin_entry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/title_text"
+            android:layout_margin="40dp"
             android:layout_marginTop="20dp"
             android:cursorVisible="false"
-        android:digits="1234567890"
-        android:inputType="number"
-            android:layout_margin="40dp"
-            android:layout_below="@id/title_text"
-        android:maxLength="5"
-        android:textIsSelectable="false"
-        android:textSize="20sp"
-        app:pinAnimationType="popIn"
-
-        app:pinTextBottomPadding="5dp"
+            android:digits="1234567890"
+            android:inputType="number"
+            android:maxLength="5"
             android:textColor="@color/white"
-        app:pinLineStroke="1dp"
-        app:pinLineStrokeSelected="1dp"
-        app:pinBackgroundIsSquare="false"
-        app:pinLineColors="@color/colorPrimary" />
+            android:textIsSelectable="false"
+            android:textSize="20sp"
 
-
-
-
-
-
+            android:imeOptions="actionDone"
+            app:pinAnimationType="popIn"
+            app:pinBackgroundIsSquare="false"
+            app:pinLineColors="@color/colorPrimary"
+            app:pinLineStroke="1dp"
+            app:pinLineStrokeSelected="1dp"
+            app:pinTextBottomPadding="5dp" />
 
 
         <Button
@@ -82,8 +76,8 @@
             android:layout_below="@+id/txt_pin_entry"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
-            android:foreground="?attr/selectableItemBackground"
             android:background="@drawable/phone_submit_button_shape"
+            android:foreground="?attr/selectableItemBackground"
             android:paddingEnd="60dp"
             android:paddingLeft="60dp"
             android:paddingRight="60dp"
@@ -101,10 +95,9 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="22dp"
             android:textAlignment="center"
-            android:textColorLink="#fee900"
             android:textColor="#fee900"
+            android:textColorLink="#fee900"
             android:textSize="16sp" />
-
 
 
     </RelativeLayout>

@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -60,6 +62,21 @@ public class PinActivity extends AppCompatActivity {
             }
         });
 
+
+
+
+        pincode.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    submitpin.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
     }
 
 
@@ -79,6 +96,9 @@ public class PinActivity extends AppCompatActivity {
         prefs.edit().putBoolean("locked", true).apply();
         startActivity();
     }
+
+
+
 
 
     private void startActivity()

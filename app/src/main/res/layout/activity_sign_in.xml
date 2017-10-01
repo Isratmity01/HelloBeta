@@ -55,6 +55,7 @@
             android:hint="এখানে পিন কোডটি লিখুন"
             android:textAlignment="center"
             android:inputType="number"
+            android:imeOptions="actionDone"
             android:textColorHint="#c1edff"
             android:textSize="16sp"
             android:visibility="visible" />
@@ -106,6 +107,7 @@
                 app:srcCompat="@drawable/edt_bg_selector"
                 android:hint="@string/phone_number_field"
                 android:inputType="phone"
+                android:imeOptions="actionDone"
                 android:paddingEnd="20dp"
                 android:paddingLeft="0dp"
                 android:paddingRight="20dp"
