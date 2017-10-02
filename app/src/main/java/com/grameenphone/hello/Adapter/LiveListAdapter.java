@@ -372,10 +372,10 @@ public class LiveListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public MessageViewHolder(View v) {
             super(v);
-            badge = (ImageView) itemView.findViewById(R.id.badge);
+            badge = (ImageView) itemView.findViewById(R.id.badges);
             liveMessage = (TextView) itemView.findViewById(R.id.live_message);
             liveTime = (TextView) itemView.findViewById(R.id.time_stamp_live);
-            liveuser = (TextView) itemView.findViewById(R.id.liveusername);
+            liveuser = (TextView) itemView.findViewById(R.id.liveusernameimg);
             sticker = (ImageView) itemView.findViewById(R.id.livesticker);
             image = (ImageView) itemView.findViewById(R.id.liveimage);
             imagedownload = (ImageView) itemView.findViewById(R.id.livedownloader);

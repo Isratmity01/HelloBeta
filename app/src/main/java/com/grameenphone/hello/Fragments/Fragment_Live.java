@@ -70,6 +70,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.LiveListAdapter;
+import com.grameenphone.hello.Adapter.LiveRoomAdapter;
 import com.grameenphone.hello.Adapter.LiveUserListAdapterInside;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Compare;
@@ -157,7 +158,7 @@ public class Fragment_Live extends Fragment {
 
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private Toolbar toolbarlive;
-    private LiveListAdapter chatLiveAdapter;
+    private LiveRoomAdapter chatLiveAdapter;
     private ProgressBar LivePrg;
     private ImageButton attach;
 
@@ -888,7 +889,7 @@ public class Fragment_Live extends Fragment {
         loadinitial();
 
 
-        chatLiveAdapter = new LiveListAdapter(getActivity(), userArrayLiveList, Fragment_Live.this, dbHelper);
+        chatLiveAdapter = new LiveRoomAdapter(getActivity(), userArrayLiveList, Fragment_Live.this, dbHelper);
 
 
         chatLiveAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {

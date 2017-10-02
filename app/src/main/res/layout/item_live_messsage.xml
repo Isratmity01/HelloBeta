@@ -14,7 +14,7 @@
 <ImageView
     android:layout_width="16dp"
     android:layout_height="16dp"
-    android:id="@+id/badge"
+    android:id="@+id/badgemsg"
     android:layout_gravity="center"
     android:layout_marginTop="2dp"
     android:layout_alignParentLeft="true"
@@ -22,11 +22,11 @@
 
     android:background="@drawable/star"/>
     <TextView
-        android:layout_width="83dp"
+        android:layout_width="70dp"
         android:layout_marginLeft="5dp"
         android:maxLines="2"
-        android:id="@+id/liveusername"
-        android:layout_toRightOf="@id/badge"
+        android:id="@+id/liveusernamemsg"
+        android:layout_toRightOf="@id/badgemsg"
         android:text="abs"
         android:textSize="15sp"
         android:textColor="#26BEFF"
@@ -36,7 +36,7 @@
         android:layout_marginLeft="5dp"
         android:maxLines="2"
         android:id="@+id/separator"
-        android:layout_toRightOf="@id/liveusername"
+        android:layout_toRightOf="@id/liveusernamemsg"
         android:text=":"
         android:textSize="15sp"
         android:textColor="#26BEFF"
@@ -60,33 +60,9 @@
         android:textIsSelectable="true"
         android:textSize="15sp"
         app:emojiconSize="8pt" />
-    <ImageView
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:id="@+id/livesticker"
-        android:layout_marginBottom="5dp"
 
 
 
-
-        android:gravity="start"/>
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:id="@+id/liveimage"
-        android:layout_marginTop="10dp"
-
-        android:layout_marginBottom="5dp"
-
-        android:gravity="start"/>
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/livedownloader"
-        android:visibility="gone"
-
-        android:background="@drawable/ic_get_app_white_24dp"
-        android:layout_centerInParent="true"/>
 
     </RelativeLayout>
     <TextView

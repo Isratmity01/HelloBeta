@@ -171,7 +171,7 @@ public class LeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public ImageView badge;
         public MessageViewHolder(View v) {
             super(v);
-            badge=(ImageView)itemView.findViewById(R.id.badge);
+            badge=(ImageView)itemView.findViewById(R.id.badges);
             leveltext = (TextView) itemView.findViewById(R.id.leveltext);
             title = (TextView) itemView.findViewById(R.id.nameView);
             serials = (TextView) itemView.findViewById(R.id.serial);

@@ -1,5 +1,7 @@
 package com.grameenphone.hello.Fragments;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -23,6 +26,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -107,6 +111,7 @@ import static android.app.Activity.RESULT_OK;
 public class Fragment_PrivateChat extends Fragment {
     public static String CHAT_ROOMS_CHILD = "chat_rooms";
     public static String MESSAGES_CHILD = "";
+    private static final int PERMISSION_REQUEST_STORAGE = 1044;
     String firstDate, newDate;
     int timefirst, timesecond;
     private RelativeLayout sendbackground;
@@ -168,7 +173,7 @@ public class Fragment_PrivateChat extends Fragment {
     private View rootView;
     private ImageView emojiImageView;
     SharedPreferences preferences;
-    private String[] Monthlist = {"জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
+    private String[] Monthlist = {"জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
             "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"};
 
     private ProgressDialog progressDialog;
@@ -286,15 +291,15 @@ public class Fragment_PrivateChat extends Fragment {
         android.support.v7.app.ActionBar ab =  ((AppCompatActivity)getActivity()).getSupportActionBar();
         //toolbarp2p.removeAllViews();
         //toolbarp2p.addView(mCustomView);
-       // toolbarp2p.addView(mCustomView,0);
+        // toolbarp2p.addView(mCustomView,0);
         //titletext=(TextView)toolbarp2p.findViewById(R.id.action_bar_title_1);
 
         //receiverPhoto=(ImageView)toolbarp2p.findViewById(R.id.conversation_contact_photo);
-       // toolbarp2p.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-       // titletext.setText(roomName) ;
+        // toolbarp2p.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        // titletext.setText(roomName) ;
         //((AppCompatActivity)getActivity()).setSupportActionBar(toolbarp2p);
 
-       // ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         jumpToBottom = (Button) view.findViewById(R.id.jump_bottom);
         LoadMore=(Button)view.findViewById(R.id.jump_totop) ;
@@ -497,6 +502,7 @@ public class Fragment_PrivateChat extends Fragment {
         attachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                askForStoragePermission();
                 photoGalleryIntent();
             }
         });
@@ -1240,7 +1246,7 @@ public class Fragment_PrivateChat extends Fragment {
                                 sender.getUid(), receiver.getUid(), sender.getPhotoUrl(), "Image", time, file, file.getType());
                         mFirebaseDatabaseReference.child(CHAT_ROOMS_CHILD).child(MESSAGES_CHILD).push().setValue(chat);
                         //    chat.setReadStatus(0);
-                        //  chat.setMessage("ছবি পাঠিয়েছেন");
+                        //  chat.setMessage("ছবি পাঠিয়েছেন");
                         //dbHelper.addMessage(chat, chat.getChatId());
                         //EventBus.getDefault().post(new ChatSent("yes"));
                         IsSent=true;
@@ -1265,5 +1271,83 @@ public class Fragment_PrivateChat extends Fragment {
         }
 
     }
+
+
+
+
+    public void askForStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+                    builder.setTitle("Storage access needed");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setMessage("please confirm Storage access");//TODO put real question
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @TargetApi(Build.VERSION_CODES.M)
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            requestPermissions(
+                                    new String[]
+                                            {Manifest.permission.READ_EXTERNAL_STORAGE}
+                                    , PERMISSION_REQUEST_STORAGE);
+                        }
+                    });
+                    builder.show();
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+
+                } else {
+
+                    // No explanation needed, we can request the permission.
+
+                    ActivityCompat.requestPermissions( getActivity(),
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            PERMISSION_REQUEST_STORAGE);
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                }
+            } else {
+                photoGalleryIntent();
+            }
+        } else {
+            photoGalleryIntent();
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    photoGalleryIntent();
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+                    Toast.makeText(getActivity(), "No Permissions ", Toast.LENGTH_SHORT).show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
+
 
 }

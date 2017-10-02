@@ -1,178 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background"
-    android:padding="5dp"
-    android:id="@+id/root_view">
+    android:padding="5dp">
 
-<android.support.design.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true">
-
-
-
-    <RelativeLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="58dp">
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/chatroomRecyclerView"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:paddingBottom="58dp"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
 
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|center"
-        android:paddingBottom="65dp">
-
-        <Button
-            android:id="@+id/jump_totop"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:background="@drawable/shape_jump_to_bottom"
-            android:text="@string/check_more"
-            android:textAllCaps="false"
-            android:textColor="#FFF" />
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:paddingBottom="65dp">
-
-        <Button
-            android:id="@+id/jump_bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:background="@drawable/shape_jump_to_bottom"
-            android:text="@string/jump_to_latest"
-            android:textAllCaps="false"
-            android:textColor="#FFF" />
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:weightSum="3"
-        android:gravity="bottom"
-        android:layout_gravity="bottom"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="2.6"
-            android:layout_height="wrap_content">
-
-
-
-            <RelativeLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/chatroomRecyclerView"
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginLeft="3dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_edittext"
-                >
+                android:layout_height="match_parent" />
 
+        </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center"
+            android:paddingBottom="65dp">
 
+            <Button
+                android:id="@+id/jump_totop"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@drawable/shape_jump_to_bottom"
+                android:text="@string/check_more"
+                android:textAllCaps="false"
+                android:textColor="#FFF" />
 
+        </RelativeLayout>
 
-                <ImageView
-                    android:id="@+id/emoticon"
-                    android:layout_width="24dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_gravity="bottom"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:paddingBottom="65dp">
 
-                    />
+            <Button
+                android:id="@+id/jump_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@drawable/shape_jump_to_bottom"
+                android:text="@string/jump_to_latest"
+                android:textAllCaps="false"
+                android:textColor="#FFF" />
 
-                <github.ankushsachdeva.emojicon.EmojiconEditText
-                    android:id="@+id/messageEditText"
-                    android:layout_width="190dp"
+        </RelativeLayout>
 
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@android:color/transparent"
-                    android:maxLines="4"
-                    android:layout_toEndOf="@+id/emoticon"
-                    android:layout_toRightOf="@+id/emoticon"
-
-
-                    android:hint="@string/hint_write_message"
-                    android:maxWidth="210dp"
-                    android:textColorHint="#AEC3E3"
-                    ads:emojiconSize="28sp" />
-                <ImageView
-                    android:id="@+id/attachment"
-                    android:layout_width="24dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_gravity="bottom"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-
-
-                    app:srcCompat="@drawable/ic_attach"
-                    />
-
-
-
-
-
-
-            </RelativeLayout>
-        </LinearLayout>
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_marginTop="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.6">
 
 
-            android:layout_weight=".4"
-            android:gravity="center"
-            android:layout_marginLeft="4dp"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:background="@drawable/shape_edittext"
+                    android:orientation="horizontal">
 
-            android:layout_height="wrap_content">
-            <RelativeLayout
-                android:layout_width="@dimen/sendbuttonsouter"
-                android:id="@+id/sendbackground"
-                android:background="@drawable/circular_shape"
-                android:layout_height="@dimen/sendbuttonsouter">
-                <ImageView
-                    android:layout_width="@dimen/sendbuttonsinside"
-                    android:layout_height="@dimen/sendbuttonsinside"
-                    android:id="@+id/send_button"
-                    android:paddingLeft="5dp"
-                    android:layout_gravity="center"
-                    android:layout_centerInParent="true"
-                    app:srcCompat="@drawable/ic_send"
-                    />
-            </RelativeLayout>
 
+                    <ImageView
+                        android:id="@+id/emoticon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+
+                        />
+
+                    <github.ankushsachdeva.emojicon.EmojiconEditText
+                        android:id="@+id/messageEditText"
+                        android:layout_width="190dp"
+
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_toEndOf="@+id/emoticon"
+                        android:layout_toRightOf="@+id/emoticon"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/hint_write_message"
+
+
+                        android:maxLines="4"
+                        android:maxWidth="210dp"
+                        android:textColorHint="#AEC3E3"
+                        ads:emojiconSize="28sp" />
+
+                    <ImageView
+                        android:id="@+id/attachment"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="12dp"
+
+
+                        app:srcCompat="@drawable/ic_attach" />
+
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="3dp"
+                android:layout_weight=".4"
+
+                android:gravity="center">
+
+                <RelativeLayout
+                    android:id="@+id/sendbackground"
+                    android:layout_width="@dimen/sendbuttonsouter"
+                    android:layout_height="@dimen/sendbuttonsouter"
+                    android:background="@drawable/circular_shape">
+
+                    <ImageView
+                        android:id="@+id/send_button"
+                        android:layout_width="@dimen/sendbuttonsinside"
+                        android:layout_height="@dimen/sendbuttonsinside"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:paddingLeft="5dp"
+                        app:srcCompat="@drawable/ic_send" />
+                </RelativeLayout>
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

@@ -245,6 +245,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
 
+
+
+
     }
 
     private void loadliveuserchips()
@@ -349,6 +352,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         fragmentTransaction.commit();
     }
 
+
+
+
     public void askForContactPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -394,6 +400,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             loadContacts();
         }
     }
+
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -675,6 +684,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         fragmentTransactionLive.commit();
 
 
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
     }
 
 
