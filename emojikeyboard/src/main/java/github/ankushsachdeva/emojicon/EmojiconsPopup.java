@@ -252,13 +252,14 @@ public class EmojiconsPopup extends PopupWindow implements ViewPager.OnPageChang
 
 						new StickerGridView(mContext, AppConstants.VHUTO, recentstickers, this),
 						new StickerGridView(mContext, AppConstants.Golu, recentstickers, this),
-						new StickerGridView(mContext,AppConstants.Jhontu,recentstickers,this)
+						new StickerGridView(mContext,AppConstants.Jhontu,recentstickers,this),
+						new StickerGridView(mContext,AppConstants.Robot,recentstickers,this)
 
 				)
 		);
 		emojisPager.setAdapter(mEmojisAdapter);
 		mEmojiTabs = new View[6];
-		mStickerTabs = new View[3];
+		mStickerTabs = new View[4];
 		mTopTabs = new Button[2];
 		mTopTabs[0] = (Button)view.findViewById(R.id.emoticons);
 
@@ -300,6 +301,7 @@ public class EmojiconsPopup extends PopupWindow implements ViewPager.OnPageChang
 		mStickerTabs[0] = view.findViewById(R.id.stickers_tab_0);
 		mStickerTabs[1] = view.findViewById(R.id.stickers_tab_1);
 		mStickerTabs[2] = view.findViewById(R.id.stickers_tab_2);
+		mStickerTabs[3] = view.findViewById(R.id.stickers_tab_3);
 		for (int i = 0; i < mStickerTabs.length; i++) {
 			final int position = i;
 			mStickerTabs[i].setOnClickListener(new View.OnClickListener() {

@@ -220,7 +220,17 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/jhontu" />
 
-
+                <ImageButton
+                    android:id="@+id/stickers_tab_3"
+                    android:layout_width="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/robotheader" />
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>

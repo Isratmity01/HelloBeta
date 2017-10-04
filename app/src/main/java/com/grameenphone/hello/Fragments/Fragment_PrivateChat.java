@@ -372,7 +372,7 @@ public class Fragment_PrivateChat extends Fragment {
 
             @Override
             public void onEmojiconClicked(Emojicon emojicon) {
-                if (emojiconEditText == null || emojicon.getEmoji().contains("golu")||emojicon.getEmoji().contains("sticker")||emojicon.getEmoji().contains("jhontu")) {
+                if (emojiconEditText == null || emojicon.getEmoji().contains("golu")||emojicon.getEmoji().contains("robot")||emojicon.getEmoji().contains("sticker")||emojicon.getEmoji().contains("jhontu")) {
                     if (emojicon.getEmojiId() == 0) {
                         long time = System.currentTimeMillis();
                         final Chat chat = new Chat(sender.getName(), receiver.getName(),
@@ -393,7 +393,7 @@ public class Fragment_PrivateChat extends Fragment {
 
                 int start = emojiconEditText.getSelectionStart();
                 int end = emojiconEditText.getSelectionEnd();
-                if(emojicon.getEmoji().contains("golu")||emojicon.getEmoji().contains("sticker")||emojicon.getEmoji().contains("jhontu"))
+                if(emojicon.getEmoji().contains("golu")||emojicon.getEmoji().contains("sticker")||emojicon.getEmoji().contains("robot")||emojicon.getEmoji().contains("jhontu"))
                 {
 
                 }

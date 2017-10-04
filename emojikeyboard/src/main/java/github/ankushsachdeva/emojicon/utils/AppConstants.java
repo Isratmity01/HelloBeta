@@ -17,6 +17,11 @@ public class AppConstants {
             Emojicon.fromChars("R.drawable.golu6"),Emojicon.fromChars("R.drawable.golu7"),
             Emojicon.fromChars("R.drawable.golu8"),Emojicon.fromChars("R.drawable.golu9"),
             Emojicon.fromChars("R.drawable.golu10")};
+    public static final Emojicon[] Robot = {Emojicon.fromChars("R.drawable.robot1"),
+            Emojicon.fromChars("R.drawable.robot2"),Emojicon.fromChars("R.drawable.robot3"),
+            Emojicon.fromChars("R.drawable.robot4"),Emojicon.fromChars("R.drawable.robot5"),
+            Emojicon.fromChars("R.drawable.robot6"),Emojicon.fromChars("R.drawable.robot7"),
+            Emojicon.fromChars("R.drawable.robot8"),Emojicon.fromChars("R.drawable.robot9")};
     public static final Emojicon[] VHUTO = {Emojicon.fromChars("R.drawable.sticker1"),
             Emojicon.fromChars("R.drawable.sticker2"),Emojicon.fromChars("R.drawable.sticker3"),
             Emojicon.fromChars("R.drawable.sticker4"),Emojicon.fromChars("R.drawable.sticker5"),
