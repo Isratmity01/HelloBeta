@@ -12,6 +12,8 @@
     <string name="phone_number_field">মোবাইল নম্বর লিখুন</string>
     <string name="consent">আমি এই অ্যাপ এর টার্মস এন্ড কন্ডিশন এ সম্মতি দিচ্ছি</string>
     <string name="show_off">১০০% ♥ দিয়ে বানানো দেশী অ্যাপ</string>
-
+    <string name="hellodisclaimer">"<b>"হ্যালো!"</b>" \nআমাদের আপনার কাছ থেকে দুটি পারমিশন প্রয়োজন। \n\n
+- কন্ট্যাক্টস এর পারমিশন দিলে আপনি আপনার অ্যাড্রেসবুক থেকে হ্যালো তে যারা আছে তাদের মেসেজ পাঠাতে পারবেন।\n
+- গ্যালারীর পারমিশন দিলে আপনি ছবি অ্যাটাচ করতে পারবেন।</string>
     <string name="phone_submit_button">শুরু করুন</string>
 </resources>
