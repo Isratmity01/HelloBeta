@@ -461,7 +461,11 @@ public class SignInActivity extends AppCompatActivity implements
                 }
                 String phnNumber=mPhoneNumberField.getText().toString();
                  joinedNumber=ccp.getFullNumberWithPlus();
-                joinedNumber=joinedNumber+phnNumber.substring(phnNumber.length()-10);;
+                if(!joinedNumber.equals("+880"))
+                {
+                    joinedNumber=joinedNumber+phnNumber;
+                }
+                else  joinedNumber=joinedNumber+phnNumber.substring(phnNumber.length()-10);;
                 startPhoneNumberVerification(joinedNumber);
                // startPhoneNumberVerification(mPhoneNumberField.getText().toString());
                 break;
