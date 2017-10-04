@@ -39,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.grameenphone.hello.Adapter.ContactListRecyclerAdapter;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Compare;
+import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.fcm.FcmNotificationBuilder;
 import com.grameenphone.hello.model.ChatRoom;
@@ -52,6 +53,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
+import static com.grameenphone.hello.Utils.Userlevels.getLevelName;
 
 public class Fragment_Contacts extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -224,6 +227,18 @@ public class Fragment_Contacts extends Fragment {
         LayoutInflater factory = LayoutInflater.from(getActivity());
         final View view = factory.inflate(R.layout.req_layout, null);
         TextView name = (TextView) view.findViewById(R.id.profile_name);
+        TextView level = (TextView) view.findViewById(R.id.level);
+
+        TextView point = (TextView) view.findViewById(R.id.point);
+
+        int points=user.getUserpoint();
+
+        name.setText(user.getName());
+
+        level.setText(getLevelName(points));
+
+        point.setText("পয়েন্ট : "+ EngBng.EngBng(String.valueOf(points)));
+
         name.setText(user.getName());
         ImageView profile = (ImageView) view.findViewById(R.id.profile_picture);
         Glide.with(getActivity()).load(user.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity()))

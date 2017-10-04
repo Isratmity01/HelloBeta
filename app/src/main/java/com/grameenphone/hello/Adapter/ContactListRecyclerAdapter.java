@@ -111,8 +111,7 @@ public class ContactListRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
             public void onClick(View view) {
 
 
-                User current = new User(data.getUid(),data.getName(),data.getPhone(),data.getThumb());
-                current.setFirebaseToken(data.getFirebaseToken());
+                User current = dbHelper.getUser(data.getUid());
 
                 if(current!=null && !(current.getUid()).equals(me.getUid()) ) {
                     final String chatRoomId = Compare.getRoomName(current.getUid(), me.getUid());
