@@ -626,7 +626,7 @@ public class Fragment_MainPage extends Fragment {
     };
     private void LiveChips() {
 
-      // liveUser=((MainActivity)getActivity()).getFinalliveusers();
+       liveUser=((MainActivity)getActivity()).getFinalliveusers();
         liveUserListAdapter = new LiveUserListAdapter(
                 getActivity(),
                 liveUser,

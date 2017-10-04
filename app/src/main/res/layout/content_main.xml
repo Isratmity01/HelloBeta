@@ -126,7 +126,7 @@
                         android:background="@android:color/transparent"
                         android:divider="@null"
                         ads:stackFromEnd="true"
-                        ads:reverseLayout="true"
+                        
                         android:fadeScrollbars="false"
                         android:orientation="horizontal"
                         android:requiresFadingEdge="horizontal|vertical"
