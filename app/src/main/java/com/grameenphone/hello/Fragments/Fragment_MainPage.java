@@ -47,14 +47,17 @@ import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Compare;
 import com.grameenphone.hello.Utils.EngBng;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
+import com.grameenphone.hello.events.PushNotificationEvent;
 import com.grameenphone.hello.fcm.FcmNotificationBuilder;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
+import com.grameenphone.hello.model.ChatSent;
 import com.grameenphone.hello.model.EventReceived;
 import com.grameenphone.hello.model.User;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,6 +88,7 @@ public class Fragment_MainPage extends Fragment {
     private ArrayList<ChatRoom> userArrayList = new ArrayList<>();
     private ArrayList<ChatRoom> chatRequests = new ArrayList<>();
 
+    private static ArrayList<ChatRoom> chatRooms = new ArrayList<>();
     RecyclerView allusers;
     private MenuItem item;
     private float density;
@@ -622,7 +626,7 @@ public class Fragment_MainPage extends Fragment {
     };
     private void LiveChips() {
 
-        // liveUser=((MainActivity)getActivity()).finalliveusers;
+        liveUser=((MainActivity)getActivity()).getFinalliveusers();
         liveUserListAdapter = new LiveUserListAdapter(
                 getActivity(),
                 liveUser,
@@ -754,7 +758,22 @@ public class Fragment_MainPage extends Fragment {
     }
 
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPushNotificationEvent(PushNotificationEvent pushNotificationEvent) {
 
+        chatRooms.clear();
+
+        //chatRooms.addAll(populateChatRoomArraylist());
+        roomListAdapter.refresh();
+    }
+    @Subscribe
+    public void onEvent(ChatSent event){
+        // your implementation
+        chatRooms.clear();
+        //chatRooms.addAll(populateChatRoomArraylist());
+        roomListAdapter.refresh();
+
+    }
 
 
 }
