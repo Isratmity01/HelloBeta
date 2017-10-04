@@ -90,7 +90,7 @@ public class Fragment_UserProfileEdit extends Fragment  {
             R.drawable.supergirl,R.drawable.superman,R.drawable.wolverine,R.drawable.wonderwoman};
     AvatarAdapter avatarAdapter;
     View fragmentView;
-
+    private int userPoint,userMod;
 
     private FirebaseAuth mAuth;
     private FirebaseUser mFirebaseUser;
@@ -100,6 +100,7 @@ public class Fragment_UserProfileEdit extends Fragment  {
     private GridView gridView;
     private String username, photourl;
     private EditText name;
+    private User me;
     private static final int IMAGE_GALLERY_REQUEST = 101;
     private String profilepicUrl = null;
     private ProgressDialog progressDialog;
@@ -114,6 +115,7 @@ public class Fragment_UserProfileEdit extends Fragment  {
     private Boolean gridClicked=false;
     private Toolbar toolbar;
 
+    private DatabaseHelper dbHelper;
     public Fragment_UserProfileEdit() {
         // Required empty public constructor
     }
@@ -172,6 +174,10 @@ public class Fragment_UserProfileEdit extends Fragment  {
         name = (EditText) view.findViewById(R.id.name_field);
         progressDialog=new ProgressDialog(getActivity());
         name.setText(username);
+        dbHelper = new DatabaseHelper(getActivity());
+        me=dbHelper.getMe();
+        userPoint=me.getUserpoint();
+        userMod=me.isMod();
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             mFirebaseUser = mAuth.getCurrentUser();
@@ -343,7 +349,8 @@ public class Fragment_UserProfileEdit extends Fragment  {
            user = new User(uid, user_name, phone, photo);
 
             user.setFirebaseToken(FirebaseInstanceId.getInstance().getToken());
-
+            user.setUserpoint(userPoint);
+            user.setMod(userMod);
 
             boolean success = false;
             try {
@@ -352,7 +359,6 @@ public class Fragment_UserProfileEdit extends Fragment  {
                         .setValue(user);
 
 
-                DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
                 dbHelper.addMe(user);
 
 
