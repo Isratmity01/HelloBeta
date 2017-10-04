@@ -626,7 +626,7 @@ public class Fragment_MainPage extends Fragment {
     };
     private void LiveChips() {
 
-        liveUser=((MainActivity)getActivity()).getFinalliveusers();
+      // liveUser=((MainActivity)getActivity()).getFinalliveusers();
         liveUserListAdapter = new LiveUserListAdapter(
                 getActivity(),
                 liveUser,
@@ -634,6 +634,7 @@ public class Fragment_MainPage extends Fragment {
                 Fragment_MainPage.this);
 
         userrecylcer.setAdapter(liveUserListAdapter);
+        liveUserListAdapter.notifyDataSetChanged();
         onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
         if (liveUser.size() > 0) liveHeader.setVisibility(View.VISIBLE);
     }
