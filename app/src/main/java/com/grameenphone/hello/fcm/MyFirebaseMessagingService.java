@@ -30,6 +30,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     String ReceivedRoomId;
     int count = 1;
     private DatabaseHelper databaseHelper;
+    private int Unique_Integer_Number;
 
 
     /**
@@ -188,8 +189,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra("room_name", title);
 
 
+        if(roomuid != null) {
+            Unique_Integer_Number = roomuid.hashCode();
+        } else if ( type.contains( "bot" ) ){
+            Unique_Integer_Number = 0;
+        } else {
+            Unique_Integer_Number = 1;
+        }
+
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, Unique_Integer_Number, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -205,7 +215,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0, notificationBuilder.build());
+
+        notificationManager.notify( Unique_Integer_Number, notificationBuilder.build());
     }
 
 
