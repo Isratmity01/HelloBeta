@@ -1,11 +1,13 @@
 package com.grameenphone.hello.Fragments;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -30,7 +32,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -57,6 +61,7 @@ import com.grameenphone.hello.fcm.FcmNotificationBuilder;
 import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.ChatSent;
+import com.grameenphone.hello.model.ChatSent2;
 import com.grameenphone.hello.model.EventReceived;
 import com.grameenphone.hello.model.User;
 
@@ -83,7 +88,7 @@ public class Fragment_MainPage extends Fragment {
     public static final String STORAGE_URL = "gs://mars-e7047.appspot.com";
     public static final String ATTACHMENT = "attachments";
     StorageReference storageRef;
-
+    private ProgressBar mainProgress;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private RoomListAdapter roomListAdapter;
     private IncomingChatRequestsAdapter chatRequestsAdapter;
@@ -113,12 +118,14 @@ public class Fragment_MainPage extends Fragment {
 
     private ImageView cardbanner;
 
+    EventBus myEventBus;
+    private SharedPreferences mSharedPreferences;
     private JSONObject chatrequestobject = new JSONObject();
-
+    private boolean firstRun;
     public Fragment_MainPage() {
         // Required empty public constructor
     }
-
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -126,6 +133,8 @@ public class Fragment_MainPage extends Fragment {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setHasOptionsMenu(true);
         setRetainInstance(true);
+        myEventBus = EventBus.getDefault();
+        EventBus.getDefault().register(this);
         storageRef = storage.getReferenceFromUrl(STORAGE_URL).child(ATTACHMENT);
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
@@ -135,7 +144,6 @@ public class Fragment_MainPage extends Fragment {
 
         // ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        EventBus.getDefault().register(this);
     //    setActionBarTitle("");
 
 
@@ -160,7 +168,7 @@ public class Fragment_MainPage extends Fragment {
                     container, false);
             bindViews(fragmentView);
         }
-
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         return fragmentView;
     }
@@ -188,7 +196,9 @@ public class Fragment_MainPage extends Fragment {
             toolbar=(Toolbar)getActivity().findViewById(R.id.toolbar);
         onlineUserCount = (TextView) view.findViewById(R.id.onlineusers);
         liveusercount = 0;
-
+        mainProgress=(ProgressBar)view.findViewById(R.id.mainpageprogress);
+        mainProgress.setVisibility(View.VISIBLE);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         liveHeader = (TextView) view.findViewById(R.id.liveuserheader);
 
         msgreqHeader = (TextView) view.findViewById(R.id.incoming_chat_request_header);
@@ -441,139 +451,23 @@ public class Fragment_MainPage extends Fragment {
 
 
         userArrayList.clear();
-        userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+        firstRun= sharedPreferences.getBoolean("fRun", false);
+        if(firstRun==false)
+        {
+            Toast.makeText(getActivity(),"ডাটা লোড হচ্ছে, দয়া করে অপেক্ষা করুন",Toast.LENGTH_LONG).show();
+            callfirebasefunction();
+            sharedPreferences.edit().putBoolean("fRun", true).apply();
+        }
+        else {
+            userArrayList.clear();
+            userArrayList = populateChatRoomArraylist();
+        }
+      //  userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+
 
 
         chatRequests.clear();
         chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
-
-
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid())
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-                        if (chatroom != null) {
-                            if(chatroom.getRoomId()!=null) {
-
-                                databaseHelper.addRoom(chatroom.getRoomId(),
-                                        chatroom.getName(),
-                                        chatroom.getPhotoUrl(),
-                                        chatroom.getRequestStatus());
-
-                                if (chatroom.getRequestStatus() == 1) {
-                                    userArrayList.add(chatroom);
-                                } else if (chatroom.getRequestStatus() == 2) {
-                                    chatRequests.add(chatroom);
-                                }
-
-
-                                userArrayList.clear();
-                                userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
-
-
-                                chatRequests.clear();
-                                chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
-                            }
-
-                        }
-
-                        roomListAdapter.notifyDataSetChanged();
-                        chatRequestsAdapter.notifyDataSetChanged();
-
-
-                        if(chatRequests.size() > 0) {
-                            msgreqHeader.setVisibility(View.VISIBLE);
-                        } else {
-                            msgreqHeader.setVisibility(View.GONE);
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                        ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-
-                        if (chatroom != null) {
-
-                            if (chatroom.getRequestStatus() == 1) {
-
-                                databaseHelper.addRoom(chatroom.getRoomId(),
-                                        chatroom.getName(),
-                                        chatroom.getPhotoUrl(),
-                                        chatroom.getRequestStatus());
-
-                                userArrayList.clear();
-                                userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
-
-
-                                chatRequests.clear();
-                                chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
-                            }
-
-                        }
-
-                        roomListAdapter.notifyDataSetChanged();
-                        chatRequestsAdapter.notifyDataSetChanged();
-
-
-
-
-                        if(chatRequests.size() > 0) {
-                            msgreqHeader.setVisibility(View.VISIBLE);
-                        } else {
-                            msgreqHeader.setVisibility(View.GONE);
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-                        ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-
-                        if (chatroom != null && chatroom.getRoomId() != null) {
-                            databaseHelper.addRoom(chatroom.getRoomId(),
-                                    chatroom.getName(),
-                                    chatroom.getPhotoUrl(),
-                                    100);
-
-                            userArrayList.clear();
-                            userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
-
-
-                            chatRequests.clear();
-                            chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
-
-
-                        }
-
-                        roomListAdapter.notifyDataSetChanged();
-                        chatRequestsAdapter.notifyDataSetChanged();
-
-                        if(chatRequests.size() > 0) {
-                            msgreqHeader.setVisibility(View.VISIBLE);
-                        } else {
-                            msgreqHeader.setVisibility(View.GONE);
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
 
         roomListAdapter = new RoomListAdapter(getActivity(), userArrayList, Fragment_MainPage.this,databaseHelper,myself);
         msgrecyler.setNestedScrollingEnabled(false);
@@ -581,8 +475,6 @@ public class Fragment_MainPage extends Fragment {
         layoutManager.setAutoMeasureEnabled(true);
         msgrecyler.setLayoutManager(layoutManager);
         msgrecyler.setAdapter(roomListAdapter);
-
-
         chatRequestsAdapter = new IncomingChatRequestsAdapter(getActivity(), chatRequests, Fragment_MainPage.this, myself);
         chatReqrecyler.setNestedScrollingEnabled(false);
 
@@ -598,14 +490,14 @@ public class Fragment_MainPage extends Fragment {
 
 
         LiveChips();
-        handler = new Handler();
+       // handler = new Handler();
 
 
 
-        handler.post(runnableCode);
+       // handler.post(runnableCode);
 
     }
-    private Runnable runnableCode = new Runnable() {
+  /*  private Runnable runnableCode = new Runnable() {
 
         @Override
 
@@ -650,7 +542,185 @@ public class Fragment_MainPage extends Fragment {
 
         }
 
-    };
+    };*/
+  private void callfirebasefunction()
+  {
+      mainProgress.setVisibility(View.VISIBLE);
+      mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+      mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid())
+              .addChildEventListener(new ChildEventListener() {
+                  @Override
+                  public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                      ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
+                      if (chatroom != null) {
+                          if(chatroom.getRoomId()!=null ) {
+
+                              databaseHelper.addRoom(chatroom.getRoomId(),
+                                      chatroom.getName(),
+                                      chatroom.getPhotoUrl(),
+                                      chatroom.getRequestStatus());
+
+
+
+
+                              //  userArrayList.clear();
+                              //userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+
+
+                              chatRequests.clear();
+                              chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
+                          }
+
+                      }
+
+                      roomListAdapter.notifyDataSetChanged();
+                      chatRequestsAdapter.notifyDataSetChanged();
+
+
+                      if(chatRequests.size() > 0) {
+                          msgreqHeader.setVisibility(View.VISIBLE);
+                      } else {
+                          msgreqHeader.setVisibility(View.GONE);
+                      }
+
+
+                  }
+
+                  @Override
+                  public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                      ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
+
+                      if (chatroom != null) {
+
+                          if (chatroom.getRequestStatus() == 1) {
+
+                              databaseHelper.addRoom(chatroom.getRoomId(),
+                                      chatroom.getName(),
+                                      chatroom.getPhotoUrl(),
+                                      chatroom.getRequestStatus());
+
+                              // userArrayList.clear();
+                              //   userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+
+
+                              chatRequests.clear();
+                              chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
+                          }
+
+                      }
+
+                      roomListAdapter.notifyDataSetChanged();
+                      chatRequestsAdapter.notifyDataSetChanged();
+
+
+
+
+                      if(chatRequests.size() > 0) {
+                          msgreqHeader.setVisibility(View.VISIBLE);
+                      } else {
+                          msgreqHeader.setVisibility(View.GONE);
+                      }
+
+
+                  }
+
+                  @Override
+                  public void onChildRemoved(DataSnapshot dataSnapshot) {
+                      ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
+
+                      if (chatroom != null && chatroom.getRoomId() != null) {
+                          databaseHelper.addRoom(chatroom.getRoomId(),
+                                  chatroom.getName(),
+                                  chatroom.getPhotoUrl(),
+                                  100);
+
+                          // userArrayList.clear();
+                          // userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+
+
+                          chatRequests.clear();
+                          chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
+
+
+                      }
+
+                      roomListAdapter.notifyDataSetChanged();
+                      chatRequestsAdapter.notifyDataSetChanged();
+
+                      if(chatRequests.size() > 0) {
+                          msgreqHeader.setVisibility(View.VISIBLE);
+                      } else {
+                          msgreqHeader.setVisibility(View.GONE);
+                      }
+
+
+                  }
+
+                  @Override
+                  public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                  }
+
+                  @Override
+                  public void onCancelled(DatabaseError databaseError) {
+
+                  }
+              });
+
+      mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+          public void onDataChange(DataSnapshot dataSnapshot) {
+              userArrayList.clear();
+              mainProgress.setVisibility(View.GONE);
+              userArrayList.addAll(populateChatRoomArraylist());
+              roomListAdapter.refresh();
+
+          }
+
+          @Override
+          public void onCancelled(DatabaseError databaseError) {
+
+          }
+
+
+      });
+
+
+
+
+  }
+    private ArrayList<ChatRoom> populateChatRoomArraylist() {
+        ArrayList<ChatRoom> userArrayList = databaseHelper.getAllRoombyStatus(1);
+
+         for(ChatRoom chatRoom : userArrayList){
+
+            if(chatRoom.getRoomId() != null) {
+
+                Chat chat = databaseHelper.getLastMsg(chatRoom.getRoomId());
+
+                if(chat != null && chat.getMessage() !=null && chat.getTimestamp() != 0){
+
+                    chatRoom.setLastChat(chat.getMessage());
+
+                    chatRoom.setTimestamp(chat.getTimestamp());
+
+                }
+
+
+
+
+            }
+
+        }
+
+        Collections.sort( userArrayList, compareChatroom );
+
+        return userArrayList;
+
+
+
+
+    }
     private void LiveChips()
 
     {
@@ -762,34 +832,7 @@ public class Fragment_MainPage extends Fragment {
 
 
 
-    @Subscribe
-    public void onEvent(EventReceived event) {
 
-        if (event.isLoginSuccessful()) {
-            if (liveUser.contains(event.getResponseMessage())) {
-                liveUser.remove(event.getResponseMessage());
-            }
-            liveUser.add(0, event.getResponseMessage());
-            liveHeader.setVisibility(View.VISIBLE);
-            //setLiveusercount(liveusercount=liveUser.size());
-            liveusercount++;
-            onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
-            liveUserListAdapter.notifyDataSetChanged();
-
-        } else {
-            liveUser.remove(event.getResponseMessage());
-            liveusercount--;
-            onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
-            if (liveUser.size() == 0) liveHeader.setVisibility(View.GONE);
-            //  setLiveusercount(liveusercount=liveUser.size());
-            // liveUser.remove(event.getResponseMessage());
-            liveUserListAdapter.notifyDataSetChanged();
-
-        }
-
-        //check if login was successful
-
-    }
 
     @Override
     public void onResume() {
@@ -885,20 +928,30 @@ public class Fragment_MainPage extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushNotificationEvent(PushNotificationEvent pushNotificationEvent) {
 
-        chatRooms.clear();
+        userArrayList.clear();
 
-        //chatRooms.addAll(populateChatRoomArraylist());
+        userArrayList.addAll(populateChatRoomArraylist());
         roomListAdapter.refresh();
     }
-    @Subscribe
-    public void onEvent(ChatSent event){
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onChatSentEvent(ChatSent event){
         // your implementation
-        chatRooms.clear();
-        //chatRooms.addAll(populateChatRoomArraylist());
+        userArrayList.clear();
+        userArrayList.addAll(populateChatRoomArraylist());
         roomListAdapter.refresh();
+      //  chatRequestsAdapter.refresh();
 
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onChatSent2Event(ChatSent2 event){
+        // your implementation
 
+        callfirebasefunction();
+
+
+        //  chatRequestsAdapter.refresh();
+
+    }
 
     public void getScreenDPI(){
         DisplayMetrics metrics = new DisplayMetrics();

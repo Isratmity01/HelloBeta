@@ -14,11 +14,13 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.grameenphone.hello.Activities.MainActivity;
+import com.grameenphone.hello.Fragments.Fragment_PrivateChat;
 import com.grameenphone.hello.R;
 import com.grameenphone.hello.Utils.Constant;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.events.PushNotificationEvent;
 import com.grameenphone.hello.model.Chat;
+import com.grameenphone.hello.model.ChatSent2;
 import com.grameenphone.hello.model.FileModel;
 import com.grameenphone.hello.model.NotificationModel;
 
@@ -100,15 +102,48 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         message = staff.getSender() + " ছবি পাঠিয়েছেন";
                     }
 
-                    sendNotification(
+                   /* sendNotification(
                             "p2p",
                             title,
                             message,
                             staff.getSender(),
                             fcmToken,
-                            roomid);
+                            roomid);*/
 
+                    if (!Fragment_PrivateChat.active) {
 
+                        sendNotification(
+                                "p2p",
+                                title,
+                                message,
+                                staff.getSender(),
+                                fcmToken,
+                                roomid);
+
+                    } else if (Fragment_PrivateChat.active && !Fragment_PrivateChat.getUser().equals(staff.getSender())) {
+
+                        sendNotification(
+                                "p2p",
+                                title,
+                                message,
+                                staff.getSender(),
+                                fcmToken,
+                                roomid);
+
+                    }else if (Fragment_PrivateChat.active && Fragment_PrivateChat.getUser().equals(staff.getSender())) {
+
+                        EventBus.getDefault().post(new PushNotificationEvent(title,
+                                message,
+                                staff.getSender(),
+                                fcmToken,
+                                roomid));
+                    } else {
+                        EventBus.getDefault().post(new PushNotificationEvent(title,
+                                message,
+                                staff.getSender(),
+                                fcmToken,
+                                roomid));
+                    }
                 }
             }
 
@@ -171,7 +206,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                   String firebaseToken,
                                   String roomuid) {
 
-
+if(type.equals("request"))
+{
+    EventBus.getDefault().post(new ChatSent2("yes"));
+} else
         EventBus.getDefault().post(new PushNotificationEvent(title,
                 message,
                 sender,

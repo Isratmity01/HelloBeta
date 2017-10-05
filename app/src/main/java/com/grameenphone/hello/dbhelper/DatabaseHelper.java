@@ -1054,7 +1054,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public Boolean ifRoomexist(String chatRoomID){
 
+        ChatRoom chatRoom = new ChatRoom();
+
+        String selection = Constant.Database.RoomDetail.ROOM_ID+" = ? ";
+        String[] selectionArgs = new String[] {chatRoomID};
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(Constant.Database.TABLE_ROOM_LIST, null,  selection, selectionArgs, null,  null, null, null);
+
+        try {
+            if (cursor.moveToFirst()) {
+                return true;
+
+            }
+        } catch (Exception e){
+            Log.d(TAG, "chatroom nullpointer exception");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+                db.close();
+            }
+        }
+
+        return false;
+
+    }
 
 
 
