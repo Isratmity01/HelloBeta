@@ -81,5 +81,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.2.0'
     ///annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     testCompile 'junit:junit:4.12'
+
+    compile 'com.firebaseui:firebase-ui-storage:0.6.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

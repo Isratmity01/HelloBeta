@@ -43,8 +43,8 @@
                         android:id="@+id/card_thumbnail_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/live_banner"
-                        android:scaleType="fitCenter" />
+                        android:src="@drawable/live_banner"
+                        android:scaleType="centerCrop" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"

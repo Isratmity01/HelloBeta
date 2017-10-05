@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,7 +58,6 @@ import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.ChatSent;
 import com.grameenphone.hello.model.EventReceived;
-import com.grameenphone.hello.model.EventReceived2;
 import com.grameenphone.hello.model.User;
 
 import org.greenrobot.eventbus.EventBus;
@@ -108,6 +109,10 @@ public class Fragment_MainPage extends Fragment {
     private User myself;
     private TextView onlineUserCount;
 
+    private String bannerimage = "banner/live_banner_xxhdpi.png";
+
+    private ImageView cardbanner;
+
     private JSONObject chatrequestobject = new JSONObject();
 
     public Fragment_MainPage() {
@@ -124,6 +129,7 @@ public class Fragment_MainPage extends Fragment {
         storageRef = storage.getReferenceFromUrl(STORAGE_URL).child(ATTACHMENT);
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
+
 
        // ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.hellologo);
 
@@ -420,6 +426,19 @@ public class Fragment_MainPage extends Fragment {
     }
 
     public void init() {
+
+        getScreenDPI();
+
+        StorageReference bannerRef = FirebaseStorage.getInstance().getReference().child( bannerimage );
+
+        cardbanner = (ImageView) getActivity().findViewById(R.id.card_thumbnail_image);
+
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(bannerRef)
+                .into(cardbanner);
+
+
 
         userArrayList.clear();
         userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
@@ -879,6 +898,33 @@ public class Fragment_MainPage extends Fragment {
         roomListAdapter.refresh();
 
     }
+
+
+    public void getScreenDPI(){
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        switch(metrics.densityDpi){
+            case DisplayMetrics.DENSITY_LOW:
+                bannerimage = "banner/live_banner_mdpi.png";
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                bannerimage = "banner/live_banner_mdpi.png";
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+                bannerimage = "banner/live_banner_hdpi.png";
+                break;
+            case DisplayMetrics.DENSITY_XHIGH:
+                bannerimage = "banner/live_banner_xhdpi.png";
+                break;
+            case DisplayMetrics.DENSITY_XXHIGH:
+                bannerimage = "banner/live_banner_xxhdpi.png";
+                break;
+            case DisplayMetrics.DENSITY_XXXHIGH:
+                bannerimage = "banner/live_banner_xxxhdpi.png";
+                break;
+        }
+    }
+
 
 
 }
