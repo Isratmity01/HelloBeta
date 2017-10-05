@@ -62,7 +62,6 @@ import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.ChatSent;
 import com.grameenphone.hello.model.ChatSent2;
-import com.grameenphone.hello.model.EventReceived;
 import com.grameenphone.hello.model.User;
 
 import org.greenrobot.eventbus.EventBus;
@@ -81,51 +80,58 @@ import static com.grameenphone.hello.Utils.Userlevels.getLevelName;
 
 
 public class Fragment_MainPage extends Fragment {
+    public static final String STORAGE_URL = "gs://mars-e7047.appspot.com";
+    public static final String ATTACHMENT = "attachments";
+    public static Comparator<ChatRoom> compareChatroom =
+
+            new Comparator<ChatRoom>() {
+
+                public int compare(ChatRoom chat1, ChatRoom other) {
+
+                    return Long.compare(other.getTimestamp(), chat1.getTimestamp());
+
+                }
+
+            };
+    private static int liveusercount;
+    private static ArrayList<ChatRoom> chatRooms = new ArrayList<>();
+    StorageReference storageRef;
+    FragmentManager fragmentManager;
+    ArrayList<String> liveUser = new ArrayList<String>();
+    RecyclerView allusers;
+    View fragmentView;
+    EventBus myEventBus;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private RecyclerView userrecylcer, msgrecyler, chatReqrecyler;
     private LiveUserListAdapter liveUserListAdapter;
-    public static final String STORAGE_URL = "gs://mars-e7047.appspot.com";
-    public static final String ATTACHMENT = "attachments";
-    StorageReference storageRef;
     private ProgressBar mainProgress;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private RoomListAdapter roomListAdapter;
     private IncomingChatRequestsAdapter chatRequestsAdapter;
     private Handler handler;
-    private int width=50,height=50;
+    private int width = 50, height = 50;
     private CardView cardView;
-    FragmentManager fragmentManager;
-    ArrayList<String> liveUser = new ArrayList<String>();
-    private static int liveusercount;
-
     private ArrayList<ChatRoom> userArrayList = new ArrayList<>();
     private ArrayList<ChatRoom> chatRequests = new ArrayList<>();
-
-    private static ArrayList<ChatRoom> chatRooms = new ArrayList<>();
-    RecyclerView allusers;
     private MenuItem item;
     private float density;
     private Toolbar toolbar;
-    private TextView liveHeader,msgreqHeader;
+    private TextView liveHeader, msgreqHeader;
     private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
-    View fragmentView;
     private DatabaseHelper databaseHelper;
     private User myself;
     private TextView onlineUserCount;
-
     private String bannerimage = "banner/live_banner_xxhdpi.png";
-
     private ImageView cardbanner;
-
-    EventBus myEventBus;
     private SharedPreferences mSharedPreferences;
     private JSONObject chatrequestobject = new JSONObject();
     private boolean firstRun;
+    private SharedPreferences sharedPreferences;
+
     public Fragment_MainPage() {
         // Required empty public constructor
     }
-    private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -140,11 +146,11 @@ public class Fragment_MainPage extends Fragment {
         mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
 
 
-       // ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.hellologo);
+        // ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.hellologo);
 
         // ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    //    setActionBarTitle("");
+        //    setActionBarTitle("");
 
 
     }
@@ -193,10 +199,10 @@ public class Fragment_MainPage extends Fragment {
 
     private void bindViews(View view) {
 
-            toolbar=(Toolbar)getActivity().findViewById(R.id.toolbar);
+        toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         onlineUserCount = (TextView) view.findViewById(R.id.onlineusers);
         liveusercount = 0;
-        mainProgress=(ProgressBar)view.findViewById(R.id.mainpageprogress);
+        mainProgress = (ProgressBar) view.findViewById(R.id.mainpageprogress);
         mainProgress.setVisibility(View.VISIBLE);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         liveHeader = (TextView) view.findViewById(R.id.liveuserheader);
@@ -247,16 +253,14 @@ public class Fragment_MainPage extends Fragment {
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         density = getResources().getDisplayMetrics().density;
-        if(density<=1.5)
-        {
+        if (density <= 1.5) {
             params.height = 116;
         } else if (density > 1.5 && density < 2.5) {
             params.height = 156;
-        }
-        else {
+        } else {
             params.height = 216;
-            width=70;
-            height=70;
+            width = 70;
+            height = 70;
         }
         //this will be changed based on device dpi
 
@@ -270,7 +274,6 @@ public class Fragment_MainPage extends Fragment {
         init();
     }
 
-
     public void openDialogue(final User user, int reqStatus) {
         AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
         LayoutInflater factory = LayoutInflater.from(getActivity());
@@ -278,10 +281,10 @@ public class Fragment_MainPage extends Fragment {
         TextView name = (TextView) view.findViewById(R.id.profile_name);
         TextView level = (TextView) view.findViewById(R.id.level);
         TextView point = (TextView) view.findViewById(R.id.point);
-        int points=user.getUserpoint();
+        int points = user.getUserpoint();
         name.setText(user.getName());
         level.setText(getLevelName(points));
-        point.setText("পয়েন্ট : "+ EngBng.EngBng(String.valueOf(points)));
+        point.setText("পয়েন্ট : " + EngBng.EngBng(String.valueOf(points)));
         name.setText(user.getName());
         ImageView profile = (ImageView) view.findViewById(R.id.profile_picture);
         Glide.with(getActivity()).load(user.getPhotoUrl()).bitmapTransform(new CropCircleTransformation(getActivity()))
@@ -332,7 +335,6 @@ public class Fragment_MainPage extends Fragment {
                             .child(user.getUid())
                             .child(chatRoomId)
                             .setValue(chatRoomForSender);
-
 
 
                     try {
@@ -416,7 +418,6 @@ public class Fragment_MainPage extends Fragment {
 
     }
 
-
     public void StartP2p(String roomId, String name) {
         Bundle bundle = new Bundle();
         bundle.putString("room_uid", roomId);
@@ -439,7 +440,7 @@ public class Fragment_MainPage extends Fragment {
 
         getScreenDPI();
 
-        StorageReference bannerRef = FirebaseStorage.getInstance().getReference().child( bannerimage );
+        StorageReference bannerRef = FirebaseStorage.getInstance().getReference().child(bannerimage);
 
         cardbanner = (ImageView) getActivity().findViewById(R.id.card_thumbnail_image);
 
@@ -449,27 +450,24 @@ public class Fragment_MainPage extends Fragment {
                 .into(cardbanner);
 
 
-
         userArrayList.clear();
-        firstRun= sharedPreferences.getBoolean("fRun", false);
-        if(firstRun==false)
-        {
-            Toast.makeText(getActivity(),"ডাটা লোড হচ্ছে, দয়া করে অপেক্ষা করুন",Toast.LENGTH_LONG).show();
+        firstRun = sharedPreferences.getBoolean("fRun", false);
+        if (firstRun == false) {
+            Toast.makeText(getActivity(), "ডাটা লোড হচ্ছে, দয়া করে অপেক্ষা করুন", Toast.LENGTH_LONG).show();
             callfirebasefunction();
             sharedPreferences.edit().putBoolean("fRun", true).apply();
-        }
-        else {
+        } else {
+            mainProgress.setVisibility(View.GONE);
             userArrayList.clear();
             userArrayList = populateChatRoomArraylist();
         }
-      //  userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
-
+        //  userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
 
 
         chatRequests.clear();
         chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
 
-        roomListAdapter = new RoomListAdapter(getActivity(), userArrayList, Fragment_MainPage.this,databaseHelper,myself);
+        roomListAdapter = new RoomListAdapter(getActivity(), userArrayList, Fragment_MainPage.this, databaseHelper, myself);
         msgrecyler.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setAutoMeasureEnabled(true);
@@ -488,217 +486,210 @@ public class Fragment_MainPage extends Fragment {
         if (chatRequests.size() > 0) msgreqHeader.setVisibility(View.VISIBLE);
 
 
-
         LiveChips();
-       // handler = new Handler();
+        // handler = new Handler();
 
 
-
-       // handler.post(runnableCode);
+        // handler.post(runnableCode);
 
     }
-  /*  private Runnable runnableCode = new Runnable() {
 
-        @Override
+    /*  private Runnable runnableCode = new Runnable() {
 
-        public void run() {
+          @Override
+
+          public void run() {
 
 
 
-            for(ChatRoom chatRoom : userArrayList){
+              for(ChatRoom chatRoom : userArrayList){
 
-                if(chatRoom.getRoomId() != null) {
+                  if(chatRoom.getRoomId() != null) {
 
-                    Chat chat = databaseHelper.getLastMsg(chatRoom.getRoomId());
+                      Chat chat = databaseHelper.getLastMsg(chatRoom.getRoomId());
 
-                    if(chat != null && chat.getMessage() !=null && chat.getTimestamp() != 0){
+                      if(chat != null && chat.getMessage() !=null && chat.getTimestamp() != 0){
 
-                        chatRoom.setLastChat(chat.getMessage());
+                          chatRoom.setLastChat(chat.getMessage());
 
-                        chatRoom.setTimestamp(chat.getTimestamp());
+                          chatRoom.setTimestamp(chat.getTimestamp());
+
+                      }
+
+
+
+
+                  }
+
+              }
+
+
+
+
+
+              Collections.sort( userArrayList, compareChatroom );
+
+              roomListAdapter.notifyDataSetChanged();
+
+
+
+
+
+              handler.postDelayed(this, 2000);
+
+          }
+
+      };*/
+    private void callfirebasefunction() {
+        mainProgress.setVisibility(View.VISIBLE);
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid())
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
+                        if (chatroom != null) {
+                            if (chatroom.getRoomId() != null) {
+
+                                databaseHelper.addRoom(chatroom.getRoomId(),
+                                        chatroom.getName(),
+                                        chatroom.getPhotoUrl(),
+                                        chatroom.getRequestStatus());
+
+
+                                //  userArrayList.clear();
+                                //userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+
+
+                                chatRequests.clear();
+                                chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
+                            }
+
+                        }
+
+                        roomListAdapter.notifyDataSetChanged();
+                        chatRequestsAdapter.notifyDataSetChanged();
+
+
+                        if (chatRequests.size() > 0) {
+                            msgreqHeader.setVisibility(View.VISIBLE);
+                        } else {
+                            msgreqHeader.setVisibility(View.GONE);
+                        }
+
 
                     }
 
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                        ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
+
+                        if (chatroom != null) {
+
+                            if (chatroom.getRequestStatus() == 1) {
+
+                                databaseHelper.addRoom(chatroom.getRoomId(),
+                                        chatroom.getName(),
+                                        chatroom.getPhotoUrl(),
+                                        chatroom.getRequestStatus());
+
+                                // userArrayList.clear();
+                                //   userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
 
 
+                                chatRequests.clear();
+                                chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
+                            }
 
-                }
+                        }
+
+                        roomListAdapter.notifyDataSetChanged();
+                        chatRequestsAdapter.notifyDataSetChanged();
+
+
+                        if (chatRequests.size() > 0) {
+                            msgreqHeader.setVisibility(View.VISIBLE);
+                        } else {
+                            msgreqHeader.setVisibility(View.GONE);
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
+
+                        if (chatroom != null && chatroom.getRoomId() != null) {
+                            databaseHelper.addRoom(chatroom.getRoomId(),
+                                    chatroom.getName(),
+                                    chatroom.getPhotoUrl(),
+                                    100);
+
+                            // userArrayList.clear();
+                            // userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
+
+
+                            chatRequests.clear();
+                            chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
+
+
+                        }
+
+                        roomListAdapter.notifyDataSetChanged();
+                        chatRequestsAdapter.notifyDataSetChanged();
+
+                        if (chatRequests.size() > 0) {
+                            msgreqHeader.setVisibility(View.VISIBLE);
+                        } else {
+                            msgreqHeader.setVisibility(View.GONE);
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+        mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userArrayList.clear();
+                mainProgress.setVisibility(View.GONE);
+                userArrayList.addAll(populateChatRoomArraylist());
+                roomListAdapter.refresh();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
 
 
+        });
 
 
+    }
 
-            Collections.sort( userArrayList, compareChatroom );
-
-            roomListAdapter.notifyDataSetChanged();
-
-
-
-
-
-            handler.postDelayed(this, 2000);
-
-        }
-
-    };*/
-  private void callfirebasefunction()
-  {
-      mainProgress.setVisibility(View.VISIBLE);
-      mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-      mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid())
-              .addChildEventListener(new ChildEventListener() {
-                  @Override
-                  public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                      ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-                      if (chatroom != null) {
-                          if(chatroom.getRoomId()!=null ) {
-
-                              databaseHelper.addRoom(chatroom.getRoomId(),
-                                      chatroom.getName(),
-                                      chatroom.getPhotoUrl(),
-                                      chatroom.getRequestStatus());
-
-
-
-
-                              //  userArrayList.clear();
-                              //userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
-
-
-                              chatRequests.clear();
-                              chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
-                          }
-
-                      }
-
-                      roomListAdapter.notifyDataSetChanged();
-                      chatRequestsAdapter.notifyDataSetChanged();
-
-
-                      if(chatRequests.size() > 0) {
-                          msgreqHeader.setVisibility(View.VISIBLE);
-                      } else {
-                          msgreqHeader.setVisibility(View.GONE);
-                      }
-
-
-                  }
-
-                  @Override
-                  public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                      ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-
-                      if (chatroom != null) {
-
-                          if (chatroom.getRequestStatus() == 1) {
-
-                              databaseHelper.addRoom(chatroom.getRoomId(),
-                                      chatroom.getName(),
-                                      chatroom.getPhotoUrl(),
-                                      chatroom.getRequestStatus());
-
-                              // userArrayList.clear();
-                              //   userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
-
-
-                              chatRequests.clear();
-                              chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
-                          }
-
-                      }
-
-                      roomListAdapter.notifyDataSetChanged();
-                      chatRequestsAdapter.notifyDataSetChanged();
-
-
-
-
-                      if(chatRequests.size() > 0) {
-                          msgreqHeader.setVisibility(View.VISIBLE);
-                      } else {
-                          msgreqHeader.setVisibility(View.GONE);
-                      }
-
-
-                  }
-
-                  @Override
-                  public void onChildRemoved(DataSnapshot dataSnapshot) {
-                      ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
-
-                      if (chatroom != null && chatroom.getRoomId() != null) {
-                          databaseHelper.addRoom(chatroom.getRoomId(),
-                                  chatroom.getName(),
-                                  chatroom.getPhotoUrl(),
-                                  100);
-
-                          // userArrayList.clear();
-                          // userArrayList.addAll(databaseHelper.getAllRoombyStatus(1));
-
-
-                          chatRequests.clear();
-                          chatRequests.addAll(databaseHelper.getAllRoombyStatus(2));
-
-
-                      }
-
-                      roomListAdapter.notifyDataSetChanged();
-                      chatRequestsAdapter.notifyDataSetChanged();
-
-                      if(chatRequests.size() > 0) {
-                          msgreqHeader.setVisibility(View.VISIBLE);
-                      } else {
-                          msgreqHeader.setVisibility(View.GONE);
-                      }
-
-
-                  }
-
-                  @Override
-                  public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                  }
-
-                  @Override
-                  public void onCancelled(DatabaseError databaseError) {
-
-                  }
-              });
-
-      mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-          public void onDataChange(DataSnapshot dataSnapshot) {
-              userArrayList.clear();
-              mainProgress.setVisibility(View.GONE);
-              userArrayList.addAll(populateChatRoomArraylist());
-              roomListAdapter.refresh();
-
-          }
-
-          @Override
-          public void onCancelled(DatabaseError databaseError) {
-
-          }
-
-
-      });
-
-
-
-
-  }
     private ArrayList<ChatRoom> populateChatRoomArraylist() {
         ArrayList<ChatRoom> userArrayList = databaseHelper.getAllRoombyStatus(1);
 
-         for(ChatRoom chatRoom : userArrayList){
+        for (ChatRoom chatRoom : userArrayList) {
 
-            if(chatRoom.getRoomId() != null) {
+            if (chatRoom.getRoomId() != null) {
 
                 Chat chat = databaseHelper.getLastMsg(chatRoom.getRoomId());
 
-                if(chat != null && chat.getMessage() !=null && chat.getTimestamp() != 0){
+                if (chat != null && chat.getMessage() != null && chat.getTimestamp() != 0) {
 
                     chatRoom.setLastChat(chat.getMessage());
 
@@ -707,20 +698,17 @@ public class Fragment_MainPage extends Fragment {
                 }
 
 
-
-
             }
 
         }
 
-        Collections.sort( userArrayList, compareChatroom );
+        Collections.sort(userArrayList, compareChatroom);
 
         return userArrayList;
 
 
-
-
     }
+
     private void LiveChips()
 
     {
@@ -732,7 +720,7 @@ public class Fragment_MainPage extends Fragment {
                 if (!liveUser.contains(dataSnapshot.getKey())) {
                     {
 
-                        liveUser.add(0,dataSnapshot.getKey());
+                        liveUser.add(0, dataSnapshot.getKey());
 
 
                     }
@@ -740,10 +728,10 @@ public class Fragment_MainPage extends Fragment {
                     liveusercount++;
                     onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
                     liveUserListAdapter.notifyDataSetChanged();
-                   // userrecylcer.smoothScrollToPosition(0);
+                    // userrecylcer.smoothScrollToPosition(0);
                 }
-                User userexist=     databaseHelper.getUser(dataSnapshot.getKey());
-                if(userexist==null||userexist.getUid()==null){
+                User userexist = databaseHelper.getUser(dataSnapshot.getKey());
+                if (userexist == null || userexist.getUid() == null) {
                     mFirebaseDatabaseReference.child("users").child(dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -753,11 +741,11 @@ public class Fragment_MainPage extends Fragment {
                             if (user != null &&
                                     user.getUid() != null &&
                                     user.getName() != null &&
-                                    user.getUid().equals(((MainActivity) getActivity()).mFirebaseUser.getUid() )) {
+                                    user.getUid().equals(((MainActivity) getActivity()).mFirebaseUser.getUid())) {
 
                                 databaseHelper.addMe(user);
                             } else {
-                                if(user != null && user.getUid() != null && user.getName() != null ) {
+                                if (user != null && user.getUid() != null && user.getName() != null) {
                                     databaseHelper.addUser(user);
                                 }
                             }
@@ -829,16 +817,6 @@ public class Fragment_MainPage extends Fragment {
         onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
         if (liveUser.size() > 0) liveHeader.setVisibility(View.VISIBLE);
     }
-
-
-
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
     /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -851,6 +829,12 @@ public class Fragment_MainPage extends Fragment {
         }
         return false;
     }*/
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
 
     private String EToB(String english_number) {
         if (english_number.equals("null") || english_number.equals(""))
@@ -887,21 +871,7 @@ public class Fragment_MainPage extends Fragment {
         return concatResult;
     }
 
-    public static Comparator<ChatRoom> compareChatroom =
-
-            new Comparator<ChatRoom>() {
-
-                public int compare(ChatRoom chat1, ChatRoom other) {
-
-                    return Long.compare(other.getTimestamp(),chat1.getTimestamp());
-
-                }
-
-            };
-
-
-
-    private JSONObject populateJsonChat (JSONObject chatrequest, String sender, String message, String title) throws JSONException {
+    private JSONObject populateJsonChat(JSONObject chatrequest, String sender, String message, String title) throws JSONException {
         chatrequest.put("sender", sender);
         chatrequest.put("text", message);
         chatrequest.put("title", title);
@@ -910,11 +880,9 @@ public class Fragment_MainPage extends Fragment {
     }
 
 
-
-
     private void sendPushNotificationToRequestReceiver(JSONObject chatRequest,
-                                                String firebaseToken,
-                                                String receiverFirebaseToken) {
+                                                       String firebaseToken,
+                                                       String receiverFirebaseToken) {
         //   EventBus.getDefault().post(new ChatSent("yes"));
         FcmNotificationBuilder.initialize()
                 .notificationType("request")
@@ -933,17 +901,19 @@ public class Fragment_MainPage extends Fragment {
         userArrayList.addAll(populateChatRoomArraylist());
         roomListAdapter.refresh();
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onChatSentEvent(ChatSent event){
+    public void onChatSentEvent(ChatSent event) {
         // your implementation
         userArrayList.clear();
         userArrayList.addAll(populateChatRoomArraylist());
         roomListAdapter.refresh();
-      //  chatRequestsAdapter.refresh();
+        //  chatRequestsAdapter.refresh();
 
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onChatSent2Event(ChatSent2 event){
+    public void onChatSent2Event(ChatSent2 event) {
         // your implementation
 
         callfirebasefunction();
@@ -953,10 +923,10 @@ public class Fragment_MainPage extends Fragment {
 
     }
 
-    public void getScreenDPI(){
+    public void getScreenDPI() {
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        switch(metrics.densityDpi){
+        switch (metrics.densityDpi) {
             case DisplayMetrics.DENSITY_LOW:
                 bannerimage = "banner/live_banner_mdpi.png";
                 break;
@@ -977,7 +947,6 @@ public class Fragment_MainPage extends Fragment {
                 break;
         }
     }
-
 
 
 }
