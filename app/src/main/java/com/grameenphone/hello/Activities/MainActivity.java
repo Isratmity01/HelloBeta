@@ -292,8 +292,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
                             if (Fragment_Live.isActive) {
                                 EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
-                            } else {
-                                EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
                             }
 
                         }
@@ -308,8 +306,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 else {
                     if (Fragment_Live.isActive) {
                         EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
-                    } else {
-                        EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
                     }
                 }
 
@@ -327,9 +323,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 liveusercount--;
                 if (Fragment_Live.isActive) {
                     EventBus.getDefault().post(new EventReceived2(false, dataSnapshot.getKey()));
-                } else
-                    EventBus.getDefault().post(new EventReceived(false, dataSnapshot.getKey()));
-                //  EventBus.getDefault().postSticky(new EventReceived(false, liveUser));
+                }
             }
 
             @Override

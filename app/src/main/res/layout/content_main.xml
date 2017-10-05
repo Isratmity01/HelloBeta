@@ -125,8 +125,7 @@
                         android:layout_below="@id/liveuserheader"
                         android:background="@android:color/transparent"
                         android:divider="@null"
-                        ads:stackFromEnd="true"
-                        
+
                         android:fadeScrollbars="false"
                         android:orientation="horizontal"
                         android:requiresFadingEdge="horizontal|vertical"

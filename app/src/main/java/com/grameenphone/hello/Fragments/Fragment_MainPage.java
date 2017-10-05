@@ -39,6 +39,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.IncomingChatRequestsAdapter;
 import com.grameenphone.hello.Adapter.LiveUserListAdapter;
@@ -53,6 +54,7 @@ import com.grameenphone.hello.model.Chat;
 import com.grameenphone.hello.model.ChatRoom;
 import com.grameenphone.hello.model.ChatSent;
 import com.grameenphone.hello.model.EventReceived;
+import com.grameenphone.hello.model.EventReceived2;
 import com.grameenphone.hello.model.User;
 
 import org.greenrobot.eventbus.EventBus;
@@ -624,9 +626,103 @@ public class Fragment_MainPage extends Fragment {
         }
 
     };
-    private void LiveChips() {
+    private void LiveChips()
 
-       liveUser=((MainActivity)getActivity()).getFinalliveusers();
+    {
+        mFirebaseDatabaseReferenceForLiveCount.child("live_user").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+
+                if (!liveUser.contains(dataSnapshot.getKey())) {
+                    {
+
+                        liveUser.add(0,dataSnapshot.getKey());
+
+
+                    }
+
+                    liveusercount++;
+                    onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
+                    liveUserListAdapter.notifyDataSetChanged();
+                   // userrecylcer.smoothScrollToPosition(0);
+                }
+                User userexist=     databaseHelper.getUser(dataSnapshot.getKey());
+                if(userexist==null||userexist.getUid()==null){
+                    mFirebaseDatabaseReference.child("users").child(dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            User user = dataSnapshot.getValue(User.class);
+
+                            if (user != null &&
+                                    user.getUid() != null &&
+                                    user.getName() != null &&
+                                    user.getUid().equals(((MainActivity) getActivity()).mFirebaseUser.getUid() )) {
+
+                                databaseHelper.addMe(user);
+                            } else {
+                                if(user != null && user.getUid() != null && user.getName() != null ) {
+                                    databaseHelper.addUser(user);
+                                }
+                            }
+
+                           /* if (Fragment_Live.isActive) {
+                                EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
+                            } else {
+                                EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
+                            }*/
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+             /*   else {
+                    if (Fragment_Live.isActive) {
+                        EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
+                    } else {
+                        EventBus.getDefault().post(new EventReceived(true, dataSnapshot.getKey()));
+                    }
+                }*/
+
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                liveUser.remove(dataSnapshot.getKey());
+                liveusercount--;
+                onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
+                liveUserListAdapter.notifyDataSetChanged();
+                //userrecylcer.smoothScrollToPosition(0);
+               /* if (Fragment_Live.isActive) {
+                    EventBus.getDefault().post(new EventReceived2(false, dataSnapshot.getKey()));
+                } else
+                    EventBus.getDefault().post(new EventReceived(false, dataSnapshot.getKey()));
+                //  EventBus.getDefault().postSticky(new EventReceived(false, liveUser));*/
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         liveUserListAdapter = new LiveUserListAdapter(
                 getActivity(),
                 liveUser,
@@ -638,6 +734,8 @@ public class Fragment_MainPage extends Fragment {
         onlineUserCount.setText(EToB(String.valueOf(liveUser.size())) + " জন অনলাইনে আছে");
         if (liveUser.size() > 0) liveHeader.setVisibility(View.VISIBLE);
     }
+
+
 
     @Subscribe
     public void onEvent(EventReceived event) {
