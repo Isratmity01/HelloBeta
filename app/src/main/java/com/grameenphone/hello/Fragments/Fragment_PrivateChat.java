@@ -69,6 +69,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -119,7 +120,7 @@ public class Fragment_PrivateChat extends Fragment {
     public int getMonthfirst() {
         return monthfirst;
     }
-
+    private int ChatCount=0;
     public void setMonthfirst(int monthfirst) {
         this.monthfirst = monthfirst;
     }
@@ -300,6 +301,7 @@ public class Fragment_PrivateChat extends Fragment {
         //((AppCompatActivity)getActivity()).setSupportActionBar(toolbarp2p);
 
         // ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mProgressBar=(ProgressBar)view.findViewById(R.id.chatProgress);
 
         jumpToBottom = (Button) view.findViewById(R.id.jump_bottom);
         LoadMore=(Button)view.findViewById(R.id.jump_totop) ;
@@ -798,8 +800,9 @@ public class Fragment_PrivateChat extends Fragment {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-
+                        mProgressBar.setVisibility(View.GONE);
                         if (dataSnapshot.hasChildren()) {
+
 
                             c= dataSnapshot.getValue(Chat.class);
                             if (c != null) {
@@ -904,6 +907,7 @@ public class Fragment_PrivateChat extends Fragment {
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
+                        mProgressBar.setVisibility(View.GONE);
 
                         if (dataSnapshot.hasChildren()) {
 
@@ -958,7 +962,23 @@ public class Fragment_PrivateChat extends Fragment {
 
                     }
                 });
+        mFirebaseDatabaseReference.child("chat_rooms").child(MESSAGES_CHILD).addListenerForSingleValueEvent(new ValueEventListener() {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+               if(dataSnapshot.getChildrenCount()==0)
+               {
+                   mProgressBar.setVisibility(View.GONE);
+                   Toast.makeText(getActivity(),"আপনাদের মাঝে আগে চ্যাট হয় নি। চ্যাট শুরু করুন",Toast.LENGTH_SHORT ).show();
+               }
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
     }
     public void init()
     {
@@ -972,6 +992,7 @@ public class Fragment_PrivateChat extends Fragment {
         //chats = dbHelper.getAllMsg(sender.getUid(),receiver.getUid());
         //System.out.println(chats.size() + " Here is the size ");
 
+        loadinitial();
         chatRoomAdapter = new ChatRoomAdapter(getActivity().getApplicationContext(), chats, sender, receiver, MESSAGES_CHILD);
 
         chatRoomAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -998,7 +1019,6 @@ public class Fragment_PrivateChat extends Fragment {
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
         mMessageRecyclerView.setAdapter(chatRoomAdapter);
 
-        loadinitial();
         //  Toast.makeText(getActivity(),"asd " +chats.size(),Toast.LENGTH_SHORT).show();
 
         mMessageRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
