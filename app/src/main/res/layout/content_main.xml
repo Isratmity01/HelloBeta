@@ -150,7 +150,11 @@
                         android:layout_height="wrap_content"
                         android:requiresFadingEdge="horizontal|vertical"
                         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
+                    <ProgressBar
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:id="@+id/mainpageprogress"/>
 
                     <TextView
                         android:id="@+id/msgheader"

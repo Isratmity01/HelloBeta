@@ -19,8 +19,11 @@ import com.grameenphone.hello.R;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.fcm.FcmNotificationBuilder;
 import com.grameenphone.hello.model.ChatRoom;
+import com.grameenphone.hello.model.ChatSent;
+import com.grameenphone.hello.model.ChatSent2;
 import com.grameenphone.hello.model.User;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -227,7 +230,7 @@ public class IncomingChatRequestsAdapter extends RecyclerView.Adapter<RecyclerVi
     private void sendPushNotificationToRequestReceiver(JSONObject chatRequest,
                                                        String firebaseToken,
                                                        String receiverFirebaseToken) {
-        //   EventBus.getDefault().post(new ChatSent("yes"));
+          EventBus.getDefault().post(new ChatSent2("yes"));
         FcmNotificationBuilder.initialize()
                 .notificationType("request")
                 .setReceived(chatRequest)

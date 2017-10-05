@@ -20,6 +20,7 @@ import com.grameenphone.hello.Utils.Constant;
 import com.grameenphone.hello.dbhelper.DatabaseHelper;
 import com.grameenphone.hello.events.PushNotificationEvent;
 import com.grameenphone.hello.model.Chat;
+import com.grameenphone.hello.model.ChatSent2;
 import com.grameenphone.hello.model.FileModel;
 import com.grameenphone.hello.model.NotificationModel;
 
@@ -205,7 +206,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                   String firebaseToken,
                                   String roomuid) {
 
-
+if(type.equals("request"))
+{
+    EventBus.getDefault().post(new ChatSent2("yes"));
+} else
         EventBus.getDefault().post(new PushNotificationEvent(title,
                 message,
                 sender,

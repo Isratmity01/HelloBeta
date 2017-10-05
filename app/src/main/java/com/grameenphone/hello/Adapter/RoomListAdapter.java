@@ -66,7 +66,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         String rooom=current.getRoomId();
         receiver_uid =rooom.replace(self.getUid(), "").replace("_", "");
         receiver=databaseHelper1.getUser(receiver_uid);
-
+        itemHolder.message.setText(null);
         itemHolder.nameTextView.setText(receiver.getName());
         if(receiver.getName() != null) {
             lilname = receiver.getName().trim().split("\\s+")[0];
