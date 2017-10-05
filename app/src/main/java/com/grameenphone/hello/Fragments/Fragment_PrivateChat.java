@@ -115,6 +115,7 @@ public class Fragment_PrivateChat extends Fragment {
     private static final int PERMISSION_REQUEST_STORAGE = 1044;
     String firstDate, newDate;
     int timefirst, timesecond;
+    public  static String user ;
     private RelativeLayout sendbackground;
     int monthfirst, monthsecond;
     public int getMonthfirst() {
@@ -147,6 +148,14 @@ public class Fragment_PrivateChat extends Fragment {
 
     public void setTimesecond(int timesecond) {
         this.timesecond = timesecond;
+    }
+
+    public static String getUser() {
+        return user;
+    }
+
+    public static void setUser(String user) {
+        Fragment_PrivateChat.user = user;
     }
 
     int year;
@@ -213,7 +222,19 @@ public class Fragment_PrivateChat extends Fragment {
         // Required empty public constructor
     }
 
+    public  static boolean active = false;
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
+        setUser(null);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -567,6 +588,7 @@ public class Fragment_PrivateChat extends Fragment {
         receiver_uid = (MESSAGES_CHILD.replace(sender.getUid(), "")).replace("_", "");
         receiver = dbHelper.getUser(receiver_uid);
         roomName=receiver.getName();
+        setUser(roomName);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window =getActivity().getWindow();
             Drawable background = getResources().getDrawable(R.drawable.gradient);

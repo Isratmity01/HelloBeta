@@ -55,6 +55,13 @@
 
             android:layout_gravity="center"
             android:textSize="20sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="দুধ ভাত"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center"
+                android:textSize="20sp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,6 +98,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="লেভেল ২"
+                android:layout_gravity="center"
+                android:textSize="20sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="পাকনা"
+                android:textColor="@color/colorPrimary"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
             <TextView
@@ -133,6 +147,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="মাস্টর"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center"
+                android:textSize="20sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="১২০-৩৯৯ পয়েন্ট"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
@@ -170,6 +191,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="পণ্ডিত"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center"
+                android:textSize="20sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="৪০০-১৪৯৯ পয়েন্ট"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
@@ -202,6 +230,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="লেভেল ৫"
+                android:layout_gravity="center"
+                android:textSize="20sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="গুরু"
+                android:textColor="@color/colorPrimary"
                 android:layout_gravity="center"
                 android:textSize="20sp"/>
             <TextView

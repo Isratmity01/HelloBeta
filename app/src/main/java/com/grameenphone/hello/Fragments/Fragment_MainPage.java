@@ -40,6 +40,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.grameenphone.hello.Activities.MainActivity;
 import com.grameenphone.hello.Adapter.IncomingChatRequestsAdapter;
 import com.grameenphone.hello.Adapter.LiveUserListAdapter;
@@ -77,7 +79,11 @@ public class Fragment_MainPage extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private RecyclerView userrecylcer, msgrecyler, chatReqrecyler;
     private LiveUserListAdapter liveUserListAdapter;
+    public static final String STORAGE_URL = "gs://mars-e7047.appspot.com";
+    public static final String ATTACHMENT = "attachments";
+    StorageReference storageRef;
 
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
     private RoomListAdapter roomListAdapter;
     private IncomingChatRequestsAdapter chatRequestsAdapter;
     private Handler handler;
@@ -115,7 +121,7 @@ public class Fragment_MainPage extends Fragment {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-
+        storageRef = storage.getReferenceFromUrl(STORAGE_URL).child(ATTACHMENT);
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
 
