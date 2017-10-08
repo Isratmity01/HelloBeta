@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -118,11 +119,11 @@ public class Fragment_MainPage extends Fragment {
     private float density;
     private Toolbar toolbar;
     private TextView liveHeader, msgreqHeader;
-    private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
+    private DatabaseReference mFirebaseDatabaseReference, mFirebaseDatabaseReferenceOnetime, mFirebaseDatabaseReferenceForRequest, mFirebaseDatabaseReferenceForLiveCount;
     private DatabaseHelper databaseHelper;
     private User myself;
     private TextView onlineUserCount;
-    private String bannerimage = "banner/live_banner_xxhdpi.png";
+    private String bannerimage = "banner/live_banner_hdpi.png";
     private ImageView cardbanner;
     private SharedPreferences mSharedPreferences;
     private JSONObject chatrequestobject = new JSONObject();
@@ -144,7 +145,8 @@ public class Fragment_MainPage extends Fragment {
         storageRef = storage.getReferenceFromUrl(STORAGE_URL).child(ATTACHMENT);
         mFirebaseDatabaseReferenceForLiveCount = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReferenceForRequest = FirebaseDatabase.getInstance().getReference();
-
+        mFirebaseDatabaseReferenceOnetime = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         // ((AppCompatActivity) getActivity()).getSupportActionBar().setLogo(R.drawable.hellologo);
 
@@ -447,6 +449,7 @@ public class Fragment_MainPage extends Fragment {
         Glide.with(this)
                 .using(new FirebaseImageLoader())
                 .load(bannerRef)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(cardbanner);
 
 
@@ -542,14 +545,15 @@ public class Fragment_MainPage extends Fragment {
       };*/
     private void callfirebasefunction() {
         mainProgress.setVisibility(View.VISIBLE);
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabaseReference.child("users_chat_room").child(((MainActivity) getActivity()).me.getUid())
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         ChatRoom chatroom = dataSnapshot.getValue(ChatRoom.class);
                         if (chatroom != null) {
-                            if (chatroom.getRoomId() != null) {
+                            if (chatroom.getRoomId() != null
+                                    && chatroom.getName() != null
+                                    && chatroom.getPhotoUrl() != null) {
 
                                 databaseHelper.addRoom(chatroom.getRoomId(),
                                         chatroom.getName(),
@@ -732,23 +736,16 @@ public class Fragment_MainPage extends Fragment {
                 }
                 User userexist = databaseHelper.getUser(dataSnapshot.getKey());
                 if (userexist == null || userexist.getUid() == null) {
-                    mFirebaseDatabaseReference.child("users").child(dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    mFirebaseDatabaseReferenceOnetime.child("users").child(dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
                             User user = dataSnapshot.getValue(User.class);
 
-                            if (user != null &&
-                                    user.getUid() != null &&
-                                    user.getName() != null &&
-                                    user.getUid().equals(((MainActivity) getActivity()).mFirebaseUser.getUid())) {
-
-                                databaseHelper.addMe(user);
-                            } else {
-                                if (user != null && user.getUid() != null && user.getName() != null) {
-                                    databaseHelper.addUser(user);
-                                }
+                            if (user != null && user.getUid() != null && user.getName() != null) {
+                                databaseHelper.addUser(user);
                             }
+
 
                            /* if (Fragment_Live.isActive) {
                                 EventBus.getDefault().post(new EventReceived2(true, dataSnapshot.getKey()));
